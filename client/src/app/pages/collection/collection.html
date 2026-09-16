@@ -1,0 +1,41 @@
+<main>
+  <header class="page-heading">
+    <p class="eyebrow">Library / {{ entryType }}</p>
+    <div>
+      <h1>{{ heading }}</h1>
+      <p>{{ description }}</p>
+    </div>
+  </header>
+
+  <section class="catalog" [attr.aria-label]="heading" aria-live="polite">
+    <div class="catalog__summary">
+      <span>Index</span>
+      @if (!loading()) { <span>{{ entries().length }} {{ entries().length === 1 ? 'entry' : 'entries' }}</span> }
+    </div>
+
+    @if (loading()) {
+      <div class="state">Loading {{ heading.toLocaleLowerCase() }}…</div>
+    } @else if (error()) {
+      <div class="state state--error">{{ error() }}</div>
+    } @else if (!entries().length) {
+      <div class="state">No {{ heading.toLocaleLowerCase() }} have been added yet.</div>
+    } @else {
+      <div class="entry-list">
+        @for (entry of entries(); track entry.slug; let index = $index) {
+          <a class="entry" [routerLink]="['/entry', entry.slug]">
+            <span class="entry__index">{{ (index + 1).toString().padStart(2, '0') }}</span>
+            <span class="entry__body">
+              <strong>{{ entry.title }}</strong>
+              <span>{{ entry.summary }}</span>
+            </span>
+            <span class="entry__tags">
+              @for (tag of entry.tags.slice(0, 3); track tag) { <small>#{{ tag }}</small> }
+            </span>
+            <span class="entry__arrow" aria-hidden="true">↗</span>
+          </a>
+        }
+      </div>
+    }
+  </section>
+</main>
+

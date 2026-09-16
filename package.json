@@ -1,0 +1,17 @@
+{
+  "name": "dev-lib",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "overrides": {
+    "@nestjs/platform-fastify@11.2.5": {
+      "fastify": "5.12.5"
+    }
+  }
+}

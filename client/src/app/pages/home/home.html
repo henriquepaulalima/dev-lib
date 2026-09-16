@@ -1,0 +1,36 @@
+<main>
+  <section class="hero">
+    <p class="eyebrow">Your working memory</p>
+    <h1>Build once.<br /><em>Find it again.</em></h1>
+    <p class="hero__copy">A practical shelf for frontend components and backend patterns worth reusing.</p>
+  </section>
+
+  <section class="destinations" aria-labelledby="browse-heading">
+    <div class="destinations__heading">
+      <p class="eyebrow">Browse the library</p>
+      <h2 id="browse-heading">Choose a shelf.</h2>
+    </div>
+
+    <div class="destination-grid">
+      <a class="destination" routerLink="/components">
+        <span class="destination__icon" aria-hidden="true">&lt;/&gt;</span>
+        <span class="destination__body">
+          <small>Frontend</small>
+          <strong>Components</strong>
+          <span>Reusable interface pieces and browser-side patterns.</span>
+        </span>
+        <span class="destination__arrow" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="destination destination--feature" routerLink="/features">
+        <span class="destination__icon" aria-hidden="true">&#123;&#125;</span>
+        <span class="destination__body">
+          <small>Backend</small>
+          <strong>Features</strong>
+          <span>Logic, architecture, and implementation concepts.</span>
+        </span>
+        <span class="destination__arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,39 @@
+[
+  {
+    "slug": "crud-service-boundaries",
+    "type": "feature",
+    "title": "CRUD service boundaries",
+    "summary": "A backend pattern that keeps transport, validation, business rules, and persistence independently testable.",
+    "tags": ["nestjs", "architecture", "crud"],
+    "overview": "A CRUD feature is most reusable when HTTP concerns stop at the controller and persistence details stop at the repository boundary.",
+    "dependencies": [],
+    "sections": [
+      {
+        "heading": "Flow",
+        "body": "Controller → application service → repository. Domain decisions belong in the application service; request parsing and response codes belong in the controller."
+      },
+      {
+        "heading": "Contract first",
+        "body": "Define the smallest repository interface the use case needs. This makes the logic portable across MongoDB, SQL, or an in-memory test double.",
+        "language": "typescript",
+        "code": "export interface ItemRepository {\n  findById(id: string): Promise<Item | null>;\n  save(item: Item): Promise<Item>;\n  remove(id: string): Promise<boolean>;\n}"
+      },
+      {
+        "heading": "Validate at the boundary",
+        "body": "Treat transport input as untrusted. Validate shape and primitive constraints before calling the application service, then enforce business invariants inside the service where every transport can share them.",
+        "language": "typescript",
+        "code": "async create(input: CreateItemInput): Promise<Item> {\n  const duplicate = await this.items.findByName(input.name);\n  if (duplicate) throw new ItemNameTakenError(input.name);\n  return this.items.save(Item.create(input));\n}"
+      },
+      {
+        "heading": "Map errors intentionally",
+        "body": "Domain and application errors should not know about HTTP. Translate known errors at the controller or an exception-filter boundary, and avoid leaking database error messages to callers.",
+        "language": "typescript",
+        "code": "try {\n  return await this.createItem.execute(body);\n} catch (error) {\n  if (error instanceof ItemNameTakenError) {\n    throw new ConflictException(error.message);\n  }\n  throw error;\n}"
+      },
+      {
+        "heading": "Test through ports",
+        "body": "Exercise application behavior with an in-memory repository that implements the same contract. Keep separate integration tests for the real persistence adapter and a small end-to-end test for transport mapping."
+      }
+    ]
+  }
+]

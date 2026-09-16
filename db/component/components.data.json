@@ -1,0 +1,39 @@
+[
+  {
+    "slug": "accessible-dialog",
+    "type": "component",
+    "title": "Accessible dialog",
+    "summary": "A dependency-free modal structure with native focus, keyboard, and dismissal behavior.",
+    "tags": ["angular", "a11y", "dialog"],
+    "overview": "A small frontend pattern built around the native dialog element. It keeps behavior in the platform and leaves visual decisions to the consuming project.",
+    "dependencies": ["Angular"],
+    "sections": [
+      {
+        "heading": "Intent",
+        "body": "Prefer the native dialog element because it provides focus containment, Escape handling, and top-layer behavior without another package. Add Angular only for state and composition."
+      },
+      {
+        "heading": "Minimal shape",
+        "body": "Keep the public API narrow: open, close, and a closed event. Project the body so the component remains content-agnostic.",
+        "language": "typescript",
+        "code": "readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');\n\nopen(): void { this.dialog().nativeElement.showModal(); }\nclose(): void { this.dialog().nativeElement.close(); }"
+      },
+      {
+        "heading": "Template anatomy",
+        "body": "Use a real dialog element and a form with method=dialog for controls that simply dismiss it. Keep the heading programmatically associated and let consumers project the main content.",
+        "language": "html",
+        "code": "<dialog #dialog aria-labelledby=\"dialog-title\">\n  <h2 id=\"dialog-title\">Confirm action</h2>\n  <ng-content />\n  <form method=\"dialog\">\n    <button>Cancel</button>\n  </form>\n</dialog>"
+      },
+      {
+        "heading": "Dismissal behavior",
+        "body": "Escape closes a modal dialog natively. If backdrop dismissal is part of the product behavior, close only when the dialog element itself is the pointer target so clicks inside the panel are ignored.",
+        "language": "typescript",
+        "code": "handleBackdrop(event: MouseEvent): void {\n  if (event.target === event.currentTarget) {\n    this.dialog().nativeElement.close();\n  }\n}"
+      },
+      {
+        "heading": "Accessibility checklist",
+        "body": "Give the dialog an accessible name, move focus to the most useful first control, restore focus to the trigger after closing, and never remove the visible focus indicator. Verify keyboard-only navigation and screen-reader announcements before reuse."
+      }
+    ]
+  }
+]

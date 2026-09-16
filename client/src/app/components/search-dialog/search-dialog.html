@@ -1,0 +1,73 @@
+<button class="search-trigger" type="button" (click)="open()" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+  </svg>
+  <span>Search library</span>
+  <kbd>Ctrl K</kbd>
+</button>
+
+<dialog #dialog class="search-dialog" aria-labelledby="search-title" (click)="handleBackdrop($event)">
+  <section class="search-panel">
+    <h2 id="search-title" class="sr-only">Search the library</h2>
+
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+      </svg>
+      <input
+        #searchInput
+        [formControl]="search"
+        (keydown)="handleInputKeydown($event)"
+        type="search"
+        role="combobox"
+        aria-controls="search-results"
+        aria-autocomplete="list"
+        [attr.aria-expanded]="entries().length > 0"
+        [attr.aria-activedescendant]="activeIndex() >= 0 ? 'search-result-' + activeIndex() : null"
+        placeholder="Search components, features, or tags…"
+        autocomplete="off"
+      />
+      <button type="button" class="close" (click)="close()" aria-label="Close search">Esc</button>
+    </div>
+
+    <div id="search-results" class="results" role="listbox" aria-label="Search results" aria-live="polite">
+      @if (loading()) {
+        <p class="state">Searching…</p>
+      } @else if (error()) {
+        <p class="state state--error">{{ error() }}</p>
+      } @else if (!entries().length) {
+        <p class="state">No entries found for “{{ search.value }}”.</p>
+      } @else {
+        <p class="results__label">{{ search.value ? 'Results' : 'Browse library' }}</p>
+        @for (entry of entries(); track entry.slug; let index = $index) {
+          <button
+            type="button"
+            role="option"
+            class="result"
+            [class.result--active]="activeIndex() === index"
+            [attr.id]="'search-result-' + index"
+            [attr.aria-selected]="activeIndex() === index"
+            (mouseenter)="activeIndex.set(index)"
+            (click)="select(entry)"
+          >
+            <span class="result__icon" [class.result__icon--feature]="entry.type === 'feature'" aria-hidden="true">
+              @if (entry.type === 'component') { &lt;/&gt; } @else { &#123;&#125; }
+            </span>
+            <span class="result__body">
+              <strong>{{ entry.title }}</strong>
+              <small>{{ entry.summary }}</small>
+            </span>
+            <span class="result__type">{{ entry.type }}</span>
+            <span class="result__arrow" aria-hidden="true">↗</span>
+          </button>
+        }
+      }
+    </div>
+
+    <footer>
+      <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+      <span><kbd>↵</kbd> Open</span>
+      <span><kbd>Esc</kbd> Close</span>
+    </footer>
+  </section>
+</dialog>

@@ -1,0 +1,28 @@
+{
+  "name": "@dev-lib/client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start:dev": "ng serve --configuration development --proxy-config proxy.conf.json",
+    "start:prod": "ng serve --configuration production",
+    "build": "ng build",
+    "test": "ng test --watch=false"
+  },
+  "dependencies": {
+    "@angular/common": "^21.2.23",
+    "@angular/compiler": "^21.2.23",
+    "@angular/core": "^21.2.23",
+    "@angular/forms": "^21.2.23",
+    "@angular/platform-browser": "^21.2.23",
+    "@angular/router": "^21.2.23",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.8.1"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.23",
+    "@angular/cli": "^21.2.23",
+    "@angular/compiler-cli": "^21.2.23",
+    "sass": "^1.92.1",
+    "typescript": "~5.9.3"
+  }
+}

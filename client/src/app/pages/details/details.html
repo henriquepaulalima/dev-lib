@@ -1,0 +1,67 @@
+<main>
+  @if (loading()) {
+    <div class="state">Opening the entry…</div>
+  } @else if (error()) {
+    <div class="state state--error">
+      <h1>Nothing here.</h1>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (details(); as entry) {
+    <a class="back" [routerLink]="entry.catalog.type === 'component' ? '/components' : '/features'">
+      ← Back to {{ entry.catalog.type === 'component' ? 'components' : 'features' }}
+    </a>
+    <article>
+      <header class="article-header">
+        <div class="article-header__meta">
+          <span class="pill" [class.pill--feature]="entry.catalog.type === 'feature'">{{ entry.catalog.type }}</span>
+          @for (tag of entry.catalog.tags; track tag) { <span>#{{ tag }}</span> }
+        </div>
+        <h1>{{ entry.catalog.title }}</h1>
+        <p>{{ entry.content.overview }}</p>
+      </header>
+
+      @if (entry.content.dependencies.length) {
+        <aside class="dependencies">
+          <span>Dependencies</span>
+          <code>{{ entry.content.dependencies.join(', ') }}</code>
+        </aside>
+      }
+
+      <div class="content-layout">
+        <div class="sections">
+          @for (section of entry.content.sections; track section.heading; let index = $index) {
+            <section #contentSection [attr.id]="'section-' + index" [attr.data-index]="index">
+              <span class="section-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
+              <div>
+                <h2>{{ section.heading }}</h2>
+                <p>{{ section.body }}</p>
+                @if (section.code) {
+                  <div class="code-block">
+                    <span>{{ section.language || 'text' }}</span>
+                    <pre><code>{{ section.code }}</code></pre>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+        </div>
+
+        <aside class="section-nav" aria-label="Sections on this page">
+          <span class="section-nav__title">On this page</span>
+          <nav>
+            @for (section of entry.content.sections; track section.heading; let index = $index) {
+              <a
+                [routerLink]="['/entry', slug]"
+                [fragment]="'section-' + index"
+                [class.section-nav__link--active]="activeSection() === index"
+              >
+                <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
+                {{ section.heading }}
+              </a>
+            }
+          </nav>
+        </aside>
+      </div>
+    </article>
+  }
+</main>
