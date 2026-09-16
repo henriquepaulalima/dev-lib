@@ -1,6 +1,4 @@
 export const environment = {
   production: true,
-  // Replace this value with the deployed API URL before a production build.
-  apiUrl: 'https://api.your-domain.example/api'
+  apiUrl: 'https://server-production-91746.up.railway.app/api'
 } as const;
-
