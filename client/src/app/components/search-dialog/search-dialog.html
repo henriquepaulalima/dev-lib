@@ -40,26 +40,60 @@
       } @else {
         <p class="results__label">{{ search.value ? 'Results' : 'Browse library' }}</p>
         @for (entry of entries(); track entry.slug; let index = $index) {
-          <button
-            type="button"
-            role="option"
-            class="result"
-            [class.result--active]="activeIndex() === index"
-            [attr.id]="'search-result-' + index"
-            [attr.aria-selected]="activeIndex() === index"
-            (mouseenter)="activeIndex.set(index)"
-            (click)="select(entry)"
-          >
-            <span class="result__icon" [class.result__icon--feature]="entry.type === 'feature'" aria-hidden="true">
-              @if (entry.type === 'component') { &lt;/&gt; } @else { &#123;&#125; }
-            </span>
-            <span class="result__body">
-              <strong>{{ entry.title }}</strong>
-              <small>{{ entry.summary }}</small>
-            </span>
-            <span class="result__type">{{ entry.type }}</span>
-            <span class="result__arrow" aria-hidden="true">↗</span>
-          </button>
+          <div class="result-group" [class.result-group--expanded]="isExpanded(entry.slug)">
+            <div class="result-row">
+              <button
+                type="button"
+                role="option"
+                class="result"
+                [class.result--active]="activeIndex() === index"
+                [attr.id]="'search-result-' + index"
+                [attr.aria-selected]="activeIndex() === index"
+                (mouseenter)="activeIndex.set(index)"
+                (click)="select(entry)"
+              >
+                <span class="result__icon" [class.result__icon--feature]="entry.type === 'feature'" aria-hidden="true">
+                  @if (entry.type === 'component') { &lt;/&gt; } @else { &#123;&#125; }
+                </span>
+                <span class="result__body">
+                  <strong>{{ entry.title }}</strong>
+                  <small>{{ entry.summary }}</small>
+                </span>
+                <span class="result__type">{{ entry.type }}</span>
+                @if (!entry.subcomponents.length) { <span class="result__arrow" aria-hidden="true">↗</span> }
+              </button>
+
+              @if (entry.subcomponents.length) {
+                <button
+                  class="subcomponent-toggle"
+                  type="button"
+                  [attr.aria-expanded]="isExpanded(entry.slug)"
+                  [attr.aria-controls]="'subcomponents-' + entry.slug"
+                  (click)="toggleSubcomponents(entry.slug)"
+                >
+                  <span>{{ entry.subcomponents.length }}</span>
+                  <span class="sr-only">{{ isExpanded(entry.slug) ? 'Hide' : 'Show' }} {{ entry.title }} variants</span>
+                  <span class="subcomponent-toggle__chevron" aria-hidden="true">⌄</span>
+                </button>
+              }
+            </div>
+
+            @if (entry.subcomponents.length && isExpanded(entry.slug)) {
+              <div class="subcomponents" [id]="'subcomponents-' + entry.slug">
+                <p>{{ entry.title }} variants</p>
+                @for (variant of entry.subcomponents; track variant.slug) {
+                  <button type="button" class="subcomponent" (click)="selectSubcomponent(entry, variant)">
+                    <span class="subcomponent__branch" aria-hidden="true">↳</span>
+                    <span>
+                      <strong>{{ variant.title }}</strong>
+                      <small>{{ variant.summary }}</small>
+                    </span>
+                    <span aria-hidden="true">→</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
         }
       }
     </div>

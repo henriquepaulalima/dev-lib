@@ -34,6 +34,7 @@ export class LibraryService {
     const content = component ?? feature;
 
     if (!content) throw new NotFoundException(`Library content "${slug}" was not found.`);
+    if (content.component) content.component.variants ??= [];
     return content;
   }
 

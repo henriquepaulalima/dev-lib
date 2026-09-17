@@ -1,5 +1,6 @@
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, effect, inject, signal, viewChildren } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { ComponentDetails } from '../../components/component-details/component-details';
 import { EntryDetails } from '../../models/library-entry';
@@ -14,6 +15,7 @@ import { LibraryApi } from '../../services/library-api';
 })
 export class Details implements OnChanges {
   private readonly api = inject(LibraryApi);
+  private readonly route = inject(ActivatedRoute);
   private readonly contentSections = viewChildren<ElementRef<HTMLElement>>('contentSection');
 
   @Input({ required: true }) slug = '';
@@ -21,8 +23,11 @@ export class Details implements OnChanges {
   readonly loading = signal(true);
   readonly error = signal('');
   readonly activeSection = signal(0);
+  readonly fragment = signal<string | null>(null);
 
   constructor() {
+    this.route.fragment.pipe(takeUntilDestroyed()).subscribe((fragment) => this.fragment.set(fragment));
+
     effect((onCleanup) => {
       const sections = this.contentSections();
       if (!sections.length || typeof IntersectionObserver === 'undefined') return;

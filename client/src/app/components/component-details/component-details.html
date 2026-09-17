@@ -9,131 +9,198 @@
       <p>{{ entry().content.overview }}</p>
       <div class="component-header__facts">
         <span><strong>{{ component.examples.length }}</strong> live {{ component.examples.length === 1 ? 'example' : 'examples' }}</span>
+        <span><strong>{{ component.variants.length }}</strong> {{ component.variants.length === 1 ? 'variant' : 'variants' }}</span>
         <span><strong>{{ entry().content.dependencies.length }}</strong> dependencies</span>
         <span><strong>HTML · CSS · JS/TS</strong> source</span>
       </div>
     </header>
 
-    <nav class="component-nav" aria-label="Sections on this page">
-      <a href="#examples">Examples</a>
-      <a href="#usage">Usage</a>
-      <a href="#anatomy">Anatomy</a>
-      <a href="#customization">Customization</a>
-      <a href="#accessibility">Accessibility</a>
-    </nav>
+    <div class="documentation-layout">
+      <aside class="component-tree" aria-label="Component variants">
+        <div class="sticky-nav">
+          <p class="sticky-nav__label">Component</p>
+          <nav>
+            <a
+              [routerLink]="['/entry', entry().catalog.slug]"
+              fragment="examples"
+              [class.component-tree__link--active]="!activeVariant()"
+              [attr.aria-current]="!activeVariant() ? 'page' : null"
+            >
+              <span class="component-tree__branch" aria-hidden="true">◆</span>
+              <span><strong>Default</strong><small>Core pattern</small></span>
+            </a>
 
-    <section class="examples" id="examples" aria-label="Interactive examples">
-      @for (example of component.examples; track example.slug) {
-        <app-component-preview [example]="example" />
-      }
-    </section>
-
-    <div class="component-guide">
-      <section class="guide-section" id="usage">
-        <div class="guide-section__heading">
-          <span>01</span>
-          <div>
-            <p class="guide-section__eyebrow">Introduction</p>
-            <h2>Choose the pattern deliberately.</h2>
-          </div>
-        </div>
-        <div class="decision-grid">
-          <article>
-            <span class="decision-grid__mark">Use it when</span>
-            <p>{{ component.useWhen }}</p>
-          </article>
-          <article>
-            <span class="decision-grid__mark decision-grid__mark--avoid">Avoid it when</span>
-            <p>{{ component.avoidWhen }}</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="guide-section" id="anatomy">
-        <div class="guide-section__heading">
-          <span>02</span>
-          <div>
-            <p class="guide-section__eyebrow">Structure</p>
-            <h2>Anatomy</h2>
-          </div>
-        </div>
-        <ol class="anatomy-list">
-          @for (part of component.anatomy; track part.name; let index = $index) {
-            <li>
-              <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
-              <strong>{{ part.name }}</strong>
-              <p>{{ part.description }}</p>
-            </li>
-          }
-        </ol>
-      </section>
-
-      <section class="guide-section" id="customization">
-        <div class="guide-section__heading">
-          <span>03</span>
-          <div>
-            <p class="guide-section__eyebrow">Public styling API</p>
-            <h2>Customization</h2>
-          </div>
-        </div>
-        <div class="token-table-wrap">
-          <table class="token-table">
-            <thead><tr><th>Token</th><th>Default</th><th>Purpose</th></tr></thead>
-            <tbody>
-              @for (token of component.tokens; track token.name) {
-                <tr>
-                  <td><code>{{ token.name }}</code></td>
-                  <td><code>{{ token.defaultValue }}</code></td>
-                  <td>{{ token.description }}</td>
-                </tr>
+            @if (component.variants.length) {
+              <p class="component-tree__group">Subcomponents</p>
+              @for (variant of component.variants; track variant.slug) {
+                <a
+                  [routerLink]="['/entry', entry().catalog.slug]"
+                  [fragment]="'variant-' + variant.slug"
+                  [class.component-tree__link--active]="activeVariant()?.slug === variant.slug"
+                  [attr.aria-current]="activeVariant()?.slug === variant.slug ? 'page' : null"
+                >
+                  <span class="component-tree__branch" aria-hidden="true">↳</span>
+                  <span><strong>{{ variant.title }}</strong><small>{{ variant.tags[0] }}</small></span>
+                </a>
               }
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="guide-section" id="accessibility">
-        <div class="guide-section__heading">
-          <span>04</span>
-          <div>
-            <p class="guide-section__eyebrow">Production checks</p>
-            <h2>Accessibility and behavior</h2>
-          </div>
-        </div>
-        <div class="checks-layout">
-          <ul class="check-list">
-            @for (item of component.accessibility; track item) { <li>{{ item }}</li> }
-          </ul>
-          <aside class="responsive-note">
-            <span>Responsive behavior</span>
-            <p>{{ component.responsive }}</p>
-          </aside>
-        </div>
-      </section>
-
-      <section class="guide-section">
-        <div class="guide-section__heading">
-          <span>05</span>
-          <div>
-            <p class="guide-section__eyebrow">Before reuse</p>
-            <h2>Limitations</h2>
-          </div>
-        </div>
-        <ul class="limitation-list">
-          @for (limitation of component.limitations; track limitation) { <li>{{ limitation }}</li> }
-        </ul>
-        <footer class="provenance">
-          <span>Provenance</span>
-          <div>
-            @if (component.provenance.url) {
-              <a [href]="component.provenance.url" target="_blank" rel="noopener noreferrer">{{ component.provenance.label }}</a>
-            } @else {
-              <strong>{{ component.provenance.label }}</strong>
             }
-            <p>{{ component.provenance.note }}</p>
+          </nav>
+        </div>
+      </aside>
+
+      <div class="documentation-content">
+        @if (activeVariant(); as variant) {
+          <article class="variant-session" [id]="'variant-' + variant.slug">
+            <header #pageSection class="variant-session__header" [id]="'variant-' + variant.slug + '--overview'">
+              <p class="variant-session__eyebrow">{{ entry().catalog.title }} / Subcomponent</p>
+              <h2>{{ variant.title }}</h2>
+              <p>{{ variant.summary }}</p>
+              <div class="variant-session__tags">
+                @for (tag of variant.tags; track tag) { <span>#{{ tag }}</span> }
+              </div>
+            </header>
+
+            <section #pageSection class="variant-section variant-section--decisions" [id]="'variant-' + variant.slug + '--usage'">
+              <div class="variant__decisions">
+                <p><strong>Use when</strong>{{ variant.useWhen }}</p>
+                <p><strong>Avoid when</strong>{{ variant.avoidWhen }}</p>
+              </div>
+            </section>
+
+            <section #pageSection class="variant-section" [id]="'variant-' + variant.slug + '--example'">
+              <app-component-preview [example]="variant.example" />
+            </section>
+
+            <section #pageSection class="variant-section variant__customization" [id]="'variant-' + variant.slug + '--customization'">
+              <div class="variant-section__heading">
+                <p>Variant contract</p>
+                <h2>What changes</h2>
+              </div>
+              <ul>
+                @for (item of variant.customization; track item) { <li>{{ item }}</li> }
+              </ul>
+            </section>
+
+            <section #pageSection class="variant-section inherited-contract" [id]="'variant-' + variant.slug + '--inheritance'">
+              <div class="variant-section__heading">
+                <p>Shared foundation</p>
+                <h2>What stays the same</h2>
+              </div>
+              <p>This subcomponent inherits the default {{ entry().catalog.title.toLocaleLowerCase() }} anatomy, styling tokens, accessibility requirements, responsive guidance, limitations, and provenance.</p>
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="anatomy">Review the shared component contract →</a>
+            </section>
+          </article>
+        } @else {
+          <div class="default-session">
+            <section #pageSection class="examples" id="examples" aria-label="Interactive examples">
+              @for (example of component.examples; track example.slug) {
+                <app-component-preview [example]="example" />
+              }
+            </section>
+
+            <div class="component-guide">
+              <section #pageSection class="guide-section" id="usage">
+                <div class="guide-section__heading">
+                  <span>01</span>
+                  <div>
+                    <p class="guide-section__eyebrow">Introduction</p>
+                    <h2>Choose the pattern deliberately.</h2>
+                  </div>
+                </div>
+                <div class="decision-grid">
+                  <article>
+                    <span class="decision-grid__mark">Use it when</span>
+                    <p>{{ component.useWhen }}</p>
+                  </article>
+                  <article>
+                    <span class="decision-grid__mark decision-grid__mark--avoid">Avoid it when</span>
+                    <p>{{ component.avoidWhen }}</p>
+                  </article>
+                </div>
+              </section>
+
+              <section #pageSection class="guide-section" id="anatomy">
+                <div class="guide-section__heading">
+                  <span>02</span>
+                  <div><p class="guide-section__eyebrow">Structure</p><h2>Anatomy</h2></div>
+                </div>
+                <ol class="anatomy-list">
+                  @for (part of component.anatomy; track part.name; let index = $index) {
+                    <li><span>{{ (index + 1).toString().padStart(2, '0') }}</span><strong>{{ part.name }}</strong><p>{{ part.description }}</p></li>
+                  }
+                </ol>
+              </section>
+
+              <section #pageSection class="guide-section" id="customization">
+                <div class="guide-section__heading">
+                  <span>03</span>
+                  <div><p class="guide-section__eyebrow">Public styling API</p><h2>Customization</h2></div>
+                </div>
+                <div class="token-table-wrap">
+                  <table class="token-table">
+                    <thead><tr><th>Token</th><th>Default</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                      @for (token of component.tokens; track token.name) {
+                        <tr><td><code>{{ token.name }}</code></td><td><code>{{ token.defaultValue }}</code></td><td>{{ token.description }}</td></tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section #pageSection class="guide-section" id="accessibility">
+                <div class="guide-section__heading">
+                  <span>04</span>
+                  <div><p class="guide-section__eyebrow">Production checks</p><h2>Accessibility and behavior</h2></div>
+                </div>
+                <div class="checks-layout">
+                  <ul class="check-list">@for (item of component.accessibility; track item) { <li>{{ item }}</li> }</ul>
+                  <aside class="responsive-note"><span>Responsive behavior</span><p>{{ component.responsive }}</p></aside>
+                </div>
+              </section>
+
+              <section #pageSection class="guide-section" id="limitations">
+                <div class="guide-section__heading">
+                  <span>05</span>
+                  <div><p class="guide-section__eyebrow">Before reuse</p><h2>Limitations</h2></div>
+                </div>
+                <ul class="limitation-list">@for (limitation of component.limitations; track limitation) { <li>{{ limitation }}</li> }</ul>
+                <footer class="provenance">
+                  <span>Provenance</span>
+                  <div>
+                    @if (component.provenance.url) {
+                      <a [href]="component.provenance.url" target="_blank" rel="noopener noreferrer">{{ component.provenance.label }}</a>
+                    } @else { <strong>{{ component.provenance.label }}</strong> }
+                    <p>{{ component.provenance.note }}</p>
+                  </div>
+                </footer>
+              </section>
+            </div>
           </div>
-        </footer>
-      </section>
+        }
+      </div>
+
+      <aside class="page-tree" aria-label="Sections on this page">
+        <div class="sticky-nav">
+          <p class="sticky-nav__label">On this page</p>
+          <nav>
+            @if (activeVariant(); as variant) {
+              <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--overview'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--overview')">Overview</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--usage'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--usage')">Usage</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--example'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--example')">Live example</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--customization'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--customization')">Customization</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--inheritance'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--inheritance')">Shared contract</a>
+            } @else {
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="examples" [class.page-tree__link--active]="isPageSectionActive('examples')">Example</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="usage" [class.page-tree__link--active]="isPageSectionActive('usage')">Usage</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="anatomy" [class.page-tree__link--active]="isPageSectionActive('anatomy')">Anatomy</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="customization" [class.page-tree__link--active]="isPageSectionActive('customization')">Customization</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="accessibility" [class.page-tree__link--active]="isPageSectionActive('accessibility')">Accessibility</a>
+              <a [routerLink]="['/entry', entry().catalog.slug]" fragment="limitations" [class.page-tree__link--active]="isPageSectionActive('limitations')">Limitations</a>
+            }
+          </nav>
+        </div>
+      </aside>
     </div>
   </article>
 } @else {

@@ -4,7 +4,14 @@
     "type": "component",
     "title": "Dialog",
     "summary": "A dependency-free modal with native focus handling, keyboard dismissal, and a small CSS token surface.",
-    "tags": ["html", "css", "javascript", "typescript", "a11y", "dialog"],
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "typescript",
+      "a11y",
+      "dialog"
+    ],
     "overview": "A progressively enhanced modal built on the native dialog element. The live example runs the exact stored HTML, CSS, and JavaScript in an isolated browser session.",
     "dependencies": [],
     "sections": [],
@@ -21,26 +28,291 @@
           "source": {
             "typescript": "export interface DialogController {\n  open(): void;\n  close(value?: string): void;\n  destroy(): void;\n}\n\nexport function createDialog(root: Element): DialogController {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const openButton = root.querySelector<HTMLButtonElement>('[data-dialog-open]');\n\n  if (!dialog || !openButton) {\n    throw new Error('Dialog markup is incomplete.');\n  }\n\n  let returnFocus: HTMLElement | null = null;\n\n  const open = (): void => {\n    returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;\n    dialog.showModal();\n    root.dispatchEvent(new CustomEvent('dialog:open'));\n  };\n\n  const close = (value = ''): void => {\n    if (dialog.open) dialog.close(value);\n  };\n\n  const handleBackdrop = (event: MouseEvent): void => {\n    if (event.target === dialog) close('backdrop');\n  };\n\n  const handleClose = (): void => {\n    returnFocus?.focus();\n    root.dispatchEvent(new CustomEvent('dialog:close', {\n      detail: { value: dialog.returnValue }\n    }));\n  };\n\n  openButton.addEventListener('click', open);\n  dialog.addEventListener('click', handleBackdrop);\n  dialog.addEventListener('close', handleClose);\n\n  return {\n    open,\n    close,\n    destroy(): void {\n      openButton.removeEventListener('click', open);\n      dialog.removeEventListener('click', handleBackdrop);\n      dialog.removeEventListener('close', handleClose);\n    }\n  };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"dialog\"]').forEach(createDialog);",
             "html": "<div class=\"c-dialog-demo\" data-component=\"dialog\">\n  <button class=\"c-button\" type=\"button\" data-dialog-open>\n    Open dialog\n  </button>\n\n  <dialog\n    class=\"c-dialog\"\n    data-dialog\n    aria-labelledby=\"dialog-title\"\n    aria-describedby=\"dialog-description\"\n  >\n    <header class=\"c-dialog__header\">\n      <span class=\"c-dialog__eyebrow\">Unsaved changes</span>\n      <h2 id=\"dialog-title\">Leave this page?</h2>\n    </header>\n\n    <p id=\"dialog-description\" class=\"c-dialog__body\">\n      Your edits have not been saved. You can stay and finish, or discard them and leave.\n    </p>\n\n    <form class=\"c-dialog__actions\" method=\"dialog\">\n      <button class=\"c-button c-button--quiet\" value=\"cancel\">Stay here</button>\n      <button class=\"c-button c-button--primary\" value=\"confirm\">Discard and leave</button>\n    </form>\n  </dialog>\n</div>",
-            "css": ".c-dialog-demo {\n  align-items: center;\n  display: grid;\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n\n  background: var(--dialog-surface);\n  border: 1px solid rgb(23 25 21 / 16%);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  margin: auto;\n  max-width: min(30rem, calc(100% - 2rem));\n  padding: 0;\n  width: 100%;\n}\n\n.c-dialog::backdrop {\n  background: rgb(20 24 18 / 55%);\n  backdrop-filter: blur(0.2rem);\n}\n\n.c-dialog__header {\n  padding: 1.6rem 1.6rem 0.75rem;\n}\n\n.c-dialog__eyebrow {\n  color: var(--dialog-muted);\n  display: block;\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\n\n.c-dialog h2 {\n  font-size: clamp(1.55rem, 5vw, 2rem);\n  letter-spacing: -0.04em;\n  line-height: 1.05;\n  margin: 0.55rem 0 0;\n}\n\n.c-dialog__body {\n  color: var(--dialog-muted);\n  line-height: 1.6;\n  margin: 0;\n  padding: 0 1.6rem 1.6rem;\n}\n\n.c-dialog__actions {\n  border-top: 1px solid rgb(23 25 21 / 12%);\n  display: flex;\n  gap: 0.65rem;\n  justify-content: flex-end;\n  padding: 1rem 1.6rem;\n}\n\n.c-button {\n  background: transparent;\n  border: 1px solid rgb(23 25 21 / 30%);\n  border-radius: 0.55rem;\n  color: inherit;\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: 2.75rem;\n  padding: 0.65rem 1rem;\n}\n\n.c-button:hover {\n  border-color: currentColor;\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid color-mix(in srgb, var(--dialog-accent) 75%, #000000);\n  outline-offset: 0.15rem;\n}\n\n.c-button--primary {\n  background: var(--dialog-accent);\n  border-color: var(--dialog-accent);\n  color: var(--dialog-accent-text);\n}\n\n@media (max-width: 32rem) {\n  .c-dialog__actions {\n    align-items: stretch;\n    flex-direction: column-reverse;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-dialog::backdrop {\n    backdrop-filter: none;\n  }\n}",
+            "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n\n  align-items: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  margin: auto;\n  max-width: min(30rem, calc(100% - (var(--dialog-gutter) * 2)));\n  padding: 0;\n  width: 100%;\n}\n\n.c-dialog::backdrop {\n  background: var(--dialog-backdrop);\n  backdrop-filter: blur(0.2rem);\n}\n\n.c-dialog__header {\n  padding: 1.5rem 1.5rem 0.75rem;\n}\n\n.c-dialog__eyebrow {\n  color: var(--dialog-muted);\n  display: block;\n  font-size: 0.7rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\n\n.c-dialog h2 {\n  font-size: clamp(1.55rem, 5vw, 2rem);\n  letter-spacing: -0.04em;\n  line-height: 1.05;\n  margin: 0.5rem 0 0;\n}\n\n.c-dialog__body {\n  color: var(--dialog-muted);\n  line-height: 1.6;\n  margin: 0;\n  padding: 0 1.5rem 1.5rem;\n}\n\n.c-dialog__actions {\n  border-top: 1px solid var(--dialog-border);\n  display: flex;\n  gap: 0.75rem;\n  justify-content: flex-end;\n  padding: 1rem 1.5rem;\n}\n\n.c-button {\n  background: transparent;\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: inherit;\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: var(--dialog-control-height);\n  padding: 0.75rem 1rem;\n}\n\n.c-button:hover {\n  border-color: currentColor;\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid var(--dialog-focus);\n  outline-offset: 0.15rem;\n}\n\n.c-button--primary {\n  background: var(--dialog-accent);\n  border-color: var(--dialog-accent);\n  color: var(--dialog-accent-text);\n}\n\n@media (max-width: 32rem) {\n  .c-dialog__actions {\n    align-items: stretch;\n    flex-direction: column-reverse;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-dialog::backdrop {\n    backdrop-filter: none;\n  }\n}",
             "javascript": "export function createDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const openButton = root.querySelector('[data-dialog-open]');\n\n  if (!(dialog instanceof HTMLDialogElement) || !(openButton instanceof HTMLButtonElement)) {\n    throw new Error('Dialog markup is incomplete.');\n  }\n\n  let returnFocus = null;\n\n  const open = () => {\n    returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;\n    dialog.showModal();\n    root.dispatchEvent(new CustomEvent('dialog:open'));\n  };\n\n  const close = (value = '') => {\n    if (dialog.open) dialog.close(value);\n  };\n\n  const handleBackdrop = (event) => {\n    if (event.target === dialog) close('backdrop');\n  };\n\n  const handleClose = () => {\n    returnFocus?.focus();\n    root.dispatchEvent(new CustomEvent('dialog:close', {\n      detail: { value: dialog.returnValue }\n    }));\n  };\n\n  openButton.addEventListener('click', open);\n  dialog.addEventListener('click', handleBackdrop);\n  dialog.addEventListener('close', handleClose);\n\n  return {\n    open,\n    close,\n    destroy() {\n      openButton.removeEventListener('click', open);\n      dialog.removeEventListener('click', handleBackdrop);\n      dialog.removeEventListener('close', handleClose);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"dialog\"]').forEach(createDialog);"
           }
         }
       ],
+      "variants": [
+        {
+          "slug": "responsive-sizes",
+          "title": "Responsive sizes",
+          "summary": "Small, medium, and large dialog widths selected by the trigger and capped to the viewport.",
+          "tags": [
+            "size",
+            "responsive",
+            "breakpoints"
+          ],
+          "useWhen": "Use explicit sizes when different tasks need predictable reading widths but should share one dialog behavior.",
+          "avoidWhen": "Avoid size choices based only on visual preference; let the content and task complexity determine the width.",
+          "customization": [
+            "Change --dialog-size-sm, --dialog-size-md, and --dialog-size-lg without touching the controller.",
+            "The max-width cap keeps every size inside narrow preview and device viewports.",
+            "Each trigger declares its size with data-dialog-size, keeping behavior hooks out of styling classes."
+          ],
+          "example": {
+            "slug": "responsive-sizes",
+            "title": "Choose a dialog size",
+            "description": "Open each size, then switch the preview to mobile to see every option respect the same viewport gutter.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<div class=\"c-dialog-demo\" data-component=\"sized-dialog\">\n  <div class=\"c-dialog-demo__triggers\">\n    <button type=\"button\" data-dialog-size=\"sm\">Small</button>\n    <button type=\"button\" data-dialog-size=\"md\">Medium</button>\n    <button type=\"button\" data-dialog-size=\"lg\">Large</button>\n  </div>\n\n  <dialog class=\"c-dialog\" data-dialog data-size=\"md\" aria-labelledby=\"sized-dialog-title\">\n    <header class=\"c-dialog__header\">\n      <div>\n        <span>Responsive size</span>\n        <h2 id=\"sized-dialog-title\">A width for the task</h2>\n      </div>\n      <button type=\"button\" data-dialog-close aria-label=\"Close dialog\">×</button>\n    </header>\n    <p class=\"c-dialog__body\">The controller changes a data attribute. CSS owns the width and always reserves a safe viewport gutter.</p>\n  </dialog>\n</div>",
+              "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n  --dialog-size-sm: 22rem;\n  --dialog-size-md: 34rem;\n  --dialog-size-lg: 48rem;\n\n  align-items: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog-demo__triggers {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem;\n  justify-content: center;\n}\n\n.c-dialog-demo button {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: var(--dialog-text);\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: var(--dialog-control-height);\n  padding: 0.75rem 1rem;\n}\n\n.c-dialog-demo button:hover { border-color: var(--dialog-text); }\n.c-dialog-demo button:focus-visible { outline: 0.2rem solid var(--dialog-focus); outline-offset: 0.15rem; }\n\n.c-dialog {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  max-width: calc(100% - (var(--dialog-gutter) * 2));\n  padding: 0;\n  width: min(var(--dialog-width), calc(100% - (var(--dialog-gutter) * 2)));\n}\n\n.c-dialog[data-size=\"sm\"] { --dialog-width: var(--dialog-size-sm); }\n.c-dialog[data-size=\"md\"] { --dialog-width: var(--dialog-size-md); }\n.c-dialog[data-size=\"lg\"] { --dialog-width: var(--dialog-size-lg); }\n.c-dialog::backdrop { background: var(--dialog-backdrop); backdrop-filter: blur(0.2rem); }\n.c-dialog__header { align-items: start; display: flex; justify-content: space-between; padding: 1.5rem 1.5rem 0.75rem; }\n.c-dialog__header span { color: var(--dialog-muted); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }\n.c-dialog h2 { font-size: clamp(1.55rem, 5vw, 2rem); letter-spacing: -0.04em; line-height: 1.05; margin: 0.5rem 0 0; }\n.c-dialog__header > button { border-color: transparent; font-size: 1.4rem; padding: 0.5rem; }\n.c-dialog__body { color: var(--dialog-muted); line-height: 1.6; margin: 0; padding: 0.75rem 1.5rem 1.5rem; }\n\n@media (prefers-reduced-motion: reduce) {\n  .c-dialog::backdrop { backdrop-filter: none; }\n}",
+              "javascript": "export function createSizedDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const triggers = [...root.querySelectorAll('[data-dialog-size]')];\n  const closeButton = root.querySelector('[data-dialog-close]');\n  if (!(dialog instanceof HTMLDialogElement) || !(closeButton instanceof HTMLButtonElement)) throw new Error('Sized dialog markup is incomplete.');\n\n  let returnFocus = null;\n  const open = (event) => {\n    const trigger = event.currentTarget;\n    if (!(trigger instanceof HTMLButtonElement)) return;\n    dialog.dataset.size = trigger.dataset.dialogSize || 'md';\n    returnFocus = trigger;\n    dialog.showModal();\n  };\n  const close = () => dialog.close();\n  const closeFromBackdrop = (event) => { if (event.target === dialog) close(); };\n  const restoreFocus = () => returnFocus?.focus();\n\n  triggers.forEach((trigger) => trigger.addEventListener('click', open));\n  closeButton.addEventListener('click', close);\n  dialog.addEventListener('click', closeFromBackdrop);\n  dialog.addEventListener('close', restoreFocus);\n\n  return { destroy() {\n    triggers.forEach((trigger) => trigger.removeEventListener('click', open));\n    closeButton.removeEventListener('click', close);\n    dialog.removeEventListener('click', closeFromBackdrop);\n    dialog.removeEventListener('close', restoreFocus);\n  } };\n}\n\ndocument.querySelectorAll('[data-component=\"sized-dialog\"]').forEach(createSizedDialog);",
+              "typescript": "export function createSizedDialog(root: Element): { destroy(): void } {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const triggers = [...root.querySelectorAll<HTMLButtonElement>('[data-dialog-size]')];\n  const closeButton = root.querySelector<HTMLButtonElement>('[data-dialog-close]');\n  if (!dialog || !closeButton) throw new Error('Sized dialog markup is incomplete.');\n\n  let returnFocus: HTMLButtonElement | null = null;\n  const open = (event: Event): void => {\n    const trigger = event.currentTarget;\n    if (!(trigger instanceof HTMLButtonElement)) return;\n    dialog.dataset['size'] = trigger.dataset['dialogSize'] || 'md';\n    returnFocus = trigger;\n    dialog.showModal();\n  };\n  const close = (): void => dialog.close();\n  const closeFromBackdrop = (event: MouseEvent): void => { if (event.target === dialog) close(); };\n  const restoreFocus = (): void => returnFocus?.focus();\n\n  triggers.forEach((trigger) => trigger.addEventListener('click', open));\n  closeButton.addEventListener('click', close);\n  dialog.addEventListener('click', closeFromBackdrop);\n  dialog.addEventListener('close', restoreFocus);\n\n  return { destroy(): void {\n    triggers.forEach((trigger) => trigger.removeEventListener('click', open));\n    closeButton.removeEventListener('click', close);\n    dialog.removeEventListener('click', closeFromBackdrop);\n    dialog.removeEventListener('close', restoreFocus);\n  } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"sized-dialog\"]').forEach(createSizedDialog);"
+            }
+          }
+        },
+        {
+          "slug": "inner-scroll",
+          "title": "Inner scroll",
+          "summary": "A viewport-bounded dialog whose header and actions stay visible while only the body scrolls.",
+          "tags": [
+            "scroll",
+            "long-content",
+            "sticky-actions"
+          ],
+          "useWhen": "Use inner scrolling when content can grow but the title, close control, and actions must remain continuously available.",
+          "avoidWhen": "Avoid putting an entire long page or multi-step workflow inside a modal; move substantial work to a dedicated route.",
+          "customization": [
+            "The dialog uses a three-row grid; only .c-dialog__content has overflow: auto.",
+            "Change --dialog-max-height to reserve more or less vertical viewport space.",
+            "Keep the heading outside the scroll region so the dialog context never disappears."
+          ],
+          "example": {
+            "slug": "inner-scroll",
+            "title": "Scrollable terms dialog",
+            "description": "Scroll the content and confirm that the title and decision buttons remain anchored.",
+            "canvasHeight": 500,
+            "source": {
+              "html": "<div class=\"c-dialog-demo\" data-component=\"scroll-dialog\">\n  <button type=\"button\" data-dialog-open>Review terms</button>\n  <dialog class=\"c-dialog\" data-dialog aria-labelledby=\"scroll-dialog-title\">\n    <header class=\"c-dialog__header\">\n      <div><span>Before continuing</span><h2 id=\"scroll-dialog-title\">Review the terms</h2></div>\n      <button type=\"button\" data-dialog-close aria-label=\"Close dialog\">×</button>\n    </header>\n    <div class=\"c-dialog__content\" tabindex=\"0\">\n      <p><strong>1. Your workspace</strong></p><p>Your saved components remain in your project and can be exported whenever you need them.</p>\n      <p><strong>2. Shared recipes</strong></p><p>Only publish source you are allowed to share. Record the origin and license of every adapted pattern.</p>\n      <p><strong>3. Preview sessions</strong></p><p>Examples execute inside an isolated frame without network access, storage access, or navigation privileges.</p>\n      <p><strong>4. Maintenance</strong></p><p>Recheck keyboard behavior, narrow layouts, and browser support whenever a recipe changes.</p>\n      <p><strong>5. Responsibility</strong></p><p>Copied recipes are starting points. Validate security, accessibility, and product requirements before shipping.</p>\n    </div>\n    <form class=\"c-dialog__actions\" method=\"dialog\">\n      <button value=\"cancel\">Cancel</button><button class=\"c-button--primary\" value=\"accept\">Accept</button>\n    </form>\n  </dialog>\n</div>",
+              "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n  --dialog-max-height: min(30rem, calc(100dvh - (var(--dialog-gutter) * 2)));\n\n  align-items: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog-demo button {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: var(--dialog-text);\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: var(--dialog-control-height);\n  padding: 0.75rem 1rem;\n}\n\n.c-dialog-demo button:hover { border-color: var(--dialog-text); }\n.c-dialog-demo button:focus-visible,\n.c-dialog__content:focus-visible { outline: 0.2rem solid var(--dialog-focus); outline-offset: 0.15rem; }\n\n.c-dialog {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  display: grid;\n  grid-template-rows: auto minmax(0, 1fr) auto;\n  max-height: var(--dialog-max-height);\n  max-width: min(36rem, calc(100% - (var(--dialog-gutter) * 2)));\n  padding: 0;\n  width: 100%;\n}\n\n.c-dialog::backdrop { background: var(--dialog-backdrop); }\n.c-dialog__header { align-items: start; border-bottom: 1px solid var(--dialog-border); display: flex; justify-content: space-between; padding: 1rem 1.5rem; }\n.c-dialog__header span { color: var(--dialog-muted); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }\n.c-dialog h2 { font-size: clamp(1.55rem, 5vw, 2rem); letter-spacing: -0.04em; line-height: 1.05; margin: 0.5rem 0 0; }\n.c-dialog__header > button { border-color: transparent; font-size: 1.4rem; padding: 0.5rem; }\n.c-dialog__content { color: var(--dialog-muted); line-height: 1.6; overflow: auto; padding: 0.5rem 1.5rem; }\n.c-dialog__content strong { color: var(--dialog-text); }\n.c-dialog__actions { border-top: 1px solid var(--dialog-border); display: flex; gap: 0.75rem; justify-content: flex-end; padding: 1rem 1.5rem; }\n.c-dialog-demo .c-button--primary { background: var(--dialog-accent); border-color: var(--dialog-accent); color: var(--dialog-accent-text); }",
+              "javascript": "export function createScrollDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const openButton = root.querySelector('[data-dialog-open]');\n  const closeButton = root.querySelector('[data-dialog-close]');\n  if (!(dialog instanceof HTMLDialogElement) || !(openButton instanceof HTMLButtonElement) || !(closeButton instanceof HTMLButtonElement)) throw new Error('Scroll dialog markup is incomplete.');\n  const open = () => dialog.showModal();\n  const close = () => dialog.close();\n  const closeFromBackdrop = (event) => { if (event.target === dialog) close(); };\n  const restoreFocus = () => openButton.focus();\n  openButton.addEventListener('click', open);\n  closeButton.addEventListener('click', close);\n  dialog.addEventListener('click', closeFromBackdrop);\n  dialog.addEventListener('close', restoreFocus);\n  return { destroy() { openButton.removeEventListener('click', open); closeButton.removeEventListener('click', close); dialog.removeEventListener('click', closeFromBackdrop); dialog.removeEventListener('close', restoreFocus); } };\n}\n\ndocument.querySelectorAll('[data-component=\"scroll-dialog\"]').forEach(createScrollDialog);",
+              "typescript": "export function createScrollDialog(root: Element): { destroy(): void } {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const openButton = root.querySelector<HTMLButtonElement>('[data-dialog-open]');\n  const closeButton = root.querySelector<HTMLButtonElement>('[data-dialog-close]');\n  if (!dialog || !openButton || !closeButton) throw new Error('Scroll dialog markup is incomplete.');\n  const open = (): void => dialog.showModal();\n  const close = (): void => dialog.close();\n  const closeFromBackdrop = (event: MouseEvent): void => { if (event.target === dialog) close(); };\n  const restoreFocus = (): void => openButton.focus();\n  openButton.addEventListener('click', open);\n  closeButton.addEventListener('click', close);\n  dialog.addEventListener('click', closeFromBackdrop);\n  dialog.addEventListener('close', restoreFocus);\n  return { destroy(): void { openButton.removeEventListener('click', open); closeButton.removeEventListener('click', close); dialog.removeEventListener('click', closeFromBackdrop); dialog.removeEventListener('close', restoreFocus); } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"scroll-dialog\"]').forEach(createScrollDialog);"
+            }
+          }
+        },
+        {
+          "slug": "maximizable",
+          "title": "Maximizable",
+          "summary": "A dialog that can expand to the preview viewport and return to its original dimensions.",
+          "tags": [
+            "maximize",
+            "fullscreen",
+            "workspace"
+          ],
+          "useWhen": "Use maximize for dense inspectors, tables, or editors that benefit from temporary extra space.",
+          "avoidWhen": "Avoid it for short confirmations, where a fullscreen control adds complexity without helping the task.",
+          "customization": [
+            "The controller toggles one c-dialog--maximized class and synchronizes aria-pressed.",
+            "The original size stays entirely in CSS, so maximizing never stores inline dimensions.",
+            "Closing always clears maximized state before the next open."
+          ],
+          "example": {
+            "slug": "maximizable",
+            "title": "Expandable workspace",
+            "description": "Open the dialog, toggle maximize in the header, and restore it before closing.",
+            "canvasHeight": 500,
+            "source": {
+              "html": "<div class=\"c-dialog-demo\" data-component=\"max-dialog\">\n  <button type=\"button\" data-dialog-open>Open workspace</button>\n  <dialog class=\"c-dialog\" data-dialog aria-labelledby=\"max-dialog-title\">\n    <header class=\"c-dialog__header\">\n      <div><span>Editing session</span><h2 id=\"max-dialog-title\">Component workspace</h2></div>\n      <div class=\"c-dialog__controls\">\n        <button type=\"button\" data-dialog-maximize aria-label=\"Maximize dialog\" aria-pressed=\"false\">□</button>\n        <button type=\"button\" data-dialog-close aria-label=\"Close dialog\">×</button>\n      </div>\n    </header>\n    <div class=\"c-dialog__body\"><div class=\"c-dialog__placeholder\">Preview area</div><p>Maximize when the work needs more room, then restore without losing the current dialog state.</p></div>\n  </dialog>\n</div>",
+              "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n\n  align-items: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog-demo button {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: var(--dialog-text);\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: var(--dialog-control-height);\n  padding: 0.75rem 1rem;\n}\n\n.c-dialog-demo button:hover { border-color: var(--dialog-text); }\n.c-dialog-demo button:focus-visible { outline: 0.2rem solid var(--dialog-focus); outline-offset: 0.15rem; }\n\n.c-dialog {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  height: min(24rem, calc(100% - (var(--dialog-gutter) * 2)));\n  max-height: calc(100% - (var(--dialog-gutter) * 2));\n  max-width: min(42rem, calc(100% - (var(--dialog-gutter) * 2)));\n  padding: 0;\n  transition: height 180ms ease, max-width 180ms ease, width 180ms ease;\n  width: 100%;\n}\n\n.c-dialog--maximized { border-radius: 0; height: 100%; max-height: 100%; max-width: 100%; width: 100%; }\n.c-dialog::backdrop { background: var(--dialog-backdrop); }\n.c-dialog__header { align-items: start; border-bottom: 1px solid var(--dialog-border); display: flex; justify-content: space-between; padding: 1rem 1.5rem; }\n.c-dialog__header span { color: var(--dialog-muted); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }\n.c-dialog h2 { font-size: clamp(1.55rem, 5vw, 2rem); letter-spacing: -0.04em; line-height: 1.05; margin: 0.5rem 0 0; }\n.c-dialog__controls { display: flex; gap: 0.25rem; }\n.c-dialog__controls button { border-color: transparent; font-size: 1.25rem; padding: 0.5rem; }\n.c-dialog__body { color: var(--dialog-muted); line-height: 1.6; padding: 1.5rem; }\n.c-dialog__placeholder { align-items: center; background: var(--dialog-canvas); border: 1px dashed var(--dialog-border-strong); border-radius: 0.75rem; color: var(--dialog-muted); display: grid; font-size: 0.75rem; height: 8rem; justify-items: center; }\n\n@media (prefers-reduced-motion: reduce) {\n  .c-dialog { transition: none; }\n}",
+              "javascript": "export function createMaxDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const openButton = root.querySelector('[data-dialog-open]');\n  const closeButton = root.querySelector('[data-dialog-close]');\n  const maximizeButton = root.querySelector('[data-dialog-maximize]');\n  if (!(dialog instanceof HTMLDialogElement) || !(openButton instanceof HTMLButtonElement) || !(closeButton instanceof HTMLButtonElement) || !(maximizeButton instanceof HTMLButtonElement)) throw new Error('Maximizable dialog markup is incomplete.');\n  const open = () => dialog.showModal();\n  const close = () => dialog.close();\n  const toggleMaximize = () => {\n    const maximized = dialog.classList.toggle('c-dialog--maximized');\n    maximizeButton.setAttribute('aria-pressed', String(maximized));\n    maximizeButton.setAttribute('aria-label', maximized ? 'Restore dialog' : 'Maximize dialog');\n    maximizeButton.textContent = maximized ? '❐' : '□';\n  };\n  const reset = () => { dialog.classList.remove('c-dialog--maximized'); maximizeButton.setAttribute('aria-pressed', 'false'); maximizeButton.setAttribute('aria-label', 'Maximize dialog'); maximizeButton.textContent = '□'; openButton.focus(); };\n  openButton.addEventListener('click', open); closeButton.addEventListener('click', close); maximizeButton.addEventListener('click', toggleMaximize); dialog.addEventListener('close', reset);\n  return { destroy() { openButton.removeEventListener('click', open); closeButton.removeEventListener('click', close); maximizeButton.removeEventListener('click', toggleMaximize); dialog.removeEventListener('close', reset); } };\n}\n\ndocument.querySelectorAll('[data-component=\"max-dialog\"]').forEach(createMaxDialog);",
+              "typescript": "export function createMaxDialog(root: Element): { destroy(): void } {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const openButton = root.querySelector<HTMLButtonElement>('[data-dialog-open]');\n  const closeButton = root.querySelector<HTMLButtonElement>('[data-dialog-close]');\n  const maximizeButton = root.querySelector<HTMLButtonElement>('[data-dialog-maximize]');\n  if (!dialog || !openButton || !closeButton || !maximizeButton) throw new Error('Maximizable dialog markup is incomplete.');\n  const open = (): void => dialog.showModal();\n  const close = (): void => dialog.close();\n  const toggleMaximize = (): void => {\n    const maximized = dialog.classList.toggle('c-dialog--maximized');\n    maximizeButton.setAttribute('aria-pressed', String(maximized));\n    maximizeButton.setAttribute('aria-label', maximized ? 'Restore dialog' : 'Maximize dialog');\n    maximizeButton.textContent = maximized ? '❐' : '□';\n  };\n  const reset = (): void => { dialog.classList.remove('c-dialog--maximized'); maximizeButton.setAttribute('aria-pressed', 'false'); maximizeButton.setAttribute('aria-label', 'Maximize dialog'); maximizeButton.textContent = '□'; openButton.focus(); };\n  openButton.addEventListener('click', open); closeButton.addEventListener('click', close); maximizeButton.addEventListener('click', toggleMaximize); dialog.addEventListener('close', reset);\n  return { destroy(): void { openButton.removeEventListener('click', open); closeButton.removeEventListener('click', close); maximizeButton.removeEventListener('click', toggleMaximize); dialog.removeEventListener('close', reset); } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"max-dialog\"]').forEach(createMaxDialog);"
+            }
+          }
+        },
+        {
+          "slug": "positioned",
+          "title": "Positioned",
+          "summary": "The same modal behavior anchored to the top, center, or bottom edge by a trigger option.",
+          "tags": [
+            "position",
+            "top",
+            "bottom"
+          ],
+          "useWhen": "Use a positioned dialog when its placement should preserve visual context near the region that initiated it.",
+          "avoidWhen": "Avoid edge placement if it makes the dialog resemble a toast or drawer and obscures the blocking nature of the task.",
+          "customization": [
+            "data-dialog-position selects a CSS-only placement; JavaScript does not calculate coordinates.",
+            "Logical block margins make top and bottom positions easy to adapt for writing modes.",
+            "Keep a viewport gutter at every position and retain the modal backdrop."
+          ],
+          "example": {
+            "slug": "positioned",
+            "title": "Choose the modal position",
+            "description": "Open the dialog at the top, center, or bottom and verify that each position keeps a safe edge gap.",
+            "canvasHeight": 460,
+            "source": {
+              "html": "<div class=\"c-dialog-demo\" data-component=\"positioned-dialog\">\n  <div class=\"c-dialog-demo__triggers\">\n    <button type=\"button\" data-dialog-position=\"top\">Top</button>\n    <button type=\"button\" data-dialog-position=\"center\">Center</button>\n    <button type=\"button\" data-dialog-position=\"bottom\">Bottom</button>\n  </div>\n  <dialog class=\"c-dialog\" data-dialog data-position=\"center\" aria-labelledby=\"positioned-dialog-title\">\n    <header><span>Positioned modal</span><button type=\"button\" data-dialog-close aria-label=\"Close dialog\">×</button></header>\n    <h2 id=\"positioned-dialog-title\">Context stays nearby</h2>\n    <p>The placement changes without changing focus, dismissal, or accessibility behavior.</p>\n  </dialog>\n</div>",
+              "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n\n  align-items: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog-demo__triggers { display: flex; flex-wrap: wrap; gap: 0.75rem; }\n.c-dialog-demo button {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: var(--dialog-text);\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: var(--dialog-control-height);\n  padding: 0.75rem 1rem;\n}\n\n.c-dialog-demo button:hover { border-color: var(--dialog-text); }\n.c-dialog-demo button:focus-visible { outline: 0.2rem solid var(--dialog-focus); outline-offset: 0.15rem; }\n\n.c-dialog {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  max-width: min(30rem, calc(100% - (var(--dialog-gutter) * 2)));\n  padding: 1.5rem;\n  width: 100%;\n}\n\n.c-dialog[data-position=\"top\"] { margin: var(--dialog-gutter) auto auto; }\n.c-dialog[data-position=\"center\"] { margin: auto; }\n.c-dialog[data-position=\"bottom\"] { margin: auto auto var(--dialog-gutter); }\n.c-dialog::backdrop { background: var(--dialog-backdrop); }\n.c-dialog header { align-items: center; display: flex; justify-content: space-between; }\n.c-dialog header span { color: var(--dialog-muted); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }\n.c-dialog header button { border-color: transparent; font-size: 1.4rem; padding: 0.5rem; }\n.c-dialog h2 { font-size: clamp(1.55rem, 5vw, 2rem); letter-spacing: -0.04em; line-height: 1.05; margin: 0.75rem 0 0.5rem; }\n.c-dialog p { color: var(--dialog-muted); line-height: 1.6; margin: 0; }",
+              "javascript": "export function createPositionedDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const triggers = [...root.querySelectorAll('[data-dialog-position]')];\n  const closeButton = root.querySelector('[data-dialog-close]');\n  if (!(dialog instanceof HTMLDialogElement) || !(closeButton instanceof HTMLButtonElement)) throw new Error('Positioned dialog markup is incomplete.');\n  let returnFocus = null;\n  const open = (event) => { const trigger = event.currentTarget; if (!(trigger instanceof HTMLButtonElement)) return; dialog.dataset.position = trigger.dataset.dialogPosition || 'center'; returnFocus = trigger; dialog.showModal(); };\n  const close = () => dialog.close();\n  const closeFromBackdrop = (event) => { if (event.target === dialog) close(); };\n  const restoreFocus = () => returnFocus?.focus();\n  triggers.forEach((trigger) => trigger.addEventListener('click', open)); closeButton.addEventListener('click', close); dialog.addEventListener('click', closeFromBackdrop); dialog.addEventListener('close', restoreFocus);\n  return { destroy() { triggers.forEach((trigger) => trigger.removeEventListener('click', open)); closeButton.removeEventListener('click', close); dialog.removeEventListener('click', closeFromBackdrop); dialog.removeEventListener('close', restoreFocus); } };\n}\n\ndocument.querySelectorAll('[data-component=\"positioned-dialog\"]').forEach(createPositionedDialog);",
+              "typescript": "export function createPositionedDialog(root: Element): { destroy(): void } {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const triggers = [...root.querySelectorAll<HTMLButtonElement>('[data-dialog-position]')];\n  const closeButton = root.querySelector<HTMLButtonElement>('[data-dialog-close]');\n  if (!dialog || !closeButton) throw new Error('Positioned dialog markup is incomplete.');\n  let returnFocus: HTMLButtonElement | null = null;\n  const open = (event: Event): void => { const trigger = event.currentTarget; if (!(trigger instanceof HTMLButtonElement)) return; dialog.dataset['position'] = trigger.dataset['dialogPosition'] || 'center'; returnFocus = trigger; dialog.showModal(); };\n  const close = (): void => dialog.close();\n  const closeFromBackdrop = (event: MouseEvent): void => { if (event.target === dialog) close(); };\n  const restoreFocus = (): void => returnFocus?.focus();\n  triggers.forEach((trigger) => trigger.addEventListener('click', open)); closeButton.addEventListener('click', close); dialog.addEventListener('click', closeFromBackdrop); dialog.addEventListener('close', restoreFocus);\n  return { destroy(): void { triggers.forEach((trigger) => trigger.removeEventListener('click', open)); closeButton.removeEventListener('click', close); dialog.removeEventListener('click', closeFromBackdrop); dialog.removeEventListener('close', restoreFocus); } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"positioned-dialog\"]').forEach(createPositionedDialog);"
+            }
+          }
+        },
+        {
+          "slug": "non-modal",
+          "title": "Non-modal",
+          "summary": "A floating dialog that leaves the rest of the page interactive and does not render a backdrop.",
+          "tags": [
+            "non-modal",
+            "floating",
+            "modeless"
+          ],
+          "useWhen": "Use a non-modal dialog for a small auxiliary tool that can stay open while the user works elsewhere.",
+          "avoidWhen": "Avoid it for decisions that must be completed before the underlying page can safely continue.",
+          "customization": [
+            "The key behavior difference is dialog.show() instead of dialog.showModal().",
+            "Position the surface clearly as an auxiliary window and keep a persistent close control.",
+            "Do not apply aria-modal because background content remains available."
+          ],
+          "example": {
+            "slug": "non-modal",
+            "title": "Floating notes",
+            "description": "Open the notes window, then interact with the background field while it remains visible.",
+            "canvasHeight": 440,
+            "source": {
+              "html": "<div class=\"c-dialog-demo\" data-component=\"non-modal-dialog\">\n  <label>Page content<input type=\"text\" placeholder=\"Still interactive\"></label>\n  <button type=\"button\" data-dialog-open>Open notes</button>\n  <dialog class=\"c-dialog\" data-dialog aria-labelledby=\"notes-dialog-title\">\n    <header><h2 id=\"notes-dialog-title\">Quick notes</h2><button type=\"button\" data-dialog-close aria-label=\"Close notes\">×</button></header>\n    <label>Note<textarea rows=\"4\" placeholder=\"Capture context without blocking the page\"></textarea></label>\n  </dialog>\n</div>",
+              "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n\n  align-content: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  gap: 1rem;\n  justify-items: start;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog-demo label { color: var(--dialog-muted); display: grid; font-size: 0.75rem; gap: 0.5rem; }\n.c-dialog-demo input,\n.c-dialog-demo textarea {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: var(--dialog-text);\n  font: inherit;\n  min-height: var(--dialog-control-height);\n  min-width: min(24rem, 75vw);\n  padding: 0.75rem;\n  resize: vertical;\n}\n\n.c-dialog-demo button {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border-strong);\n  border-radius: var(--dialog-control-radius);\n  color: var(--dialog-text);\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: var(--dialog-control-height);\n  padding: 0.75rem 1rem;\n}\n\n.c-dialog-demo button:hover { border-color: var(--dialog-text); }\n.c-dialog-demo :focus-visible { outline: 0.2rem solid var(--dialog-focus); outline-offset: 0.15rem; }\n\n.c-dialog {\n  background: var(--dialog-surface);\n  border: 1px solid var(--dialog-border);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  inset: auto var(--dialog-gutter) var(--dialog-gutter) auto;\n  margin: 0;\n  max-width: min(22rem, calc(100% - (var(--dialog-gutter) * 2)));\n  padding: 1.5rem;\n  position: fixed;\n  width: 100%;\n}\n\n.c-dialog header { align-items: center; display: flex; justify-content: space-between; margin-bottom: 0.75rem; }\n.c-dialog h2 { font-size: clamp(1.55rem, 5vw, 2rem); letter-spacing: -0.04em; line-height: 1.05; margin: 0; }\n.c-dialog header button { border-color: transparent; font-size: 1.4rem; padding: 0.5rem; }\n.c-dialog label,\n.c-dialog textarea { width: 100%; }\n.c-dialog textarea { min-width: 0; }",
+              "javascript": "export function createNonModalDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const openButton = root.querySelector('[data-dialog-open]');\n  const closeButton = root.querySelector('[data-dialog-close]');\n  if (!(dialog instanceof HTMLDialogElement) || !(openButton instanceof HTMLButtonElement) || !(closeButton instanceof HTMLButtonElement)) throw new Error('Non-modal dialog markup is incomplete.');\n  const open = () => { if (!dialog.open) dialog.show(); };\n  const close = () => dialog.close();\n  openButton.addEventListener('click', open);\n  closeButton.addEventListener('click', close);\n  return { destroy() { openButton.removeEventListener('click', open); closeButton.removeEventListener('click', close); } };\n}\n\ndocument.querySelectorAll('[data-component=\"non-modal-dialog\"]').forEach(createNonModalDialog);",
+              "typescript": "export function createNonModalDialog(root: Element): { destroy(): void } {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const openButton = root.querySelector<HTMLButtonElement>('[data-dialog-open]');\n  const closeButton = root.querySelector<HTMLButtonElement>('[data-dialog-close]');\n  if (!dialog || !openButton || !closeButton) throw new Error('Non-modal dialog markup is incomplete.');\n  const open = (): void => { if (!dialog.open) dialog.show(); };\n  const close = (): void => dialog.close();\n  openButton.addEventListener('click', open);\n  closeButton.addEventListener('click', close);\n  return { destroy(): void { openButton.removeEventListener('click', open); closeButton.removeEventListener('click', close); } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"non-modal-dialog\"]').forEach(createNonModalDialog);"
+            }
+          }
+        },
+        {
+          "slug": "animated-transitions",
+          "title": "Animated transitions",
+          "summary": "Fade-scale, slide-up, and drop-in motion pairs for opening and closing the modal.",
+          "tags": [
+            "animation",
+            "motion",
+            "transitions",
+            "reduced-motion"
+          ],
+          "useWhen": "Use a short transition to preserve spatial context and make a modal entering or leaving the top layer easier to follow.",
+          "avoidWhen": "Avoid decorative or slow motion that delays a focused task, and never make essential content depend on animation completing.",
+          "customization": [
+            "data-dialog-animation selects fade-scale, slide-up, or drop-in without changing the component markup.",
+            "Opening and closing use paired keyframes with the same duration and easing so the motion feels reversible.",
+            "prefers-reduced-motion: reduce disables all keyframes and transitions while preserving the open and close behavior."
+          ],
+          "example": {
+            "slug": "animated-transitions",
+            "title": "Choose an entrance motion",
+            "description": "Pick a motion pair, open the dialog, and close it with the button, backdrop, or Escape to test every exit path.",
+            "canvasHeight": 470,
+            "source": {
+              "html": "<div class=\"c-dialog-demo\" data-component=\"animated-dialog\">\n  <div class=\"c-dialog-demo__triggers\">\n    <button type=\"button\" data-dialog-animation=\"fade-scale\">Fade + scale</button>\n    <button type=\"button\" data-dialog-animation=\"slide-up\">Slide up</button>\n    <button type=\"button\" data-dialog-animation=\"drop-in\">Drop in</button>\n  </div>\n\n  <dialog class=\"c-dialog\" data-dialog data-dialog-animation=\"fade-scale\" aria-labelledby=\"animated-dialog-title\" aria-describedby=\"animated-dialog-description\">\n    <header class=\"c-dialog__header\">\n      <div><span>Motion study</span><h2 id=\"animated-dialog-title\">A considered entrance</h2></div>\n      <button type=\"button\" data-dialog-close aria-label=\"Close dialog\">×</button>\n    </header>\n    <p id=\"animated-dialog-description\" class=\"c-dialog__body\">Motion should clarify where a surface came from and where it goes, then get out of the way.</p>\n    <div class=\"c-dialog__actions\"><button type=\"button\" data-dialog-close>Close dialog</button></div>\n  </dialog>\n</div>",
+              "css": ".c-dialog-demo {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-backdrop: rgb(20 24 18 / 55%);\n  --dialog-border: #dcddd4;\n  --dialog-border-strong: #bfc1b7;\n  --dialog-canvas: #f5f5ef;\n  --dialog-control-height: 2.75rem;\n  --dialog-control-radius: 0.55rem;\n  --dialog-focus: #b9f474;\n  --dialog-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --dialog-gutter: 1rem;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n\n  align-items: center;\n  display: grid;\n  font-family: var(--dialog-font);\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog-demo__triggers { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }\n.c-dialog-demo button { background: var(--dialog-surface); border: 1px solid var(--dialog-border-strong); border-radius: var(--dialog-control-radius); color: var(--dialog-text); cursor: pointer; font: inherit; font-weight: 650; min-height: var(--dialog-control-height); padding: 0.75rem 1rem; }\n.c-dialog-demo button:hover { border-color: var(--dialog-text); }\n.c-dialog-demo button:focus-visible { outline: 0.2rem solid var(--dialog-focus); outline-offset: 0.15rem; }\n.c-dialog { background: var(--dialog-surface); border: 1px solid var(--dialog-border); border-radius: var(--dialog-radius); box-shadow: var(--dialog-shadow); color: var(--dialog-text); max-width: min(30rem, calc(100% - (var(--dialog-gutter) * 2))); padding: 0; width: 100%; }\n.c-dialog[open] { animation-duration: 180ms; animation-fill-mode: both; animation-timing-function: cubic-bezier(0.2, 0, 0, 1); }\n.c-dialog[data-animation=\"fade-scale\"] { --dialog-motion-transform: scale(0.96); }\n.c-dialog[data-animation=\"slide-up\"] { --dialog-motion-transform: translateY(1rem); }\n.c-dialog[data-animation=\"drop-in\"] { --dialog-motion-transform: translateY(-1rem) scale(0.98); }\n.c-dialog.is-opening { animation-name: dialog-enter; }\n.c-dialog.is-closing { animation-name: dialog-exit; }\n.c-dialog::backdrop { background: var(--dialog-backdrop); }\n.c-dialog__header { align-items: start; border-bottom: 1px solid var(--dialog-border); display: flex; justify-content: space-between; padding: 1.5rem 1.5rem 0.75rem; }\n.c-dialog__header span { color: var(--dialog-muted); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; }\n.c-dialog h2 { font-size: clamp(1.55rem, 5vw, 2rem); letter-spacing: -0.04em; line-height: 1.05; margin: 0.5rem 0 0; }\n.c-dialog__header > button { border-color: transparent; font-size: 1.4rem; padding: 0.5rem; }\n.c-dialog__body { color: var(--dialog-muted); line-height: 1.6; margin: 0; padding: 0.75rem 1.5rem 1.5rem; }\n.c-dialog__actions { border-top: 1px solid var(--dialog-border); display: flex; justify-content: flex-end; padding: 1rem 1.5rem; }\n.c-dialog__actions button { background: var(--dialog-accent); border-color: var(--dialog-accent); color: var(--dialog-accent-text); }\n@keyframes dialog-enter { from { opacity: 0; transform: var(--dialog-motion-transform); } to { opacity: 1; transform: none; } }\n@keyframes dialog-exit { from { opacity: 1; transform: none; } to { opacity: 0; transform: var(--dialog-motion-transform); } }\n@media (prefers-reduced-motion: reduce) { .c-dialog[open] { animation: none; } }",
+              "javascript": "export function createAnimatedDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const triggers = [...root.querySelectorAll('[data-dialog-animation]')];\n  const closeButtons = [...root.querySelectorAll('[data-dialog-close]')];\n  if (!(dialog instanceof HTMLDialogElement) || !triggers.length || !closeButtons.length) throw new Error('Animated dialog markup is incomplete.');\n\n  let returnFocus = null;\n  let closeTimer = 0;\n  const open = (event) => {\n    const trigger = event.currentTarget;\n    if (!(trigger instanceof HTMLButtonElement)) return;\n    dialog.dataset.animation = trigger.dataset.dialogAnimation || 'fade-scale';\n    returnFocus = trigger;\n    dialog.showModal();\n    requestAnimationFrame(() => dialog.classList.add('is-opening'));\n  };\n  const finishClose = () => {\n    window.clearTimeout(closeTimer);\n    dialog.close();\n  };\n  const close = () => {\n    if (!dialog.open || dialog.classList.contains('is-closing')) return;\n    dialog.classList.remove('is-opening');\n    dialog.classList.add('is-closing');\n    closeTimer = window.setTimeout(finishClose, 220);\n  };\n  const handleAnimationEnd = (event) => {\n    if (event.animationName === 'dialog-enter') dialog.classList.remove('is-opening');\n    if (event.animationName === 'dialog-exit') finishClose();\n  };\n  const handleCancel = (event) => { event.preventDefault(); close(); };\n  const handleBackdrop = (event) => { if (event.target === dialog) close(); };\n  const restoreFocus = () => { dialog.classList.remove('is-opening', 'is-closing'); returnFocus?.focus(); };\n\n  triggers.forEach((trigger) => trigger.addEventListener('click', open));\n  closeButtons.forEach((button) => button.addEventListener('click', close));\n  dialog.addEventListener('animationend', handleAnimationEnd);\n  dialog.addEventListener('cancel', handleCancel);\n  dialog.addEventListener('click', handleBackdrop);\n  dialog.addEventListener('close', restoreFocus);\n\n  return { destroy() {\n    window.clearTimeout(closeTimer);\n    triggers.forEach((trigger) => trigger.removeEventListener('click', open));\n    closeButtons.forEach((button) => button.removeEventListener('click', close));\n    dialog.removeEventListener('animationend', handleAnimationEnd);\n    dialog.removeEventListener('cancel', handleCancel);\n    dialog.removeEventListener('click', handleBackdrop);\n    dialog.removeEventListener('close', restoreFocus);\n  } };\n}\n\ndocument.querySelectorAll('[data-component=\"animated-dialog\"]').forEach(createAnimatedDialog);",
+              "typescript": "export function createAnimatedDialog(root: Element): { destroy(): void } {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const triggers = [...root.querySelectorAll<HTMLButtonElement>('[data-dialog-animation]')];\n  const closeButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-dialog-close]')];\n  if (!dialog || !triggers.length || !closeButtons.length) throw new Error('Animated dialog markup is incomplete.');\n\n  let returnFocus: HTMLButtonElement | null = null;\n  let closeTimer = 0;\n  const open = (event: Event): void => {\n    const trigger = event.currentTarget;\n    if (!(trigger instanceof HTMLButtonElement)) return;\n    dialog.dataset['animation'] = trigger.dataset['dialogAnimation'] || 'fade-scale';\n    returnFocus = trigger;\n    dialog.showModal();\n    requestAnimationFrame(() => dialog.classList.add('is-opening'));\n  };\n  const finishClose = (): void => { window.clearTimeout(closeTimer); dialog.close(); };\n  const close = (): void => {\n    if (!dialog.open || dialog.classList.contains('is-closing')) return;\n    dialog.classList.remove('is-opening');\n    dialog.classList.add('is-closing');\n    closeTimer = window.setTimeout(finishClose, 220);\n  };\n  const handleAnimationEnd = (event: AnimationEvent): void => {\n    if (event.animationName === 'dialog-enter') dialog.classList.remove('is-opening');\n    if (event.animationName === 'dialog-exit') finishClose();\n  };\n  const handleCancel = (event: Event): void => { event.preventDefault(); close(); };\n  const handleBackdrop = (event: MouseEvent): void => { if (event.target === dialog) close(); };\n  const restoreFocus = (): void => { dialog.classList.remove('is-opening', 'is-closing'); returnFocus?.focus(); };\n\n  triggers.forEach((trigger) => trigger.addEventListener('click', open));\n  closeButtons.forEach((button) => button.addEventListener('click', close));\n  dialog.addEventListener('animationend', handleAnimationEnd);\n  dialog.addEventListener('cancel', handleCancel);\n  dialog.addEventListener('click', handleBackdrop);\n  dialog.addEventListener('close', restoreFocus);\n\n  return { destroy(): void {\n    window.clearTimeout(closeTimer);\n    triggers.forEach((trigger) => trigger.removeEventListener('click', open));\n    closeButtons.forEach((button) => button.removeEventListener('click', close));\n    dialog.removeEventListener('animationend', handleAnimationEnd);\n    dialog.removeEventListener('cancel', handleCancel);\n    dialog.removeEventListener('click', handleBackdrop);\n    dialog.removeEventListener('close', restoreFocus);\n  } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"animated-dialog\"]').forEach(createAnimatedDialog);"
+            }
+          }
+        }
+      ],
       "anatomy": [
-        { "name": "Trigger", "description": "A native button that opens the modal and receives focus again after dismissal." },
-        { "name": "Dialog", "description": "The native top-layer container responsible for modal focus behavior and Escape handling." },
-        { "name": "Header", "description": "An optional eyebrow and required heading that provide the accessible name." },
-        { "name": "Body", "description": "Concise context describing the decision and its consequences." },
-        { "name": "Actions", "description": "A method=dialog form that closes without custom button handlers." }
+        {
+          "name": "Trigger",
+          "description": "A native button that opens the modal and receives focus again after dismissal."
+        },
+        {
+          "name": "Dialog",
+          "description": "The native top-layer container responsible for modal focus behavior and Escape handling."
+        },
+        {
+          "name": "Header",
+          "description": "An optional eyebrow and required heading that provide the accessible name."
+        },
+        {
+          "name": "Body",
+          "description": "Concise context describing the decision and its consequences."
+        },
+        {
+          "name": "Actions",
+          "description": "A method=dialog form that closes without custom button handlers."
+        }
       ],
       "tokens": [
-        { "name": "--dialog-accent", "defaultValue": "#b9f474", "description": "Primary action and focus color." },
-        { "name": "--dialog-accent-text", "defaultValue": "#162600", "description": "Text shown on the primary action." },
-        { "name": "--dialog-radius", "defaultValue": "1rem", "description": "Corner radius of the dialog surface." },
-        { "name": "--dialog-surface", "defaultValue": "#ffffff", "description": "Dialog background color." },
-        { "name": "--dialog-text", "defaultValue": "#171915", "description": "Primary text color." },
-        { "name": "--dialog-muted", "defaultValue": "#62665d", "description": "Secondary copy color." },
-        { "name": "--dialog-shadow", "defaultValue": "0 1.5rem 5rem rgb(20 24 18 / 22%)", "description": "Elevation applied to the modal surface." }
+        {
+          "name": "--dialog-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary action color."
+        },
+        {
+          "name": "--dialog-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the primary action."
+        },
+        {
+          "name": "--dialog-backdrop",
+          "defaultValue": "rgb(20 24 18 / 55%)",
+          "description": "Modal blocking-layer color."
+        },
+        {
+          "name": "--dialog-border",
+          "defaultValue": "#dcddd4",
+          "description": "Dividers and quiet surface boundaries."
+        },
+        {
+          "name": "--dialog-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--dialog-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Nested placeholder and work-area background."
+        },
+        {
+          "name": "--dialog-control-height",
+          "defaultValue": "2.75rem",
+          "description": "Minimum interactive control height."
+        },
+        {
+          "name": "--dialog-control-radius",
+          "defaultValue": "0.55rem",
+          "description": "Button, input, and textarea corner radius."
+        },
+        {
+          "name": "--dialog-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline color."
+        },
+        {
+          "name": "--dialog-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component and control font stack."
+        },
+        {
+          "name": "--dialog-gutter",
+          "defaultValue": "1rem",
+          "description": "Minimum distance from each viewport edge."
+        },
+        {
+          "name": "--dialog-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary copy color."
+        },
+        {
+          "name": "--dialog-radius",
+          "defaultValue": "1rem",
+          "description": "Dialog surface corner radius."
+        },
+        {
+          "name": "--dialog-shadow",
+          "defaultValue": "0 1.5rem 5rem rgb(20 24 18 / 22%)",
+          "description": "Floating surface elevation."
+        },
+        {
+          "name": "--dialog-surface",
+          "defaultValue": "#ffffff",
+          "description": "Dialog and control background color."
+        },
+        {
+          "name": "--dialog-text",
+          "defaultValue": "#171915",
+          "description": "Primary text color."
+        }
       ],
       "accessibility": [
         "The native dialog element supplies modal semantics, focus containment, and Escape dismissal.",
@@ -55,8 +327,9 @@
         "Very old browsers without native dialog support require a polyfill, which is intentionally not included."
       ],
       "provenance": {
-        "label": "Original native implementation",
-        "note": "Built from platform primitives for Dev Lib; no third-party component source is included."
+        "label": "PrimeNG Dialog behavior study",
+        "url": "https://v21.primeng.org/dialog",
+        "note": "PrimeNG's documented dialog variants guided the behavior taxonomy. Every recipe here is an original, dependency-free implementation built from native platform primitives; no PrimeNG source is reproduced."
       }
     }
   }

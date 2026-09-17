@@ -12,7 +12,7 @@
     </a>
 
     @if (entry.catalog.type === 'component') {
-      <app-component-details [entry]="entry" />
+      <app-component-details [entry]="entry" [fragment]="fragment()" />
     } @else {
       <article>
         <header class="article-header">

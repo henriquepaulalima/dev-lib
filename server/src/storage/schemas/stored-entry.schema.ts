@@ -62,6 +62,35 @@ export class StoredComponentExample {
 const StoredComponentExampleSchema = SchemaFactory.createForClass(StoredComponentExample);
 
 @Schema({ _id: false })
+export class StoredComponentVariant {
+  @Prop({ required: true, trim: true })
+  slug: string;
+
+  @Prop({ required: true, trim: true })
+  title: string;
+
+  @Prop({ required: true })
+  summary: string;
+
+  @Prop({ default: [], type: [String] })
+  tags: string[];
+
+  @Prop({ required: true })
+  useWhen: string;
+
+  @Prop({ required: true })
+  avoidWhen: string;
+
+  @Prop({ default: [], type: [String] })
+  customization: string[];
+
+  @Prop({ required: true, type: StoredComponentExampleSchema })
+  example: StoredComponentExample;
+}
+
+const StoredComponentVariantSchema = SchemaFactory.createForClass(StoredComponentVariant);
+
+@Schema({ _id: false })
 export class StoredComponentAnatomyItem {
   @Prop({ required: true, trim: true })
   name: string;
@@ -113,6 +142,9 @@ export class StoredComponentContent {
 
   @Prop({ default: [], type: [StoredComponentExampleSchema] })
   examples: StoredComponentExample[];
+
+  @Prop({ default: [], type: [StoredComponentVariantSchema] })
+  variants: StoredComponentVariant[];
 
   @Prop({ default: [], type: [StoredComponentAnatomyItemSchema] })
   anatomy: StoredComponentAnatomyItem[];

@@ -12,7 +12,7 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, of, startWith, switchMap, tap } from 'rxjs';
-import { CatalogEntry } from '../../models/library-entry';
+import { CatalogEntry, CatalogSubcomponent } from '../../models/library-entry';
 import { LibraryApi } from '../../services/library-api';
 
 @Component({
@@ -34,6 +34,7 @@ export class SearchDialog {
   readonly loading = signal(true);
   readonly error = signal('');
   readonly activeIndex = signal(-1);
+  readonly expandedEntries = signal<ReadonlySet<string>>(new Set());
 
   constructor() {
     this.search.valueChanges.pipe(
@@ -54,6 +55,12 @@ export class SearchDialog {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe((entries) => {
       this.entries.set(entries.slice(0, 8));
+      const query = this.search.value.trim();
+      this.expandedEntries.set(new Set(
+        query
+          ? entries.filter((entry) => entry.subcomponents.some((variant) => this.matches(variant, query))).map((entry) => entry.slug)
+          : []
+      ));
       this.loading.set(false);
     });
   }
@@ -101,5 +108,26 @@ export class SearchDialog {
     this.close();
     await this.router.navigate(['/entry', entry.slug]);
   }
-}
 
+  toggleSubcomponents(slug: string): void {
+    this.expandedEntries.update((current) => {
+      const next = new Set(current);
+      next.has(slug) ? next.delete(slug) : next.add(slug);
+      return next;
+    });
+  }
+
+  isExpanded(slug: string): boolean {
+    return this.expandedEntries().has(slug);
+  }
+
+  async selectSubcomponent(entry: CatalogEntry, variant: CatalogSubcomponent): Promise<void> {
+    this.close();
+    await this.router.navigate(['/entry', entry.slug], { fragment: `variant-${variant.slug}` });
+  }
+
+  private matches(variant: CatalogSubcomponent, query: string): boolean {
+    const haystack = [variant.title, variant.summary, ...variant.tags].join(' ').toLocaleLowerCase();
+    return query.toLocaleLowerCase().split(/\s+/).every((term) => haystack.includes(term));
+  }
+}

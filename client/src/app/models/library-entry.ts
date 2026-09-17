@@ -6,6 +6,14 @@ export interface CatalogEntry {
   title: string;
   summary: string;
   tags: string[];
+  subcomponents: CatalogSubcomponent[];
+}
+
+export interface CatalogSubcomponent {
+  slug: string;
+  title: string;
+  summary: string;
+  tags: string[];
 }
 
 export interface ContentSection {
@@ -47,11 +55,23 @@ export interface ComponentProvenance {
   note: string;
 }
 
+export interface ComponentVariant {
+  slug: string;
+  title: string;
+  summary: string;
+  tags: string[];
+  useWhen: string;
+  avoidWhen: string;
+  customization: string[];
+  example: ComponentExample;
+}
+
 export interface ComponentContent {
   status: 'draft' | 'verified';
   useWhen: string;
   avoidWhen: string;
   examples: ComponentExample[];
+  variants: ComponentVariant[];
   anatomy: ComponentAnatomyItem[];
   tokens: ComponentToken[];
   accessibility: string[];
