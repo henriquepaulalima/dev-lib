@@ -10,12 +10,17 @@
 
 ## Frontend entries
 
-- Use standalone Angular components and built-in template control flow.
-- Default to `ChangeDetectionStrategy.OnPush` and signals for local view state.
+- Store component recipes as framework-independent HTML, CSS, and JavaScript. Angular is the library viewer, not the component runtime.
+- Every example must render from the same stored source shown in its HTML, CSS, and JavaScript tabs.
+- A TypeScript equivalent may be included for typed projects, but the dependency-free preview always executes the canonical JavaScript source.
+- Start with semantic HTML and progressively enhance it with an ES module.
+- Use `data-component` on the component root and `data-*` attributes for JavaScript hooks; styling classes are not behavior hooks.
+- Prefix styling classes with `c-` and scope customization variables to the component, such as `--dialog-radius`.
+- Export one initializer that accepts a root element and returns documented methods plus `destroy()` when behavior is interactive.
 - Use semantic HTML before adding ARIA. Add ARIA only where native semantics are insufficient.
-- Scope component Sass locally and use the global design tokens when the library client renders a demo.
-- Avoid global event listeners; if one is necessary, document teardown.
-- Keep data fetching out of presentational components.
+- Do not rely on a framework, preprocessor, bundler, global state, or undeclared network resource.
+- Avoid global event listeners; if one is necessary, document and implement teardown.
+- Verify multiple instances, keyboard operation, narrow layouts, visible focus, and reduced-motion behavior before marking an entry verified.
 
 ## Backend entries
 
@@ -41,4 +46,3 @@
 - Ensure keyboard focus is visible and color is not the only signal.
 - Test layouts at narrow mobile and wide desktop widths.
 - Respect reduced-motion preferences when adding nonessential animation.
-

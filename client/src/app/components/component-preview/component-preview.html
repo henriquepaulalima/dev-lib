@@ -1,0 +1,74 @@
+<section class="example" [attr.aria-labelledby]="'example-' + example().slug">
+  <header class="example__header">
+    <div>
+      <p class="example__eyebrow">Live example</p>
+      <h2 [id]="'example-' + example().slug">{{ example().title }}</h2>
+      <p class="example__description">{{ example().description }}</p>
+    </div>
+    <div class="session-status" aria-live="polite">
+      <span
+        class="session-status__indicator"
+        [class.session-status__indicator--ready]="sessionStatus() === 'ready'"
+        [class.session-status__indicator--error]="sessionStatus() === 'error'"
+      ></span>
+      {{ sessionStatus() === 'ready' ? 'Session running' : sessionStatus() === 'error' ? 'Runtime error' : 'Starting session' }}
+    </div>
+  </header>
+
+  <div class="preview">
+    <div class="preview__toolbar">
+      <span>Preview</span>
+      <div class="preview__actions" aria-label="Preview controls">
+        <div class="viewport-picker" aria-label="Preview width">
+          <button type="button" [attr.aria-pressed]="viewport() === 'responsive'" (click)="setViewport('responsive')">Responsive</button>
+          <button type="button" [attr.aria-pressed]="viewport() === 'tablet'" (click)="setViewport('tablet')">Tablet</button>
+          <button type="button" [attr.aria-pressed]="viewport() === 'mobile'" (click)="setViewport('mobile')">Mobile</button>
+        </div>
+        <button class="reload" type="button" (click)="reload()">↻ Reset</button>
+      </div>
+    </div>
+
+    <div class="preview__canvas" [style.min-height.px]="example().canvasHeight || 420">
+      <div
+        class="preview__viewport"
+        [class.preview__viewport--tablet]="viewport() === 'tablet'"
+        [class.preview__viewport--mobile]="viewport() === 'mobile'"
+      >
+        <iframe
+          #previewFrame
+          [title]="example().title + ' interactive preview'"
+          sandbox="allow-scripts allow-forms"
+          referrerpolicy="no-referrer"
+        ></iframe>
+      </div>
+    </div>
+
+    @if (runtimeError()) {
+      <div class="runtime-error" role="alert">
+        <strong>Preview error</strong>
+        <code>{{ runtimeError() }}</code>
+      </div>
+    }
+  </div>
+
+  <div class="source">
+    <div class="source__files" role="tablist" aria-label="Example source files">
+      <button type="button" role="tab" [attr.aria-selected]="selectedFile() === 'html'" (click)="selectFile('html')">HTML</button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedFile() === 'css'" (click)="selectFile('css')">CSS</button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedFile() === 'javascript'" (click)="selectFile('javascript')">JavaScript</button>
+    </div>
+    <div class="source__bar">
+      <div class="source__identity">
+        <code>{{ selectedFileName() }}</code>
+        @if (selectedFile() === 'javascript' && example().source.typescript) {
+          <div class="language-toggle" aria-label="Script language">
+            <button type="button" [attr.aria-pressed]="scriptLanguage() === 'javascript'" (click)="selectScriptLanguage('javascript')">JS</button>
+            <button type="button" [attr.aria-pressed]="scriptLanguage() === 'typescript'" (click)="selectScriptLanguage('typescript')">TS</button>
+          </div>
+        }
+      </div>
+      <button type="button" (click)="copySelectedSource()">{{ copied() ? 'Copied' : 'Copy file' }}</button>
+    </div>
+    <pre><code class="hljs" [innerHTML]="highlightedSource()"></code></pre>
+  </div>
+</section>

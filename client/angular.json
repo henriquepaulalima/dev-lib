@@ -16,7 +16,10 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "../node_modules/highlight.js/styles/atom-one-dark.css",
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {

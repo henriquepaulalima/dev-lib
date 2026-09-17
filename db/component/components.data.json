@@ -2,38 +2,62 @@
   {
     "slug": "accessible-dialog",
     "type": "component",
-    "title": "Accessible dialog",
-    "summary": "A dependency-free modal structure with native focus, keyboard, and dismissal behavior.",
-    "tags": ["angular", "a11y", "dialog"],
-    "overview": "A small frontend pattern built around the native dialog element. It keeps behavior in the platform and leaves visual decisions to the consuming project.",
-    "dependencies": ["Angular"],
-    "sections": [
-      {
-        "heading": "Intent",
-        "body": "Prefer the native dialog element because it provides focus containment, Escape handling, and top-layer behavior without another package. Add Angular only for state and composition."
-      },
-      {
-        "heading": "Minimal shape",
-        "body": "Keep the public API narrow: open, close, and a closed event. Project the body so the component remains content-agnostic.",
-        "language": "typescript",
-        "code": "readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');\n\nopen(): void { this.dialog().nativeElement.showModal(); }\nclose(): void { this.dialog().nativeElement.close(); }"
-      },
-      {
-        "heading": "Template anatomy",
-        "body": "Use a real dialog element and a form with method=dialog for controls that simply dismiss it. Keep the heading programmatically associated and let consumers project the main content.",
-        "language": "html",
-        "code": "<dialog #dialog aria-labelledby=\"dialog-title\">\n  <h2 id=\"dialog-title\">Confirm action</h2>\n  <ng-content />\n  <form method=\"dialog\">\n    <button>Cancel</button>\n  </form>\n</dialog>"
-      },
-      {
-        "heading": "Dismissal behavior",
-        "body": "Escape closes a modal dialog natively. If backdrop dismissal is part of the product behavior, close only when the dialog element itself is the pointer target so clicks inside the panel are ignored.",
-        "language": "typescript",
-        "code": "handleBackdrop(event: MouseEvent): void {\n  if (event.target === event.currentTarget) {\n    this.dialog().nativeElement.close();\n  }\n}"
-      },
-      {
-        "heading": "Accessibility checklist",
-        "body": "Give the dialog an accessible name, move focus to the most useful first control, restore focus to the trigger after closing, and never remove the visible focus indicator. Verify keyboard-only navigation and screen-reader announcements before reuse."
+    "title": "Dialog",
+    "summary": "A dependency-free modal with native focus handling, keyboard dismissal, and a small CSS token surface.",
+    "tags": ["html", "css", "javascript", "typescript", "a11y", "dialog"],
+    "overview": "A progressively enhanced modal built on the native dialog element. The live example runs the exact stored HTML, CSS, and JavaScript in an isolated browser session.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "verified",
+      "useWhen": "Use a modal when a focused decision or short task must be completed before returning to the current page.",
+      "avoidWhen": "Avoid it for passive information, long forms, multi-step flows, or content that deserves its own page.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Confirmation dialog",
+          "description": "Open the modal, dismiss it with Escape or the backdrop, and verify that focus returns to the trigger.",
+          "canvasHeight": 430,
+          "source": {
+            "typescript": "export interface DialogController {\n  open(): void;\n  close(value?: string): void;\n  destroy(): void;\n}\n\nexport function createDialog(root: Element): DialogController {\n  const dialog = root.querySelector<HTMLDialogElement>('[data-dialog]');\n  const openButton = root.querySelector<HTMLButtonElement>('[data-dialog-open]');\n\n  if (!dialog || !openButton) {\n    throw new Error('Dialog markup is incomplete.');\n  }\n\n  let returnFocus: HTMLElement | null = null;\n\n  const open = (): void => {\n    returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;\n    dialog.showModal();\n    root.dispatchEvent(new CustomEvent('dialog:open'));\n  };\n\n  const close = (value = ''): void => {\n    if (dialog.open) dialog.close(value);\n  };\n\n  const handleBackdrop = (event: MouseEvent): void => {\n    if (event.target === dialog) close('backdrop');\n  };\n\n  const handleClose = (): void => {\n    returnFocus?.focus();\n    root.dispatchEvent(new CustomEvent('dialog:close', {\n      detail: { value: dialog.returnValue }\n    }));\n  };\n\n  openButton.addEventListener('click', open);\n  dialog.addEventListener('click', handleBackdrop);\n  dialog.addEventListener('close', handleClose);\n\n  return {\n    open,\n    close,\n    destroy(): void {\n      openButton.removeEventListener('click', open);\n      dialog.removeEventListener('click', handleBackdrop);\n      dialog.removeEventListener('close', handleClose);\n    }\n  };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"dialog\"]').forEach(createDialog);",
+            "html": "<div class=\"c-dialog-demo\" data-component=\"dialog\">\n  <button class=\"c-button\" type=\"button\" data-dialog-open>\n    Open dialog\n  </button>\n\n  <dialog\n    class=\"c-dialog\"\n    data-dialog\n    aria-labelledby=\"dialog-title\"\n    aria-describedby=\"dialog-description\"\n  >\n    <header class=\"c-dialog__header\">\n      <span class=\"c-dialog__eyebrow\">Unsaved changes</span>\n      <h2 id=\"dialog-title\">Leave this page?</h2>\n    </header>\n\n    <p id=\"dialog-description\" class=\"c-dialog__body\">\n      Your edits have not been saved. You can stay and finish, or discard them and leave.\n    </p>\n\n    <form class=\"c-dialog__actions\" method=\"dialog\">\n      <button class=\"c-button c-button--quiet\" value=\"cancel\">Stay here</button>\n      <button class=\"c-button c-button--primary\" value=\"confirm\">Discard and leave</button>\n    </form>\n  </dialog>\n</div>",
+            "css": ".c-dialog-demo {\n  align-items: center;\n  display: grid;\n  justify-items: center;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-dialog {\n  --dialog-accent: #b9f474;\n  --dialog-accent-text: #162600;\n  --dialog-muted: #62665d;\n  --dialog-radius: 1rem;\n  --dialog-surface: #ffffff;\n  --dialog-text: #171915;\n  --dialog-shadow: 0 1.5rem 5rem rgb(20 24 18 / 22%);\n\n  background: var(--dialog-surface);\n  border: 1px solid rgb(23 25 21 / 16%);\n  border-radius: var(--dialog-radius);\n  box-shadow: var(--dialog-shadow);\n  color: var(--dialog-text);\n  margin: auto;\n  max-width: min(30rem, calc(100% - 2rem));\n  padding: 0;\n  width: 100%;\n}\n\n.c-dialog::backdrop {\n  background: rgb(20 24 18 / 55%);\n  backdrop-filter: blur(0.2rem);\n}\n\n.c-dialog__header {\n  padding: 1.6rem 1.6rem 0.75rem;\n}\n\n.c-dialog__eyebrow {\n  color: var(--dialog-muted);\n  display: block;\n  font-size: 0.72rem;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\n\n.c-dialog h2 {\n  font-size: clamp(1.55rem, 5vw, 2rem);\n  letter-spacing: -0.04em;\n  line-height: 1.05;\n  margin: 0.55rem 0 0;\n}\n\n.c-dialog__body {\n  color: var(--dialog-muted);\n  line-height: 1.6;\n  margin: 0;\n  padding: 0 1.6rem 1.6rem;\n}\n\n.c-dialog__actions {\n  border-top: 1px solid rgb(23 25 21 / 12%);\n  display: flex;\n  gap: 0.65rem;\n  justify-content: flex-end;\n  padding: 1rem 1.6rem;\n}\n\n.c-button {\n  background: transparent;\n  border: 1px solid rgb(23 25 21 / 30%);\n  border-radius: 0.55rem;\n  color: inherit;\n  cursor: pointer;\n  font: inherit;\n  font-weight: 650;\n  min-height: 2.75rem;\n  padding: 0.65rem 1rem;\n}\n\n.c-button:hover {\n  border-color: currentColor;\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid color-mix(in srgb, var(--dialog-accent) 75%, #000000);\n  outline-offset: 0.15rem;\n}\n\n.c-button--primary {\n  background: var(--dialog-accent);\n  border-color: var(--dialog-accent);\n  color: var(--dialog-accent-text);\n}\n\n@media (max-width: 32rem) {\n  .c-dialog__actions {\n    align-items: stretch;\n    flex-direction: column-reverse;\n  }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-dialog::backdrop {\n    backdrop-filter: none;\n  }\n}",
+            "javascript": "export function createDialog(root) {\n  const dialog = root.querySelector('[data-dialog]');\n  const openButton = root.querySelector('[data-dialog-open]');\n\n  if (!(dialog instanceof HTMLDialogElement) || !(openButton instanceof HTMLButtonElement)) {\n    throw new Error('Dialog markup is incomplete.');\n  }\n\n  let returnFocus = null;\n\n  const open = () => {\n    returnFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;\n    dialog.showModal();\n    root.dispatchEvent(new CustomEvent('dialog:open'));\n  };\n\n  const close = (value = '') => {\n    if (dialog.open) dialog.close(value);\n  };\n\n  const handleBackdrop = (event) => {\n    if (event.target === dialog) close('backdrop');\n  };\n\n  const handleClose = () => {\n    returnFocus?.focus();\n    root.dispatchEvent(new CustomEvent('dialog:close', {\n      detail: { value: dialog.returnValue }\n    }));\n  };\n\n  openButton.addEventListener('click', open);\n  dialog.addEventListener('click', handleBackdrop);\n  dialog.addEventListener('close', handleClose);\n\n  return {\n    open,\n    close,\n    destroy() {\n      openButton.removeEventListener('click', open);\n      dialog.removeEventListener('click', handleBackdrop);\n      dialog.removeEventListener('close', handleClose);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"dialog\"]').forEach(createDialog);"
+          }
+        }
+      ],
+      "anatomy": [
+        { "name": "Trigger", "description": "A native button that opens the modal and receives focus again after dismissal." },
+        { "name": "Dialog", "description": "The native top-layer container responsible for modal focus behavior and Escape handling." },
+        { "name": "Header", "description": "An optional eyebrow and required heading that provide the accessible name." },
+        { "name": "Body", "description": "Concise context describing the decision and its consequences." },
+        { "name": "Actions", "description": "A method=dialog form that closes without custom button handlers." }
+      ],
+      "tokens": [
+        { "name": "--dialog-accent", "defaultValue": "#b9f474", "description": "Primary action and focus color." },
+        { "name": "--dialog-accent-text", "defaultValue": "#162600", "description": "Text shown on the primary action." },
+        { "name": "--dialog-radius", "defaultValue": "1rem", "description": "Corner radius of the dialog surface." },
+        { "name": "--dialog-surface", "defaultValue": "#ffffff", "description": "Dialog background color." },
+        { "name": "--dialog-text", "defaultValue": "#171915", "description": "Primary text color." },
+        { "name": "--dialog-muted", "defaultValue": "#62665d", "description": "Secondary copy color." },
+        { "name": "--dialog-shadow", "defaultValue": "0 1.5rem 5rem rgb(20 24 18 / 22%)", "description": "Elevation applied to the modal surface." }
+      ],
+      "accessibility": [
+        "The native dialog element supplies modal semantics, focus containment, and Escape dismissal.",
+        "aria-labelledby and aria-describedby connect the heading and explanation to the dialog.",
+        "Focus returns to the opening control after every close path.",
+        "The visible focus ring remains available for keyboard users."
+      ],
+      "responsive": "The dialog width is capped on larger screens. Below 32rem, actions stack vertically with the safest action last in visual order and first in DOM order.",
+      "limitations": [
+        "Use only one modal interaction at a time; nested dialogs create confusing focus and dismissal behavior.",
+        "The confirmation event reports intent but does not perform application-specific work.",
+        "Very old browsers without native dialog support require a polyfill, which is intentionally not included."
+      ],
+      "provenance": {
+        "label": "Original native implementation",
+        "note": "Built from platform primitives for Dev Lib; no third-party component source is included."
       }
-    ]
+    }
   }
 ]

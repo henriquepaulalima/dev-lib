@@ -1,0 +1,144 @@
+@if (entry().content.component; as component) {
+  <article class="component-entry">
+    <header class="component-header">
+      <div class="component-header__meta">
+        <span class="status-pill">{{ component.status }}</span>
+        @for (tag of entry().catalog.tags; track tag) { <span>#{{ tag }}</span> }
+      </div>
+      <h1>{{ entry().catalog.title }}</h1>
+      <p>{{ entry().content.overview }}</p>
+      <div class="component-header__facts">
+        <span><strong>{{ component.examples.length }}</strong> live {{ component.examples.length === 1 ? 'example' : 'examples' }}</span>
+        <span><strong>{{ entry().content.dependencies.length }}</strong> dependencies</span>
+        <span><strong>HTML · CSS · JS/TS</strong> source</span>
+      </div>
+    </header>
+
+    <nav class="component-nav" aria-label="Sections on this page">
+      <a href="#examples">Examples</a>
+      <a href="#usage">Usage</a>
+      <a href="#anatomy">Anatomy</a>
+      <a href="#customization">Customization</a>
+      <a href="#accessibility">Accessibility</a>
+    </nav>
+
+    <section class="examples" id="examples" aria-label="Interactive examples">
+      @for (example of component.examples; track example.slug) {
+        <app-component-preview [example]="example" />
+      }
+    </section>
+
+    <div class="component-guide">
+      <section class="guide-section" id="usage">
+        <div class="guide-section__heading">
+          <span>01</span>
+          <div>
+            <p class="guide-section__eyebrow">Introduction</p>
+            <h2>Choose the pattern deliberately.</h2>
+          </div>
+        </div>
+        <div class="decision-grid">
+          <article>
+            <span class="decision-grid__mark">Use it when</span>
+            <p>{{ component.useWhen }}</p>
+          </article>
+          <article>
+            <span class="decision-grid__mark decision-grid__mark--avoid">Avoid it when</span>
+            <p>{{ component.avoidWhen }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="guide-section" id="anatomy">
+        <div class="guide-section__heading">
+          <span>02</span>
+          <div>
+            <p class="guide-section__eyebrow">Structure</p>
+            <h2>Anatomy</h2>
+          </div>
+        </div>
+        <ol class="anatomy-list">
+          @for (part of component.anatomy; track part.name; let index = $index) {
+            <li>
+              <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
+              <strong>{{ part.name }}</strong>
+              <p>{{ part.description }}</p>
+            </li>
+          }
+        </ol>
+      </section>
+
+      <section class="guide-section" id="customization">
+        <div class="guide-section__heading">
+          <span>03</span>
+          <div>
+            <p class="guide-section__eyebrow">Public styling API</p>
+            <h2>Customization</h2>
+          </div>
+        </div>
+        <div class="token-table-wrap">
+          <table class="token-table">
+            <thead><tr><th>Token</th><th>Default</th><th>Purpose</th></tr></thead>
+            <tbody>
+              @for (token of component.tokens; track token.name) {
+                <tr>
+                  <td><code>{{ token.name }}</code></td>
+                  <td><code>{{ token.defaultValue }}</code></td>
+                  <td>{{ token.description }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="guide-section" id="accessibility">
+        <div class="guide-section__heading">
+          <span>04</span>
+          <div>
+            <p class="guide-section__eyebrow">Production checks</p>
+            <h2>Accessibility and behavior</h2>
+          </div>
+        </div>
+        <div class="checks-layout">
+          <ul class="check-list">
+            @for (item of component.accessibility; track item) { <li>{{ item }}</li> }
+          </ul>
+          <aside class="responsive-note">
+            <span>Responsive behavior</span>
+            <p>{{ component.responsive }}</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="guide-section">
+        <div class="guide-section__heading">
+          <span>05</span>
+          <div>
+            <p class="guide-section__eyebrow">Before reuse</p>
+            <h2>Limitations</h2>
+          </div>
+        </div>
+        <ul class="limitation-list">
+          @for (limitation of component.limitations; track limitation) { <li>{{ limitation }}</li> }
+        </ul>
+        <footer class="provenance">
+          <span>Provenance</span>
+          <div>
+            @if (component.provenance.url) {
+              <a [href]="component.provenance.url" target="_blank" rel="noopener noreferrer">{{ component.provenance.label }}</a>
+            } @else {
+              <strong>{{ component.provenance.label }}</strong>
+            }
+            <p>{{ component.provenance.note }}</p>
+          </div>
+        </footer>
+      </section>
+    </div>
+  </article>
+} @else {
+  <div class="component-error">
+    <h1>Component content is incomplete.</h1>
+    <p>This entry does not have the structured component documentation required for a live preview.</p>
+  </div>
+}

@@ -24,6 +24,117 @@ export class StoredSection {
 
 export const StoredSectionSchema = SchemaFactory.createForClass(StoredSection);
 
+@Schema({ _id: false })
+export class StoredComponentExampleSource {
+  @Prop({ required: true })
+  html: string;
+
+  @Prop({ required: true })
+  css: string;
+
+  @Prop({ required: true })
+  javascript: string;
+
+  @Prop()
+  typescript?: string;
+}
+
+const StoredComponentExampleSourceSchema = SchemaFactory.createForClass(StoredComponentExampleSource);
+
+@Schema({ _id: false })
+export class StoredComponentExample {
+  @Prop({ required: true, trim: true })
+  slug: string;
+
+  @Prop({ required: true, trim: true })
+  title: string;
+
+  @Prop({ required: true })
+  description: string;
+
+  @Prop({ required: true, type: StoredComponentExampleSourceSchema })
+  source: StoredComponentExampleSource;
+
+  @Prop()
+  canvasHeight?: number;
+}
+
+const StoredComponentExampleSchema = SchemaFactory.createForClass(StoredComponentExample);
+
+@Schema({ _id: false })
+export class StoredComponentAnatomyItem {
+  @Prop({ required: true, trim: true })
+  name: string;
+
+  @Prop({ required: true })
+  description: string;
+}
+
+const StoredComponentAnatomyItemSchema = SchemaFactory.createForClass(StoredComponentAnatomyItem);
+
+@Schema({ _id: false })
+export class StoredComponentToken {
+  @Prop({ required: true, trim: true })
+  name: string;
+
+  @Prop({ required: true })
+  defaultValue: string;
+
+  @Prop({ required: true })
+  description: string;
+}
+
+const StoredComponentTokenSchema = SchemaFactory.createForClass(StoredComponentToken);
+
+@Schema({ _id: false })
+export class StoredComponentProvenance {
+  @Prop({ required: true, trim: true })
+  label: string;
+
+  @Prop()
+  url?: string;
+
+  @Prop({ required: true })
+  note: string;
+}
+
+const StoredComponentProvenanceSchema = SchemaFactory.createForClass(StoredComponentProvenance);
+
+@Schema({ _id: false })
+export class StoredComponentContent {
+  @Prop({ enum: ['draft', 'verified'], required: true })
+  status: 'draft' | 'verified';
+
+  @Prop({ required: true })
+  useWhen: string;
+
+  @Prop({ required: true })
+  avoidWhen: string;
+
+  @Prop({ default: [], type: [StoredComponentExampleSchema] })
+  examples: StoredComponentExample[];
+
+  @Prop({ default: [], type: [StoredComponentAnatomyItemSchema] })
+  anatomy: StoredComponentAnatomyItem[];
+
+  @Prop({ default: [], type: [StoredComponentTokenSchema] })
+  tokens: StoredComponentToken[];
+
+  @Prop({ default: [], type: [String] })
+  accessibility: string[];
+
+  @Prop({ required: true })
+  responsive: string;
+
+  @Prop({ default: [], type: [String] })
+  limitations: string[];
+
+  @Prop({ required: true, type: StoredComponentProvenanceSchema })
+  provenance: StoredComponentProvenance;
+}
+
+const StoredComponentContentSchema = SchemaFactory.createForClass(StoredComponentContent);
+
 @Schema({ versionKey: false })
 export class StoredEntry {
   @Prop({ required: true, unique: true, trim: true })
@@ -49,6 +160,9 @@ export class StoredEntry {
 
   @Prop({ default: [], type: [String] })
   dependencies: string[];
+
+  @Prop({ type: StoredComponentContentSchema })
+  component?: StoredComponentContent;
 }
 
 export const StoredEntrySchema = SchemaFactory.createForClass(StoredEntry);

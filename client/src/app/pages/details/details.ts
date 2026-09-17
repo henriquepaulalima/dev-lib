@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, effect, inject, signal, viewChildren } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { catchError, of } from 'rxjs';
+import { ComponentDetails } from '../../components/component-details/component-details';
 import { EntryDetails } from '../../models/library-entry';
 import { LibraryApi } from '../../services/library-api';
 
 @Component({
   selector: 'app-details',
-  imports: [RouterLink],
+  imports: [RouterLink, ComponentDetails],
   templateUrl: './details.html',
   styleUrl: './details.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
