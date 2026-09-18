@@ -1,0 +1,592 @@
+[
+  {
+    "slug": "float-label",
+    "type": "component",
+    "title": "Float label",
+    "summary": "A real label that moves above a populated or focused native input.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "form",
+      "float-label"
+    ],
+    "overview": "A compact floating-label treatment that keeps label and input semantics native.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use float label when its native semantic contract matches the task.",
+      "avoidWhen": "Avoid float label when another native control or navigation pattern communicates the task more clearly.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Basic float label",
+          "description": "A complete float label that is independently copyable in the isolated preview.",
+          "canvasHeight": 320,
+          "source": {
+            "html": "<div class=\"c-float-label-demo\" data-component=\"float-label\"><div class=\"c-float-label\"><input id=\"workspace-label\" type=\"text\" placeholder=\" \" aria-describedby=\"workspace-help\"><label for=\"workspace-label\">Workspace name</label><small id=\"workspace-help\">Shown to collaborators.</small></div></div>",
+            "css": ".c-float-label-demo{--float-label-accent:#b9f474;--float-label-accent-text:#162600;--float-label-border:#dcddd4;--float-label-border-strong:#bfc1b7;--float-label-canvas:#f5f5ef;--float-label-focus:#b9f474;--float-label-font:Inter,ui-sans-serif,system-ui,sans-serif;--float-label-muted:#62665d;--float-label-radius:.55rem;--float-label-surface:#fff;--float-label-text:#171915;align-content:center;background:var(--float-label-canvas);display:grid;font-family:var(--float-label-font);min-height:100%;padding:2rem}.c-float-label{display:grid;gap:.5rem;inline-size:min(100%,28rem);margin:auto;position:relative}.c-float-label input{background:var(--float-label-surface);border:1px solid var(--float-label-border-strong);border-radius:var(--float-label-radius);color:var(--float-label-text);font:inherit;min-height:2.75rem;padding:1.1rem .75rem .45rem;width:100%}.c-float-label label{color:var(--float-label-muted);inset:.85rem .75rem auto;pointer-events:none;position:absolute;transition:transform 160ms ease,background 160ms ease}.c-float-label input:focus+label,.c-float-label input:not(:placeholder-shown)+label{background:var(--float-label-surface);color:var(--float-label-text);padding-inline:.2rem;transform:translateY(-1.2rem) scale(.8)}.c-float-label input:focus-visible{outline:.2rem solid var(--float-label-focus);outline-offset:.15rem}@media(prefers-reduced-motion:reduce){.c-float-label label{transition:none}}",
+            "javascript": "export function createFloatLabel(root) {\n  if (!root.matches('[data-component=\"float-label\"]') || !root.querySelector('input')) throw new Error('createFloatLabel markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"float-label\"]').forEach(createFloatLabel);"
+          }
+        }
+      ],
+      "variants": [],
+      "tokens": [
+        {
+          "name": "--float-label-accent",
+          "defaultValue": "#b9f474",
+          "description": "The accent role for this component."
+        },
+        {
+          "name": "--float-label-accent-text",
+          "defaultValue": "#162600",
+          "description": "The accent-text role for this component."
+        },
+        {
+          "name": "--float-label-border",
+          "defaultValue": "#dcddd4",
+          "description": "The border role for this component."
+        },
+        {
+          "name": "--float-label-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "The border-strong role for this component."
+        },
+        {
+          "name": "--float-label-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "The canvas role for this component."
+        },
+        {
+          "name": "--float-label-focus",
+          "defaultValue": "#b9f474",
+          "description": "The focus role for this component."
+        },
+        {
+          "name": "--float-label-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "The font role for this component."
+        },
+        {
+          "name": "--float-label-muted",
+          "defaultValue": "#62665d",
+          "description": "The muted role for this component."
+        },
+        {
+          "name": "--float-label-radius",
+          "defaultValue": "0.55rem",
+          "description": "The radius role for this component."
+        },
+        {
+          "name": "--float-label-surface",
+          "defaultValue": "#ffffff",
+          "description": "The surface role for this component."
+        },
+        {
+          "name": "--float-label-text",
+          "defaultValue": "#171915",
+          "description": "The text role for this component."
+        }
+      ],
+      "anatomy": [
+        [
+          "Field",
+          "Native input and connected label"
+        ],
+        [
+          "Floating label",
+          "Visual position of the same label"
+        ]
+      ],
+      "accessibility": [
+        "Keep a real label with for/id.",
+        "Do not use placeholder text as the accessible name.",
+        "Disable motion under reduced-motion preferences."
+      ],
+      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
+      "limitations": [
+        "The CSS :placeholder-shown technique requires a current browser."
+      ],
+      "provenance": {
+        "label": "PrimeNG Float label study",
+        "url": "https://primeng.dev/floatlabel",
+        "note": "PrimeNG Float label informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+      }
+    }
+  },
+  {
+    "slug": "textarea",
+    "type": "component",
+    "title": "Textarea",
+    "summary": "A labeled native multiline input with helper text and a synchronized character count.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "form",
+      "textarea"
+    ],
+    "overview": "A native textarea recipe that preserves browser editing, selection, spellcheck, and form behavior.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use textarea when its native semantic contract matches the task.",
+      "avoidWhen": "Avoid textarea when another native control or navigation pattern communicates the task more clearly.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Basic textarea",
+          "description": "A complete textarea that is independently copyable in the isolated preview.",
+          "canvasHeight": 320,
+          "source": {
+            "html": "<div class=\"c-textarea-demo\" data-component=\"textarea\"><div class=\"c-textarea\"><label for=\"support-message\">Message</label><textarea id=\"support-message\" maxlength=\"240\" aria-describedby=\"support-help support-count\" placeholder=\"Describe what happened\"></textarea><div class=\"c-textarea__meta\"><small id=\"support-help\">Include the page and action.</small><small id=\"support-count\" data-textarea-count>0 / 240</small></div></div></div>",
+            "css": ".c-textarea-demo{--textarea-accent:#b9f474;--textarea-accent-text:#162600;--textarea-border:#dcddd4;--textarea-border-strong:#bfc1b7;--textarea-canvas:#f5f5ef;--textarea-focus:#b9f474;--textarea-font:Inter,ui-sans-serif,system-ui,sans-serif;--textarea-muted:#62665d;--textarea-radius:.55rem;--textarea-surface:#fff;--textarea-text:#171915;align-content:center;background:var(--textarea-canvas);display:grid;font-family:var(--textarea-font);min-height:100%;padding:2rem}.c-textarea{display:grid;gap:.5rem;inline-size:min(100%,34rem);margin:auto}.c-textarea textarea{background:var(--textarea-surface);border:1px solid var(--textarea-border-strong);border-radius:var(--textarea-radius);color:var(--textarea-text);font:inherit;line-height:1.5;min-height:8rem;padding:.75rem;resize:vertical;width:100%}.c-textarea textarea:focus-visible{outline:.2rem solid var(--textarea-focus);outline-offset:.15rem}.c-textarea__meta{color:var(--textarea-muted);display:flex;justify-content:space-between}",
+            "javascript": "export function createTextarea(root){const area=root.querySelector('textarea[maxlength]');const count=root.querySelector('[data-textarea-count]');if(!(area instanceof HTMLTextAreaElement)||!(count instanceof HTMLElement))throw new Error('Textarea markup is incomplete.');const update=()=>count.textContent=`${area.value.length} / ${area.maxLength}`;area.addEventListener('input',update);update();return{destroy(){area.removeEventListener('input',update);}}}document.querySelectorAll('[data-component=\"textarea\"]').forEach(createTextarea);"
+          }
+        }
+      ],
+      "variants": [],
+      "tokens": [
+        {
+          "name": "--textarea-accent",
+          "defaultValue": "#b9f474",
+          "description": "The accent role for this component."
+        },
+        {
+          "name": "--textarea-accent-text",
+          "defaultValue": "#162600",
+          "description": "The accent-text role for this component."
+        },
+        {
+          "name": "--textarea-border",
+          "defaultValue": "#dcddd4",
+          "description": "The border role for this component."
+        },
+        {
+          "name": "--textarea-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "The border-strong role for this component."
+        },
+        {
+          "name": "--textarea-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "The canvas role for this component."
+        },
+        {
+          "name": "--textarea-focus",
+          "defaultValue": "#b9f474",
+          "description": "The focus role for this component."
+        },
+        {
+          "name": "--textarea-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "The font role for this component."
+        },
+        {
+          "name": "--textarea-muted",
+          "defaultValue": "#62665d",
+          "description": "The muted role for this component."
+        },
+        {
+          "name": "--textarea-radius",
+          "defaultValue": "0.55rem",
+          "description": "The radius role for this component."
+        },
+        {
+          "name": "--textarea-surface",
+          "defaultValue": "#ffffff",
+          "description": "The surface role for this component."
+        },
+        {
+          "name": "--textarea-text",
+          "defaultValue": "#171915",
+          "description": "The text role for this component."
+        }
+      ],
+      "anatomy": [
+        [
+          "Label",
+          "Persistent visible name"
+        ],
+        [
+          "Textarea",
+          "Native multiline control"
+        ],
+        [
+          "Counter",
+          "Constraint feedback"
+        ]
+      ],
+      "accessibility": [
+        "Connect helper text with aria-describedby.",
+        "Do not use placeholder as the only label.",
+        "Keep the character count outside the accessible name."
+      ],
+      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
+      "limitations": [],
+      "provenance": {
+        "label": "PrimeNG Textarea study",
+        "url": "https://primeng.dev/textarea",
+        "note": "PrimeNG Textarea informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+      }
+    }
+  },
+  {
+    "slug": "slider",
+    "type": "component",
+    "title": "Slider",
+    "summary": "A native range control with a visible synchronized value and bounded steps.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "form",
+      "slider"
+    ],
+    "overview": "A native range input keeps keyboard increments, form behavior, and assistive technology support platform-owned.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use slider when its native semantic contract matches the task.",
+      "avoidWhen": "Avoid slider when another native control or navigation pattern communicates the task more clearly.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Basic slider",
+          "description": "A complete slider that is independently copyable in the isolated preview.",
+          "canvasHeight": 320,
+          "source": {
+            "html": "<div class=\"c-slider-demo\" data-component=\"slider\"><div class=\"c-slider\"><div class=\"c-slider__meta\"><label for=\"confidence\">Confidence</label><output for=\"confidence\" id=\"confidence-output\">65%</output></div><input id=\"confidence\" type=\"range\" min=\"0\" max=\"100\" step=\"5\" value=\"65\" aria-describedby=\"confidence-output\"></div></div>",
+            "css": ".c-slider-demo{--slider-accent:#b9f474;--slider-accent-text:#162600;--slider-border:#dcddd4;--slider-border-strong:#bfc1b7;--slider-canvas:#f5f5ef;--slider-focus:#b9f474;--slider-font:Inter,ui-sans-serif,system-ui,sans-serif;--slider-muted:#62665d;--slider-radius:.55rem;--slider-surface:#fff;--slider-text:#171915;align-content:center;background:var(--slider-canvas);display:grid;font-family:var(--slider-font);min-height:100%;padding:2rem}.c-slider{display:grid;gap:.75rem;inline-size:min(100%,34rem);margin:auto}.c-slider__meta{display:flex;justify-content:space-between}.c-slider input{accent-color:var(--slider-accent);width:100%}.c-slider input:focus-visible{outline:.2rem solid var(--slider-focus);outline-offset:.25rem}.c-slider output{font-weight:650}",
+            "javascript": "export function createSlider(root){const input=root.querySelector('input[type=\"range\"]');const output=root.querySelector('output');if(!(input instanceof HTMLInputElement)||!(output instanceof HTMLOutputElement))throw new Error('Slider markup is incomplete.');const update=()=>{output.textContent=`${input.value}%`;output.value=input.value};input.addEventListener('input',update);update();return{destroy(){input.removeEventListener('input',update);}}}document.querySelectorAll('[data-component=\"slider\"]').forEach(createSlider);"
+          }
+        }
+      ],
+      "variants": [],
+      "tokens": [
+        {
+          "name": "--slider-accent",
+          "defaultValue": "#b9f474",
+          "description": "The accent role for this component."
+        },
+        {
+          "name": "--slider-accent-text",
+          "defaultValue": "#162600",
+          "description": "The accent-text role for this component."
+        },
+        {
+          "name": "--slider-border",
+          "defaultValue": "#dcddd4",
+          "description": "The border role for this component."
+        },
+        {
+          "name": "--slider-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "The border-strong role for this component."
+        },
+        {
+          "name": "--slider-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "The canvas role for this component."
+        },
+        {
+          "name": "--slider-focus",
+          "defaultValue": "#b9f474",
+          "description": "The focus role for this component."
+        },
+        {
+          "name": "--slider-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "The font role for this component."
+        },
+        {
+          "name": "--slider-muted",
+          "defaultValue": "#62665d",
+          "description": "The muted role for this component."
+        },
+        {
+          "name": "--slider-radius",
+          "defaultValue": "0.55rem",
+          "description": "The radius role for this component."
+        },
+        {
+          "name": "--slider-surface",
+          "defaultValue": "#ffffff",
+          "description": "The surface role for this component."
+        },
+        {
+          "name": "--slider-text",
+          "defaultValue": "#171915",
+          "description": "The text role for this component."
+        }
+      ],
+      "anatomy": [
+        [
+          "Label",
+          "Value being adjusted"
+        ],
+        [
+          "Range",
+          "Native bounded control"
+        ],
+        [
+          "Output",
+          "Visible synchronized value"
+        ]
+      ],
+      "accessibility": [
+        "Set min, max, and step.",
+        "Keep a visible value output.",
+        "Use the platform Home, End, and arrow behavior."
+      ],
+      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
+      "limitations": [],
+      "provenance": {
+        "label": "PrimeNG Slider study",
+        "url": "https://primeng.dev/slider",
+        "note": "PrimeNG Slider informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+      }
+    }
+  },
+  {
+    "slug": "date-picker",
+    "type": "component",
+    "title": "Date picker",
+    "summary": "A native date field that delegates calendar UI, parsing, keyboard support, and locale formatting to the platform.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "form",
+      "date-picker"
+    ],
+    "overview": "A trustworthy baseline for one date before a custom calendar is justified.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use date picker when its native semantic contract matches the task.",
+      "avoidWhen": "Avoid date picker when another native control or navigation pattern communicates the task more clearly.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Basic date picker",
+          "description": "A complete date picker that is independently copyable in the isolated preview.",
+          "canvasHeight": 320,
+          "source": {
+            "html": "<div class=\"c-date-picker-demo\" data-component=\"date-picker\"><div class=\"c-date-picker\"><label for=\"due-date\">Due date</label><input id=\"due-date\" type=\"date\" min=\"2026-01-01\" max=\"2026-12-31\" aria-describedby=\"due-help\"><small id=\"due-help\">Choose a date in 2026.</small></div></div>",
+            "css": ".c-date-picker-demo{--date-picker-accent:#b9f474;--date-picker-accent-text:#162600;--date-picker-border:#dcddd4;--date-picker-border-strong:#bfc1b7;--date-picker-canvas:#f5f5ef;--date-picker-focus:#b9f474;--date-picker-font:Inter,ui-sans-serif,system-ui,sans-serif;--date-picker-muted:#62665d;--date-picker-radius:.55rem;--date-picker-surface:#fff;--date-picker-text:#171915;align-content:center;background:var(--date-picker-canvas);display:grid;font-family:var(--date-picker-font);min-height:100%;padding:2rem}.c-date-picker{display:grid;gap:.5rem;inline-size:min(100%,28rem);margin:auto}.c-date-picker input{background:var(--date-picker-surface);border:1px solid var(--date-picker-border-strong);border-radius:var(--date-picker-radius);color:var(--date-picker-text);font:inherit;min-height:2.75rem;padding:.75rem;width:100%}.c-date-picker input:focus-visible{outline:.2rem solid var(--date-picker-focus);outline-offset:.15rem}.c-date-picker small{color:var(--date-picker-muted)}",
+            "javascript": "export function createDatePicker(root) {\n  if (!root.matches('[data-component=\"date-picker\"]') || !root.querySelector('input[type=\"date\"]')) throw new Error('createDatePicker markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"date-picker\"]').forEach(createDatePicker);"
+          }
+        }
+      ],
+      "variants": [],
+      "tokens": [
+        {
+          "name": "--date-picker-accent",
+          "defaultValue": "#b9f474",
+          "description": "The accent role for this component."
+        },
+        {
+          "name": "--date-picker-accent-text",
+          "defaultValue": "#162600",
+          "description": "The accent-text role for this component."
+        },
+        {
+          "name": "--date-picker-border",
+          "defaultValue": "#dcddd4",
+          "description": "The border role for this component."
+        },
+        {
+          "name": "--date-picker-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "The border-strong role for this component."
+        },
+        {
+          "name": "--date-picker-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "The canvas role for this component."
+        },
+        {
+          "name": "--date-picker-focus",
+          "defaultValue": "#b9f474",
+          "description": "The focus role for this component."
+        },
+        {
+          "name": "--date-picker-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "The font role for this component."
+        },
+        {
+          "name": "--date-picker-muted",
+          "defaultValue": "#62665d",
+          "description": "The muted role for this component."
+        },
+        {
+          "name": "--date-picker-radius",
+          "defaultValue": "0.55rem",
+          "description": "The radius role for this component."
+        },
+        {
+          "name": "--date-picker-surface",
+          "defaultValue": "#ffffff",
+          "description": "The surface role for this component."
+        },
+        {
+          "name": "--date-picker-text",
+          "defaultValue": "#171915",
+          "description": "The text role for this component."
+        }
+      ],
+      "anatomy": [
+        [
+          "Label",
+          "Visible name for the date"
+        ],
+        [
+          "Native date input",
+          "Platform picker and serialized value"
+        ],
+        [
+          "Constraint help",
+          "Human-readable bounds"
+        ]
+      ],
+      "accessibility": [
+        "Use input type=date before introducing a custom calendar.",
+        "Keep constraints synchronized with server validation.",
+        "Do not use placeholder dates as labels."
+      ],
+      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
+      "limitations": [],
+      "provenance": {
+        "label": "PrimeNG Date picker study",
+        "url": "https://primeng.dev/datepicker",
+        "note": "PrimeNG Date picker informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+      }
+    }
+  },
+  {
+    "slug": "toggle-button",
+    "type": "component",
+    "title": "Toggle button",
+    "summary": "A native button with aria-pressed for a reversible command-like on/off state.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "form",
+      "toggle-button"
+    ],
+    "overview": "A button toggle is distinct from a switch: it represents a reversible command such as pinning or bookmarking.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use toggle button when its native semantic contract matches the task.",
+      "avoidWhen": "Avoid toggle button when another native control or navigation pattern communicates the task more clearly.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Basic toggle button",
+          "description": "A complete toggle button that is independently copyable in the isolated preview.",
+          "canvasHeight": 320,
+          "source": {
+            "html": "<div class=\"c-toggle-button-demo\" data-component=\"toggle-button\"><button class=\"c-toggle-button\" type=\"button\" aria-pressed=\"false\">Pin to dashboard</button><p class=\"c-toggle-button-demo__status\" data-toggle-status role=\"status\">Pin to dashboard is off.</p></div>",
+            "css": ".c-toggle-button-demo{--toggle-button-accent:#b9f474;--toggle-button-accent-text:#162600;--toggle-button-border:#dcddd4;--toggle-button-border-strong:#bfc1b7;--toggle-button-canvas:#f5f5ef;--toggle-button-focus:#b9f474;--toggle-button-font:Inter,ui-sans-serif,system-ui,sans-serif;--toggle-button-muted:#62665d;--toggle-button-radius:.55rem;--toggle-button-surface:#fff;--toggle-button-text:#171915;align-content:center;background:var(--toggle-button-canvas);display:grid;font-family:var(--toggle-button-font);min-height:100%;padding:2rem}.c-toggle-button{background:var(--toggle-button-surface);border:1px solid var(--toggle-button-border-strong);border-radius:var(--toggle-button-radius);color:var(--toggle-button-text);cursor:pointer;font:inherit;font-weight:650;min-height:2.75rem;padding:.75rem 1rem}.c-toggle-button[aria-pressed=\"true\"]{background:var(--toggle-button-accent);border-color:var(--toggle-button-accent);color:var(--toggle-button-accent-text)}.c-toggle-button:focus-visible{outline:.2rem solid var(--toggle-button-focus);outline-offset:.15rem}.c-toggle-button-demo__status{color:var(--toggle-button-muted)}",
+            "javascript": "export function createToggleButton(root){const button=root.querySelector('[aria-pressed]');const status=root.querySelector('[data-toggle-status]');if(!(button instanceof HTMLButtonElement)||!(status instanceof HTMLElement))throw new Error('Toggle button markup is incomplete.');const toggle=()=>{const pressed=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(pressed));status.textContent=`Pin to dashboard is ${pressed?'on':'off'}.`;};button.addEventListener('click',toggle);return{destroy(){button.removeEventListener('click',toggle);}}}document.querySelectorAll('[data-component=\"toggle-button\"]').forEach(createToggleButton);"
+          }
+        }
+      ],
+      "variants": [],
+      "tokens": [
+        {
+          "name": "--toggle-button-accent",
+          "defaultValue": "#b9f474",
+          "description": "The accent role for this component."
+        },
+        {
+          "name": "--toggle-button-accent-text",
+          "defaultValue": "#162600",
+          "description": "The accent-text role for this component."
+        },
+        {
+          "name": "--toggle-button-border",
+          "defaultValue": "#dcddd4",
+          "description": "The border role for this component."
+        },
+        {
+          "name": "--toggle-button-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "The border-strong role for this component."
+        },
+        {
+          "name": "--toggle-button-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "The canvas role for this component."
+        },
+        {
+          "name": "--toggle-button-focus",
+          "defaultValue": "#b9f474",
+          "description": "The focus role for this component."
+        },
+        {
+          "name": "--toggle-button-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "The font role for this component."
+        },
+        {
+          "name": "--toggle-button-muted",
+          "defaultValue": "#62665d",
+          "description": "The muted role for this component."
+        },
+        {
+          "name": "--toggle-button-radius",
+          "defaultValue": "0.55rem",
+          "description": "The radius role for this component."
+        },
+        {
+          "name": "--toggle-button-surface",
+          "defaultValue": "#ffffff",
+          "description": "The surface role for this component."
+        },
+        {
+          "name": "--toggle-button-text",
+          "defaultValue": "#171915",
+          "description": "The text role for this component."
+        }
+      ],
+      "anatomy": [
+        [
+          "Native button",
+          "Enter and Space action control"
+        ],
+        [
+          "Pressed state",
+          "aria-pressed and visual state"
+        ]
+      ],
+      "accessibility": [
+        "Keep the button label stable while state changes.",
+        "Use aria-pressed for a command toggle.",
+        "Use a switch for an immediate configuration setting."
+      ],
+      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
+      "limitations": [],
+      "provenance": {
+        "label": "PrimeNG Toggle button study",
+        "url": "https://primeng.dev/togglebutton",
+        "note": "PrimeNG Toggle button informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+      }
+    }
+  }
+]
+

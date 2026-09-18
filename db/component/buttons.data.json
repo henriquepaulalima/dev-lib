@@ -1,0 +1,232 @@
+[
+  {
+    "slug": "button",
+    "type": "component",
+    "title": "Button",
+    "summary": "A native action control with clear emphasis, accessible icon and busy states, and responsive action layouts.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "typescript",
+      "a11y",
+      "button",
+      "form",
+      "action"
+    ],
+    "overview": "A dependency-free button recipe built on the native button element. It keeps action semantics, keyboard behavior, focus treatment, and state announcements intact while exposing a compact token surface.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a button to submit data or perform an action in the current interface.",
+      "avoidWhen": "Avoid buttons for navigation to another URL; use an anchor so browser link behavior remains available.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Action hierarchy",
+          "description": "Activate the primary, secondary, and quiet actions and compare them with the native disabled state.",
+          "canvasHeight": 320,
+          "source": {
+            "html": "<div class=\"c-button-demo\" data-component=\"button\">\n  <div class=\"c-button-demo__row\">\n    <button class=\"c-button c-button--primary\" type=\"button\" data-button-action=\"Create project\">Create project</button>\n    <button class=\"c-button\" type=\"button\" data-button-action=\"Preview\">Preview</button>\n    <button class=\"c-button c-button--quiet\" type=\"button\" data-button-action=\"Cancel\">Cancel</button>\n    <button class=\"c-button\" type=\"button\" disabled>Unavailable</button>\n  </div>\n  <p class=\"c-button-demo__status\" data-button-status aria-live=\"polite\">Choose an action.</p>\n</div>",
+            "css": ".c-button-demo {\n  --button-accent: #b9f474;\n  --button-accent-text: #162600;\n  --button-border: #dcddd4;\n  --button-border-strong: #bfc1b7;\n  --button-canvas: #f5f5ef;\n  --button-control-height: 2.75rem;\n  --button-focus: #b9f474;\n  --button-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --button-muted: #62665d;\n  --button-radius: 0.55rem;\n  --button-surface: #ffffff;\n  --button-text: #171915;\n\n  align-content: center;\n  background: var(--button-canvas);\n  color: var(--button-text);\n  display: grid;\n  font-family: var(--button-font);\n  gap: 1rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-button-demo__row {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem;\n}\n\n.c-button {\n  align-items: center;\n  background: var(--button-surface);\n  border: 1px solid var(--button-border-strong);\n  border-radius: var(--button-radius);\n  color: var(--button-text);\n  cursor: pointer;\n  display: inline-flex;\n  font: inherit;\n  font-weight: 650;\n  gap: 0.5rem;\n  justify-content: center;\n  min-height: var(--button-control-height);\n  padding: 0.75rem 1rem;\n  text-decoration: none;\n}\n\n.c-button:hover:not(:disabled) {\n  border-color: var(--button-text);\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid var(--button-focus);\n  outline-offset: 0.15rem;\n}\n\n.c-button:active:not(:disabled) {\n  box-shadow: inset 0 0 0 1px var(--button-text);\n}\n\n.c-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n}\n\n.c-button--primary {\n  background: var(--button-accent);\n  border-color: var(--button-accent);\n  color: var(--button-accent-text);\n}\n\n.c-button--quiet {\n  background: transparent;\n  border-color: transparent;\n}\n\n.c-button svg {\n  block-size: 1.1rem;\n  inline-size: 1.1rem;\n  stroke: currentColor;\n}\n\n.c-button-demo__status {\n  color: var(--button-muted);\n  line-height: 1.6;\n  margin: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-button {\n    scroll-behavior: auto;\n  }\n}",
+            "javascript": "export function createButton(root) {\n  const status = root.querySelector('[data-button-status]');\n\n  if (!(status instanceof HTMLElement)) {\n    throw new Error('Button demo markup is incomplete.');\n  }\n\n  const handleClick = (event) => {\n    const button = event.target.closest('[data-button-action]');\n    if (!(button instanceof HTMLButtonElement) || !root.contains(button)) return;\n\n    const action = button.dataset.buttonAction || button.textContent.trim();\n    status.textContent = `${action} activated.`;\n    root.dispatchEvent(new CustomEvent('button:activate', {\n      detail: { action }\n    }));\n  };\n\n  root.addEventListener('click', handleClick);\n\n  return {\n    destroy() {\n      root.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"button\"]').forEach(createButton);",
+            "typescript": "export interface ButtonController {\n  destroy(): void;\n}\n\nexport function createButton(root: Element): ButtonController {\n  const status = root.querySelector<HTMLElement>('[data-button-status]');\n\n  if (!status) {\n    throw new Error('Button demo markup is incomplete.');\n  }\n\n  const handleClick = (event: Event): void => {\n    const target = event.target;\n    if (!(target instanceof Element)) return;\n\n    const button = target.closest<HTMLButtonElement>('[data-button-action]');\n    if (!button || !root.contains(button)) return;\n\n    const action = button.dataset['buttonAction'] || button.textContent?.trim() || 'Button';\n    status.textContent = `${action} activated.`;\n    root.dispatchEvent(new CustomEvent('button:activate', {\n      detail: { action }\n    }));\n  };\n\n  root.addEventListener('click', handleClick);\n\n  return {\n    destroy(): void {\n      root.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"button\"]').forEach(createButton);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "icon-only",
+          "title": "Icon-only buttons",
+          "summary": "Square action buttons with inline icons, full-size hit areas, and explicit accessible names.",
+          "tags": [
+            "icon",
+            "aria-label",
+            "compact",
+            "toolbar"
+          ],
+          "useWhen": "Use an icon-only button in a familiar, space-constrained toolbar where the symbol has a clear accessible name.",
+          "avoidWhen": "Avoid it when the icon is unfamiliar or the action needs explanation; keep a visible text label instead.",
+          "customization": [
+            "Keep the inline and block size tied to --button-control-height so the hit area never shrinks below the shared minimum.",
+            "Replace the inline SVG while retaining aria-hidden on the artwork and aria-label on the button.",
+            "Use the same primary, secondary, and quiet emphasis classes as text buttons."
+          ],
+          "example": {
+            "slug": "icon-only",
+            "title": "Compact toolbar actions",
+            "description": "Tab through the square controls and activate them to verify that the accessible label also drives the status message.",
+            "canvasHeight": 300,
+            "source": {
+            "html": "<div class=\"c-button-demo\" data-component=\"icon-buttons\">\n  <div class=\"c-button-demo__row\" role=\"group\" aria-label=\"Document actions\">\n    <button class=\"c-button c-button--primary c-button--icon\" type=\"button\" aria-label=\"Add item\" data-icon-action>\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M12 5v14M5 12h14\"/></svg>\n    </button>\n    <button class=\"c-button c-button--icon\" type=\"button\" aria-label=\"Edit item\" data-icon-action>\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m4 20 4.5-1 10-10-3.5-3.5-10 10L4 20Z\"/><path d=\"m13.5 7 3.5 3.5\"/></svg>\n    </button>\n    <button class=\"c-button c-button--quiet c-button--icon\" type=\"button\" aria-label=\"Delete item\" data-icon-action>\n      <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13\"/></svg>\n    </button>\n  </div>\n  <p class=\"c-button-demo__status\" data-button-status aria-live=\"polite\">Choose a grouped action.</p>\n</div>",
+              "css": ".c-button-demo {\n  --button-accent: #b9f474;\n  --button-accent-text: #162600;\n  --button-border: #dcddd4;\n  --button-border-strong: #bfc1b7;\n  --button-canvas: #f5f5ef;\n  --button-control-height: 2.75rem;\n  --button-focus: #b9f474;\n  --button-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --button-muted: #62665d;\n  --button-radius: 0.55rem;\n  --button-surface: #ffffff;\n  --button-text: #171915;\n\n  align-content: center;\n  background: var(--button-canvas);\n  color: var(--button-text);\n  display: grid;\n  font-family: var(--button-font);\n  gap: 1rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-button-demo__row {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem;\n}\n\n.c-button {\n  align-items: center;\n  background: var(--button-surface);\n  border: 1px solid var(--button-border-strong);\n  border-radius: var(--button-radius);\n  color: var(--button-text);\n  cursor: pointer;\n  display: inline-flex;\n  font: inherit;\n  font-weight: 650;\n  gap: 0.5rem;\n  justify-content: center;\n  min-height: var(--button-control-height);\n  padding: 0.75rem 1rem;\n  text-decoration: none;\n}\n\n.c-button:hover:not(:disabled) {\n  border-color: var(--button-text);\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid var(--button-focus);\n  outline-offset: 0.15rem;\n}\n\n.c-button:active:not(:disabled) {\n  box-shadow: inset 0 0 0 1px var(--button-text);\n}\n\n.c-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n}\n\n.c-button--primary {\n  background: var(--button-accent);\n  border-color: var(--button-accent);\n  color: var(--button-accent-text);\n}\n\n.c-button--quiet {\n  background: transparent;\n  border-color: transparent;\n}\n\n.c-button svg {\n  block-size: 1.1rem;\n  inline-size: 1.1rem;\n  stroke: currentColor;\n}\n\n.c-button-demo__status {\n  color: var(--button-muted);\n  line-height: 1.6;\n  margin: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-button {\n    scroll-behavior: auto;\n  }\n}\n\n.c-button--icon {\n  inline-size: var(--button-control-height);\n  padding: 0.5rem;\n}",
+              "javascript": "export function createIconButtons(root) {\n  const status = root.querySelector('[data-button-status]');\n  if (!(status instanceof HTMLElement)) throw new Error('Icon button markup is incomplete.');\n\n  const handleClick = (event) => {\n    const button = event.target.closest('[data-icon-action]');\n    if (!(button instanceof HTMLButtonElement) || !root.contains(button)) return;\n    const action = button.getAttribute('aria-label') || 'Icon action';\n    status.textContent = `${action} activated.`;\n  };\n\n  root.addEventListener('click', handleClick);\n  return { destroy() { root.removeEventListener('click', handleClick); } };\n}\n\ndocument.querySelectorAll('[data-component=\"icon-buttons\"]').forEach(createIconButtons);",
+              "typescript": "export function createIconButtons(root: Element): { destroy(): void } {\n  const status = root.querySelector<HTMLElement>('[data-button-status]');\n  if (!status) throw new Error('Icon button markup is incomplete.');\n\n  const handleClick = (event: Event): void => {\n    const target = event.target;\n    if (!(target instanceof Element)) return;\n    const button = target.closest<HTMLButtonElement>('[data-icon-action]');\n    if (!button || !root.contains(button)) return;\n    const action = button.getAttribute('aria-label') || 'Icon action';\n    status.textContent = `${action} activated.`;\n  };\n\n  root.addEventListener('click', handleClick);\n  return { destroy(): void { root.removeEventListener('click', handleClick); } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"icon-buttons\"]').forEach(createIconButtons);"
+            }
+          }
+        },
+        {
+          "slug": "busy-state",
+          "title": "Busy state",
+          "summary": "A submit-style button that prevents duplicate activation and announces progress without relying on its spinner.",
+          "tags": [
+            "loading",
+            "busy",
+            "async",
+            "aria-live",
+            "disabled"
+          ],
+          "useWhen": "Use a busy state while one bounded action is in progress and duplicate activation would be harmful or confusing.",
+          "avoidWhen": "Avoid indefinite busy buttons for background work; use a persistent status or progress component when completion may take a long time.",
+          "customization": [
+            "Call setBusy(true) before asynchronous work and setBusy(false) in a finally block in production code.",
+            "The spinner is decorative; the changing label and polite live region carry the state accessibly.",
+            "The demo timer only simulates a request and is cleared by destroy()."
+          ],
+          "example": {
+            "slug": "busy-state",
+            "title": "Save with progress feedback",
+            "description": "Start the simulated save and verify that the button becomes disabled, its label changes, and completion is announced.",
+            "canvasHeight": 300,
+            "source": {
+              "html": "<div class=\"c-button-demo\" data-component=\"busy-button\">\n  <div class=\"c-button-demo__row\">\n    <button class=\"c-button c-button--primary\" type=\"button\" data-busy-button aria-busy=\"false\">\n      <span class=\"c-button__spinner\" aria-hidden=\"true\"></span>\n      <span data-button-label>Save changes</span>\n    </button>\n  </div>\n  <p class=\"c-button-demo__status\" data-button-status role=\"status\">Ready to save.</p>\n</div>",
+              "css": ".c-button-demo {\n  --button-accent: #b9f474;\n  --button-accent-text: #162600;\n  --button-border: #dcddd4;\n  --button-border-strong: #bfc1b7;\n  --button-canvas: #f5f5ef;\n  --button-control-height: 2.75rem;\n  --button-focus: #b9f474;\n  --button-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --button-muted: #62665d;\n  --button-radius: 0.55rem;\n  --button-surface: #ffffff;\n  --button-text: #171915;\n\n  align-content: center;\n  background: var(--button-canvas);\n  color: var(--button-text);\n  display: grid;\n  font-family: var(--button-font);\n  gap: 1rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-button-demo__row {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem;\n}\n\n.c-button {\n  align-items: center;\n  background: var(--button-surface);\n  border: 1px solid var(--button-border-strong);\n  border-radius: var(--button-radius);\n  color: var(--button-text);\n  cursor: pointer;\n  display: inline-flex;\n  font: inherit;\n  font-weight: 650;\n  gap: 0.5rem;\n  justify-content: center;\n  min-height: var(--button-control-height);\n  padding: 0.75rem 1rem;\n  text-decoration: none;\n}\n\n.c-button:hover:not(:disabled) {\n  border-color: var(--button-text);\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid var(--button-focus);\n  outline-offset: 0.15rem;\n}\n\n.c-button:active:not(:disabled) {\n  box-shadow: inset 0 0 0 1px var(--button-text);\n}\n\n.c-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n}\n\n.c-button--primary {\n  background: var(--button-accent);\n  border-color: var(--button-accent);\n  color: var(--button-accent-text);\n}\n\n.c-button--quiet {\n  background: transparent;\n  border-color: transparent;\n}\n\n.c-button svg {\n  block-size: 1.1rem;\n  inline-size: 1.1rem;\n  stroke: currentColor;\n}\n\n.c-button-demo__status {\n  color: var(--button-muted);\n  line-height: 1.6;\n  margin: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-button {\n    scroll-behavior: auto;\n  }\n}\n\n.c-button__spinner {\n  animation: button-spin 700ms linear infinite;\n  block-size: 1rem;\n  border: 0.15rem solid currentColor;\n  border-inline-end-color: transparent;\n  border-radius: 50%;\n  display: none;\n  inline-size: 1rem;\n}\n\n.c-button[aria-busy=\"true\"] .c-button__spinner {\n  display: block;\n}\n\n@keyframes button-spin {\n  to { transform: rotate(1turn); }\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-button__spinner {\n    animation: none;\n    border-inline-end-color: currentColor;\n  }\n}",
+              "javascript": "export function createBusyButton(root) {\n  const button = root.querySelector('[data-busy-button]');\n  const label = root.querySelector('[data-button-label]');\n  const status = root.querySelector('[data-button-status]');\n\n  if (!(button instanceof HTMLButtonElement) || !(label instanceof HTMLElement) || !(status instanceof HTMLElement)) {\n    throw new Error('Busy button markup is incomplete.');\n  }\n\n  let timer = 0;\n\n  const setBusy = (busy) => {\n    button.disabled = busy;\n    button.setAttribute('aria-busy', String(busy));\n    label.textContent = busy ? 'Saving…' : 'Save changes';\n    status.textContent = busy ? 'Saving changes.' : 'Changes saved.';\n  };\n\n  const handleClick = () => {\n    setBusy(true);\n    timer = window.setTimeout(() => setBusy(false), 1200);\n  };\n\n  button.addEventListener('click', handleClick);\n\n  return {\n    setBusy,\n    destroy() {\n      window.clearTimeout(timer);\n      button.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"busy-button\"]').forEach(createBusyButton);",
+              "typescript": "export interface BusyButtonController {\n  setBusy(busy: boolean): void;\n  destroy(): void;\n}\n\nexport function createBusyButton(root: Element): BusyButtonController {\n  const button = root.querySelector<HTMLButtonElement>('[data-busy-button]');\n  const label = root.querySelector<HTMLElement>('[data-button-label]');\n  const status = root.querySelector<HTMLElement>('[data-button-status]');\n\n  if (!button || !label || !status) {\n    throw new Error('Busy button markup is incomplete.');\n  }\n\n  let timer = 0;\n\n  const setBusy = (busy: boolean): void => {\n    button.disabled = busy;\n    button.setAttribute('aria-busy', String(busy));\n    label.textContent = busy ? 'Saving…' : 'Save changes';\n    status.textContent = busy ? 'Saving changes.' : 'Changes saved.';\n  };\n\n  const handleClick = (): void => {\n    setBusy(true);\n    timer = window.setTimeout(() => setBusy(false), 1200);\n  };\n\n  button.addEventListener('click', handleClick);\n\n  return {\n    setBusy,\n    destroy(): void {\n      window.clearTimeout(timer);\n      button.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"busy-button\"]').forEach(createBusyButton);"
+            }
+          }
+        },
+        {
+          "slug": "responsive-actions",
+          "title": "Responsive action layout",
+          "summary": "A dialog-style action row that becomes a full-width vertical stack on narrow screens.",
+          "tags": [
+            "responsive",
+            "full-width",
+            "actions",
+            "mobile"
+          ],
+          "useWhen": "Use a responsive action group when adjacent decisions fit horizontally on larger screens but need larger targets and clearer order on mobile.",
+          "avoidWhen": "Avoid treating unrelated page actions as one group; keep each control near the content it affects.",
+          "customization": [
+            "Change only the 32rem layout threshold when the labels no longer fit without wrapping.",
+            "column-reverse keeps the primary action visually first while preserving the safer secondary action first in DOM order.",
+            "Every button retains the shared 2.75rem minimum height and focus outline."
+          ],
+          "example": {
+            "slug": "responsive-actions",
+            "title": "Stacked mobile actions",
+            "description": "Switch the preview between desktop and mobile widths to see the actions move from a row to a full-width stack.",
+            "canvasHeight": 330,
+            "source": {
+              "html": "<div class=\"c-button-demo\" data-component=\"responsive-buttons\">\n  <div class=\"c-button-demo__actions\">\n    <button class=\"c-button\" type=\"button\" data-button-action=\"Keep editing\">Keep editing</button>\n    <button class=\"c-button c-button--primary\" type=\"button\" data-button-action=\"Publish changes\">Publish changes</button>\n  </div>\n  <p class=\"c-button-demo__status\" data-button-status aria-live=\"polite\">Choose how to continue.</p>\n</div>",
+              "css": ".c-button-demo {\n  --button-accent: #b9f474;\n  --button-accent-text: #162600;\n  --button-border: #dcddd4;\n  --button-border-strong: #bfc1b7;\n  --button-canvas: #f5f5ef;\n  --button-control-height: 2.75rem;\n  --button-focus: #b9f474;\n  --button-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --button-muted: #62665d;\n  --button-radius: 0.55rem;\n  --button-surface: #ffffff;\n  --button-text: #171915;\n\n  align-content: center;\n  background: var(--button-canvas);\n  color: var(--button-text);\n  display: grid;\n  font-family: var(--button-font);\n  gap: 1rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-button-demo__row {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem;\n}\n\n.c-button {\n  align-items: center;\n  background: var(--button-surface);\n  border: 1px solid var(--button-border-strong);\n  border-radius: var(--button-radius);\n  color: var(--button-text);\n  cursor: pointer;\n  display: inline-flex;\n  font: inherit;\n  font-weight: 650;\n  gap: 0.5rem;\n  justify-content: center;\n  min-height: var(--button-control-height);\n  padding: 0.75rem 1rem;\n  text-decoration: none;\n}\n\n.c-button:hover:not(:disabled) {\n  border-color: var(--button-text);\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid var(--button-focus);\n  outline-offset: 0.15rem;\n}\n\n.c-button:active:not(:disabled) {\n  box-shadow: inset 0 0 0 1px var(--button-text);\n}\n\n.c-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n}\n\n.c-button--primary {\n  background: var(--button-accent);\n  border-color: var(--button-accent);\n  color: var(--button-accent-text);\n}\n\n.c-button--quiet {\n  background: transparent;\n  border-color: transparent;\n}\n\n.c-button svg {\n  block-size: 1.1rem;\n  inline-size: 1.1rem;\n  stroke: currentColor;\n}\n\n.c-button-demo__status {\n  color: var(--button-muted);\n  line-height: 1.6;\n  margin: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-button {\n    scroll-behavior: auto;\n  }\n}\n\n.c-button-demo__actions {\n  display: flex;\n  gap: 0.75rem;\n  justify-content: flex-end;\n}\n\n@media (max-width: 32rem) {\n  .c-button-demo__actions {\n    align-items: stretch;\n    flex-direction: column-reverse;\n  }\n\n  .c-button-demo__actions .c-button {\n    inline-size: 100%;\n  }\n}",
+              "javascript": "export function createButton(root) {\n  const status = root.querySelector('[data-button-status]');\n\n  if (!(status instanceof HTMLElement)) {\n    throw new Error('Button demo markup is incomplete.');\n  }\n\n  const handleClick = (event) => {\n    const button = event.target.closest('[data-button-action]');\n    if (!(button instanceof HTMLButtonElement) || !root.contains(button)) return;\n\n    const action = button.dataset.buttonAction || button.textContent.trim();\n    status.textContent = `${action} activated.`;\n    root.dispatchEvent(new CustomEvent('button:activate', {\n      detail: { action }\n    }));\n  };\n\n  root.addEventListener('click', handleClick);\n\n  return {\n    destroy() {\n      root.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"responsive-buttons\"]').forEach(createButton);",
+              "typescript": "export interface ButtonController {\n  destroy(): void;\n}\n\nexport function createButton(root: Element): ButtonController {\n  const status = root.querySelector<HTMLElement>('[data-button-status]');\n\n  if (!status) {\n    throw new Error('Button demo markup is incomplete.');\n  }\n\n  const handleClick = (event: Event): void => {\n    const target = event.target;\n    if (!(target instanceof Element)) return;\n\n    const button = target.closest<HTMLButtonElement>('[data-button-action]');\n    if (!button || !root.contains(button)) return;\n\n    const action = button.dataset['buttonAction'] || button.textContent?.trim() || 'Button';\n    status.textContent = `${action} activated.`;\n    root.dispatchEvent(new CustomEvent('button:activate', {\n      detail: { action }\n    }));\n  };\n\n  root.addEventListener('click', handleClick);\n\n  return {\n    destroy(): void {\n      root.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"responsive-buttons\"]').forEach(createButton);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Native control",
+          "description": "A button element that supplies action semantics and Enter/Space activation."
+        },
+        {
+          "name": "Label",
+          "description": "Visible action-oriented text, or an accessible name when the control contains only an icon."
+        },
+        {
+          "name": "Optional icon",
+          "description": "Decorative inline artwork that reinforces the label without replacing it."
+        },
+        {
+          "name": "State feedback",
+          "description": "Disabled, busy, focus, and pressed styling that remains distinguishable without color alone."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--button-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary action background and focus-support color."
+        },
+        {
+          "name": "--button-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text and icon color on primary actions."
+        },
+        {
+          "name": "--button-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet structural borders."
+        },
+        {
+          "name": "--button-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Default interactive control border."
+        },
+        {
+          "name": "--button-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--button-control-height",
+          "defaultValue": "2.75rem",
+          "description": "Minimum button height and icon-button width."
+        },
+        {
+          "name": "--button-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--button-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Button and demo font stack."
+        },
+        {
+          "name": "--button-muted",
+          "defaultValue": "#62665d",
+          "description": "Supporting status text."
+        },
+        {
+          "name": "--button-radius",
+          "defaultValue": "0.55rem",
+          "description": "Standard button corner radius."
+        },
+        {
+          "name": "--button-surface",
+          "defaultValue": "#ffffff",
+          "description": "Secondary button background."
+        },
+        {
+          "name": "--button-text",
+          "defaultValue": "#171915",
+          "description": "Default text and icon color."
+        }
+      ],
+      "accessibility": [
+        "Use a native button for actions and an anchor with href for navigation.",
+        "Always set type=\"button\" unless the control intentionally submits or resets its form.",
+        "Give icon-only controls a concise aria-label or aria-labelledby value.",
+        "Keep visible focus, a minimum 2.75rem target, and text that communicates destructive or consequential actions directly.",
+        "Expose asynchronous work with aria-busy and a live text update; never rely on animation alone.",
+        "Use the native disabled attribute only when the control should leave the tab order."
+      ],
+      "responsive": "Buttons wrap without clipping. The responsive-actions variant becomes a full-width vertical stack below 32rem while preserving a logical DOM and keyboard order.",
+      "limitations": [
+        "The basic recipe reports activation only; application-specific commands, form submission, and error handling remain the consumer's responsibility.",
+        "Inline SVG icons are intentionally simple and should be replaced with product-approved artwork while preserving their accessible naming contract.",
+        "A toggle button is a distinct stateful component and is intentionally not modeled as a visual button variant."
+      ],
+      "provenance": {
+        "label": "Cross-library button behavior study",
+        "url": "https://primeng.dev/button",
+        "note": "PrimeNG Button, Bootstrap 5.3 Buttons (https://getbootstrap.com/docs/5.3/components/buttons/), and Angular Material Button (https://material.angular.dev/components/button/overview) informed the feature inventory. This is original, dependency-free HTML, CSS, and JavaScript; no library source or branded styling is reproduced."
+      }
+    }
+  }
+]

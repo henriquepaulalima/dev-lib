@@ -1,0 +1,1048 @@
+[
+  {
+    "slug": "alert",
+    "type": "component",
+    "title": "Alert",
+    "summary": "Inline feedback with explicit severity text, appropriate live-region behavior, dismissal, and form-error guidance.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "alert",
+      "message",
+      "feedback",
+      "validation"
+    ],
+    "overview": "A dependency-free inline feedback pattern that separates passive status from urgent alerts and never relies on color alone.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use an alert to explain the result of an action, a system condition, or a problem that needs attention near the affected content.",
+      "avoidWhen": "Avoid alerts for neutral helper text, confirmations that need a blocking decision, or transient global notifications better handled by a toast.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Feedback severities",
+          "description": "Compare informational, success, warning, and error messages with visible labels and semantic live-region roles.",
+          "canvasHeight": 520,
+          "source": {
+            "html": "<div class=\"c-alert-demo\" data-component=\"alert\">\n  <div class=\"c-alert c-alert--info\" role=\"status\"><span class=\"c-alert__icon\" aria-hidden=\"true\">i</span><div class=\"c-alert__content\"><strong>Information</strong><p>Your workspace will be archived after 30 days of inactivity.</p></div></div>\n  <div class=\"c-alert c-alert--success\" role=\"status\"><span class=\"c-alert__icon\" aria-hidden=\"true\">✓</span><div class=\"c-alert__content\"><strong>Changes saved</strong><p>Your notification preferences are up to date.</p></div></div>\n  <div class=\"c-alert c-alert--warning\" role=\"status\"><span class=\"c-alert__icon\" aria-hidden=\"true\">!</span><div class=\"c-alert__content\"><strong>Storage almost full</strong><p>Remove unused files before the next upload.</p></div></div>\n  <div class=\"c-alert c-alert--danger\" role=\"alert\"><span class=\"c-alert__icon\" aria-hidden=\"true\">×</span><div class=\"c-alert__content\"><strong>Upload failed</strong><p>The file is larger than the 10 MB limit.</p></div></div>\n</div>",
+            "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }",
+            "javascript": "export function createAlert(root) {\n  if (!root.matches('[data-component=\"alert\"]') || !root.querySelector('.c-alert')) {\n    throw new Error('createAlert markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"alert\"]').forEach(createAlert);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "dismissible",
+          "title": "Dismissible alert",
+          "summary": "A persistent inline message with a labeled close control and a programmatic close method.",
+          "tags": [
+            "dismissible",
+            "close",
+            "persistent"
+          ],
+          "useWhen": "Use dismissal when a noncritical message would otherwise occupy useful space after it has been read.",
+          "avoidWhen": "Do not let people dismiss validation errors or safety information that remains unresolved.",
+          "customization": [
+            "Keep the close control a native button with an explicit accessible name.",
+            "The close() method and button use the same path and emit alert:close.",
+            "Hidden removes the dismissed message from both the layout and accessibility tree."
+          ],
+          "example": {
+            "slug": "dismissible",
+            "title": "Dismiss a warning",
+            "description": "Close the warning with its labeled button and listen for alert:close when integrating it.",
+            "canvasHeight": 300,
+            "source": {
+              "html": "<div class=\"c-alert-demo\" data-component=\"dismissible-alert\">\n  <div class=\"c-alert c-alert--warning c-alert--dismissible\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">!</span>\n    <div class=\"c-alert__content\"><strong>Maintenance scheduled</strong><p>Editing will be unavailable from 02:00 to 02:15 UTC.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss maintenance notice\" data-alert-close>×</button>\n  </div>\n</div>",
+              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert--dismissible { grid-template-columns: auto 1fr auto; }\n.c-alert__close { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 0.55rem; color: currentColor; cursor: pointer; display: inline-flex; font: inherit; font-size: 1.25rem; height: 2.75rem; justify-content: center; width: 2.75rem; }\n.c-alert__close:hover { border-color: currentColor; }",
+              "javascript": "export function createDismissibleAlert(root) {\n  const alert = root.querySelector('[data-alert]');\n  const closeButton = root.querySelector('[data-alert-close]');\n  if (!(alert instanceof HTMLElement) || !(closeButton instanceof HTMLButtonElement)) {\n    throw new Error('Dismissible alert markup is incomplete.');\n  }\n\n  const close = () => {\n    alert.hidden = true;\n    root.dispatchEvent(new CustomEvent('alert:close'));\n  };\n\n  closeButton.addEventListener('click', close);\n  return {\n    close,\n    destroy() { closeButton.removeEventListener('click', close); }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"dismissible-alert\"]').forEach(createDismissibleAlert);"
+            }
+          }
+        },
+        {
+          "slug": "form-error",
+          "title": "Form error summary",
+          "summary": "An assertive error summary that links directly to invalid fields and complements inline error text.",
+          "tags": [
+            "form",
+            "validation",
+            "error-summary",
+            "aria-describedby"
+          ],
+          "useWhen": "Use an error summary after a failed form submission when several fields may need correction.",
+          "avoidWhen": "Avoid announcing validation assertively on every keystroke; validate on blur or submission and preserve user input.",
+          "customization": [
+            "Move focus to the summary only after submission when doing so helps users recover.",
+            "Each summary link targets the invalid field, which also references its inline error with aria-describedby.",
+            "Keep aria-invalid synchronized with the real validation state."
+          ],
+          "example": {
+            "slug": "form-error",
+            "title": "Validation summary",
+            "description": "Follow the error link to the invalid email field and inspect the linked inline explanation.",
+            "canvasHeight": 390,
+            "source": {
+              "html": "<div class=\"c-alert-demo\" data-component=\"form-error-alert\">\n  <div class=\"c-alert c-alert--danger\" role=\"alert\" tabindex=\"-1\">\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">×</span>\n    <div class=\"c-alert__content\"><strong>Fix one field</strong><p><a href=\"#account-email\">Email must include an @ sign.</a></p></div>\n  </div>\n  <label for=\"account-email\">Email address</label>\n  <input id=\"account-email\" type=\"email\" value=\"invalid.email\" aria-invalid=\"true\" aria-describedby=\"account-email-error\">\n  <p id=\"account-email-error\">Enter an address such as name@example.com.</p>\n</div>",
+              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert-demo label { font-weight: 650; }\n.c-alert-demo input { background: var(--alert-surface); border: 1px solid var(--alert-danger-text); border-radius: 0.55rem; color: var(--alert-text); font: inherit; min-height: 2.75rem; padding: 0.75rem; }\n.c-alert-demo input:focus-visible, .c-alert a:focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n.c-alert-demo > p { color: var(--alert-danger-text); margin: -0.25rem 0 0; }\n.c-alert a { color: inherit; font-weight: 650; }",
+              "javascript": "export function createFormErrorAlert(root) {\n  if (!root.matches('[data-component=\"form-error-alert\"]') || !root.querySelector('input[aria-invalid]')) {\n    throw new Error('createFormErrorAlert markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"form-error-alert\"]').forEach(createFormErrorAlert);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Container",
+          "description": "A nearby feedback surface with a status or alert role chosen by urgency."
+        },
+        {
+          "name": "Severity cue",
+          "description": "A text label and symbol that communicate meaning without depending on color."
+        },
+        {
+          "name": "Message",
+          "description": "Concise context and a recovery step when action is required."
+        },
+        {
+          "name": "Optional close",
+          "description": "A labeled native button for dismissible, noncritical messages."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--alert-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--alert-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--alert-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--alert-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Emphasized control borders."
+        },
+        {
+          "name": "--alert-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--alert-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--alert-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--alert-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--alert-radius",
+          "defaultValue": "0.75rem",
+          "description": "Nested surface radius."
+        },
+        {
+          "name": "--alert-surface",
+          "defaultValue": "#ffffff",
+          "description": "Primary component surface."
+        },
+        {
+          "name": "--alert-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        },
+        {
+          "name": "--alert-info-bg",
+          "defaultValue": "#eef5ff",
+          "description": "Information message surface."
+        },
+        {
+          "name": "--alert-info-text",
+          "defaultValue": "#174a7c",
+          "description": "Information message text and icon."
+        },
+        {
+          "name": "--alert-success-bg",
+          "defaultValue": "#edf8e5",
+          "description": "Success message surface."
+        },
+        {
+          "name": "--alert-success-text",
+          "defaultValue": "#245c16",
+          "description": "Success message text and icon."
+        },
+        {
+          "name": "--alert-warning-bg",
+          "defaultValue": "#fff5d9",
+          "description": "Warning message surface."
+        },
+        {
+          "name": "--alert-warning-text",
+          "defaultValue": "#6b4b00",
+          "description": "Warning message text and icon."
+        },
+        {
+          "name": "--alert-danger-bg",
+          "defaultValue": "#fff0ee",
+          "description": "Error message surface."
+        },
+        {
+          "name": "--alert-danger-text",
+          "defaultValue": "#8f251e",
+          "description": "Error message text and icon."
+        }
+      ],
+      "accessibility": [
+        "Use role=status for polite updates and role=alert only for urgent, newly introduced failures.",
+        "Include a visible severity label or meaningful wording; color and icons are supplementary.",
+        "Label close controls by the specific message they dismiss.",
+        "Link form summaries to fields and keep inline errors connected with aria-describedby.",
+        "Do not move focus for passive status updates."
+      ],
+      "responsive": "Alerts fill their container and allow long text to wrap. Preview padding tightens below 32rem without shrinking controls.",
+      "limitations": [
+        "Static messages already present at page load may not be announced as live updates in every screen reader.",
+        "The recipe does not manage a global message queue; use a toast region for transient application-wide notifications."
+      ],
+      "provenance": {
+        "label": "Cross-library message behavior study",
+        "url": "https://primeng.dev/message",
+        "note": "PrimeNG Message and Bootstrap Alerts informed the behavior inventory. This is original native markup, styling, and JavaScript with no copied library source."
+      }
+    }
+  },
+  {
+    "slug": "badge",
+    "type": "component",
+    "title": "Badge",
+    "summary": "A compact, noninteractive status or count label with inline, overlay, and dot-status patterns.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "badge",
+      "status",
+      "count"
+    ],
+    "overview": "A dependency-free badge for short metadata. It stays noninteractive, pairs color with text, and adds live-region behavior only when a changing value genuinely needs announcement.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a badge to annotate another label or control with a short status, category, or count.",
+      "avoidWhen": "Avoid badges for actions, long phrases, or critical feedback that needs an alert and recovery guidance.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Inline statuses",
+          "description": "Compare neutral and emphasized status labels that communicate their meaning in text.",
+          "canvasHeight": 260,
+          "source": {
+            "html": "<div class=\"c-badge-demo\" data-component=\"badge\"><div class=\"c-badge-demo__row\"><span class=\"c-badge c-badge--accent\">Approved</span><span class=\"c-badge\"><span class=\"c-badge__dot\" aria-hidden=\"true\"></span>In review</span><span class=\"c-badge c-badge--muted\">Archived</span></div></div>",
+            "css": ".c-badge-demo {\n  --badge-accent: #b9f474; --badge-accent-text: #162600; --badge-border: #dcddd4; --badge-border-strong: #bfc1b7; --badge-canvas: #f5f5ef; --badge-focus: #b9f474; --badge-font: Inter, ui-sans-serif, system-ui, sans-serif; --badge-muted: #62665d; --badge-radius: 0.75rem; --badge-surface: #ffffff; --badge-text: #171915;\n  align-content: center; background: var(--badge-canvas); color: var(--badge-text); display: grid; font-family: var(--badge-font); gap: 1rem; min-height: 100%; padding: 2rem;\n}\n.c-badge-demo__row { align-items: center; display: flex; flex-wrap: wrap; gap: 0.75rem; }\n.c-badge { align-items: center; background: var(--badge-surface); border: 1px solid var(--badge-border); border-radius: 999px; color: var(--badge-text); display: inline-flex; font-size: 0.75rem; font-weight: 650; gap: 0.4rem; line-height: 1; min-height: 1.75rem; padding: 0.35rem 0.65rem; }\n.c-badge--accent { background: var(--badge-accent); border-color: var(--badge-accent); color: var(--badge-accent-text); }\n.c-badge--muted { color: var(--badge-muted); }\n.c-badge__dot { background: currentColor; border-radius: 50%; height: 0.5rem; width: 0.5rem; }\n@media (max-width: 32rem) { .c-badge-demo { padding: 1rem; } }",
+            "javascript": "export function createBadge(root) {\n  if (!root.matches('[data-component=\"badge\"]') || !root.querySelector('.c-badge')) {\n    throw new Error('createBadge markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"badge\"]').forEach(createBadge);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "overlay-count",
+          "title": "Overlay count",
+          "summary": "A numeric badge positioned on a related control with a complete accessible name on the control.",
+          "tags": [
+            "overlay",
+            "count",
+            "notifications"
+          ],
+          "useWhen": "Use an overlay count when the number directly annotates a familiar control such as an inbox.",
+          "avoidWhen": "Avoid announcing rapidly changing counts unless each change requires immediate attention.",
+          "customization": [
+            "The button accessible name contains the count, so the visual badge can be aria-hidden.",
+            "Keep the count short; use 99+ or a similarly understood cap for large values.",
+            "Reserve space around the target so the overlay is not clipped."
+          ],
+          "example": {
+            "slug": "overlay-count",
+            "title": "Inbox count",
+            "description": "Focus the inbox control and confirm that its accessible name includes the unread count.",
+            "canvasHeight": 260,
+            "source": {
+              "html": "<div class=\"c-badge-demo\" data-component=\"overlay-badge\"><div class=\"c-badge-demo__row\"><button class=\"c-badge-target\" type=\"button\" aria-label=\"Inbox, 8 unread messages\">Inbox<span class=\"c-badge c-badge--accent c-badge--overlay\" aria-hidden=\"true\">8</span></button></div></div>",
+              "css": ".c-badge-demo {\n  --badge-accent: #b9f474; --badge-accent-text: #162600; --badge-border: #dcddd4; --badge-border-strong: #bfc1b7; --badge-canvas: #f5f5ef; --badge-focus: #b9f474; --badge-font: Inter, ui-sans-serif, system-ui, sans-serif; --badge-muted: #62665d; --badge-radius: 0.75rem; --badge-surface: #ffffff; --badge-text: #171915;\n  align-content: center; background: var(--badge-canvas); color: var(--badge-text); display: grid; font-family: var(--badge-font); gap: 1rem; min-height: 100%; padding: 2rem;\n}\n.c-badge-demo__row { align-items: center; display: flex; flex-wrap: wrap; gap: 0.75rem; }\n.c-badge { align-items: center; background: var(--badge-surface); border: 1px solid var(--badge-border); border-radius: 999px; color: var(--badge-text); display: inline-flex; font-size: 0.75rem; font-weight: 650; gap: 0.4rem; line-height: 1; min-height: 1.75rem; padding: 0.35rem 0.65rem; }\n.c-badge--accent { background: var(--badge-accent); border-color: var(--badge-accent); color: var(--badge-accent-text); }\n.c-badge--muted { color: var(--badge-muted); }\n.c-badge__dot { background: currentColor; border-radius: 50%; height: 0.5rem; width: 0.5rem; }\n@media (max-width: 32rem) { .c-badge-demo { padding: 1rem; } }\n.c-badge-target { background: var(--badge-surface); border: 1px solid var(--badge-border-strong); border-radius: 0.55rem; color: var(--badge-text); font: inherit; font-weight: 650; min-height: 2.75rem; padding: 0.75rem 1rem; position: relative; }\n.c-badge-target:focus-visible { outline: 0.2rem solid var(--badge-focus); outline-offset: 0.15rem; }\n.c-badge--overlay { inset: -0.65rem -0.65rem auto auto; min-width: 1.75rem; padding-inline: 0.4rem; position: absolute; }",
+              "javascript": "export function createOverlayBadge(root) {\n  if (!root.matches('[data-component=\"overlay-badge\"]') || !root.querySelector('.c-badge--overlay')) {\n    throw new Error('createOverlayBadge markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"overlay-badge\"]').forEach(createOverlayBadge);"
+            }
+          }
+        },
+        {
+          "slug": "presence",
+          "title": "Presence badge",
+          "summary": "A dot-and-text status label that remains understandable without color.",
+          "tags": [
+            "presence",
+            "status",
+            "dot",
+            "text"
+          ],
+          "useWhen": "Use presence badges for a small set of stable availability states next to a person or service.",
+          "avoidWhen": "Avoid implying exact availability from stale or unreliable presence data.",
+          "customization": [
+            "Always retain the visible state text beside the dot.",
+            "Update dynamic presence politely only when the change matters in the current task.",
+            "Do not make the badge itself focusable unless it performs an action, in which case use a separate button."
+          ],
+          "example": {
+            "slug": "presence",
+            "title": "Service presence",
+            "description": "Read the explicit state labels; the dots are decorative reinforcements only.",
+            "canvasHeight": 260,
+            "source": {
+              "html": "<div class=\"c-badge-demo\" data-component=\"presence-badge\"><div class=\"c-badge-demo__row\"><span class=\"c-badge c-badge--accent\"><span class=\"c-badge__dot\" aria-hidden=\"true\"></span>Online</span><span class=\"c-badge\"><span class=\"c-badge__dot\" aria-hidden=\"true\"></span>Away</span><span class=\"c-badge c-badge--muted\"><span class=\"c-badge__dot\" aria-hidden=\"true\"></span>Offline</span></div></div>",
+              "css": ".c-badge-demo {\n  --badge-accent: #b9f474; --badge-accent-text: #162600; --badge-border: #dcddd4; --badge-border-strong: #bfc1b7; --badge-canvas: #f5f5ef; --badge-focus: #b9f474; --badge-font: Inter, ui-sans-serif, system-ui, sans-serif; --badge-muted: #62665d; --badge-radius: 0.75rem; --badge-surface: #ffffff; --badge-text: #171915;\n  align-content: center; background: var(--badge-canvas); color: var(--badge-text); display: grid; font-family: var(--badge-font); gap: 1rem; min-height: 100%; padding: 2rem;\n}\n.c-badge-demo__row { align-items: center; display: flex; flex-wrap: wrap; gap: 0.75rem; }\n.c-badge { align-items: center; background: var(--badge-surface); border: 1px solid var(--badge-border); border-radius: 999px; color: var(--badge-text); display: inline-flex; font-size: 0.75rem; font-weight: 650; gap: 0.4rem; line-height: 1; min-height: 1.75rem; padding: 0.35rem 0.65rem; }\n.c-badge--accent { background: var(--badge-accent); border-color: var(--badge-accent); color: var(--badge-accent-text); }\n.c-badge--muted { color: var(--badge-muted); }\n.c-badge__dot { background: currentColor; border-radius: 50%; height: 0.5rem; width: 0.5rem; }\n@media (max-width: 32rem) { .c-badge-demo { padding: 1rem; } }",
+              "javascript": "export function createPresenceBadge(root) {\n  if (!root.matches('[data-component=\"presence-badge\"]') || !root.querySelector('.c-badge__dot')) {\n    throw new Error('createPresenceBadge markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"presence-badge\"]').forEach(createPresenceBadge);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "description": "One or two words that state the category or status."
+        },
+        {
+          "name": "Optional indicator",
+          "description": "A decorative dot or number that reinforces the text."
+        },
+        {
+          "name": "Related target",
+          "description": "The nearby control or content the badge annotates."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--badge-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--badge-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--badge-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--badge-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Emphasized control borders."
+        },
+        {
+          "name": "--badge-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--badge-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--badge-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--badge-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--badge-radius",
+          "defaultValue": "0.75rem",
+          "description": "Nested surface radius."
+        },
+        {
+          "name": "--badge-surface",
+          "defaultValue": "#ffffff",
+          "description": "Primary component surface."
+        },
+        {
+          "name": "--badge-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Keep badges noninteractive and out of the tab order.",
+        "State status in visible text instead of color alone.",
+        "When overlaying a control, include the count or state in the control's accessible name.",
+        "Use aria-live sparingly for dynamic values and avoid announcing decorative changes."
+      ],
+      "responsive": "Inline badges wrap as a group and keep their content on one line; overlay badges remain anchored to their target.",
+      "limitations": [
+        "Badges intentionally do not truncate long labels; authors should choose shorter language.",
+        "The overlay recipe assumes its target is not inside an overflow-clipped ancestor."
+      ],
+      "provenance": {
+        "label": "Cross-library badge behavior study",
+        "url": "https://primeng.dev/badge",
+        "note": "PrimeNG Badge, Bootstrap Badges, and Angular Material Badge informed the feature inventory. The implementation and styling are original and dependency-free."
+      }
+    }
+  },
+  {
+    "slug": "card",
+    "type": "component",
+    "title": "Card",
+    "summary": "A semantic content container with clear regions and a responsive horizontal layout.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "card",
+      "content",
+      "layout"
+    ],
+    "overview": "A dependency-free card that groups one coherent piece of content without inventing interaction semantics. Authors select article, section, or div according to the content.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a card when a bounded content item benefits from a heading, supporting text, media, metadata, or actions.",
+      "avoidWhen": "Avoid cards when ordinary headings and page sections already express the hierarchy, or when every surface becomes an unrelated box.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Content card",
+          "description": "Inspect the article, labeled heading, supporting copy, and footer link as one self-contained item.",
+          "canvasHeight": 470,
+          "source": {
+            "html": "<div class=\"c-card-demo\" data-component=\"card\"><article class=\"c-card\" aria-labelledby=\"card-project-title\"><div class=\"c-card__media\"><span class=\"c-card__eyebrow\">Featured project</span></div><div class=\"c-card__body\"><h2 id=\"card-project-title\">Field notes</h2><p>A compact research workspace for observations, references, and decisions.</p></div><footer class=\"c-card__footer\"><span class=\"c-card__eyebrow\">Updated today</span><a href=\"#open-field-notes\">Open project</a></footer></article></div>",
+            "css": ".c-card-demo {\n  --card-accent:#b9f474; --card-accent-text:#162600; --card-border:#dcddd4; --card-border-strong:#bfc1b7; --card-canvas:#f5f5ef; --card-focus:#b9f474; --card-font:Inter, ui-sans-serif, system-ui, sans-serif; --card-muted:#62665d; --card-radius:0.75rem; --card-surface:#ffffff; --card-text:#171915; --card-shadow:0 1.5rem 5rem rgb(20 24 18 / 22%);\n  align-content:center; background:var(--card-canvas); color:var(--card-text); display:grid; font-family:var(--card-font); min-height:100%; padding:2rem;\n}\n.c-card { background:var(--card-surface); border:1px solid var(--card-border); border-radius:var(--card-radius); display:grid; inline-size:min(100%, 28rem); margin-inline:auto; overflow:hidden; }\n.c-card__media { align-items:end; background:linear-gradient(135deg, var(--card-accent), var(--card-canvas)); display:flex; min-height:9rem; padding:1rem; }\n.c-card__eyebrow { color:var(--card-muted); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; }\n.c-card__body { display:grid; gap:0.75rem; padding:1.5rem; }\n.c-card h2 { font-size:clamp(1.55rem, 5vw, 2rem); letter-spacing:-0.04em; line-height:1.05; margin:0; }\n.c-card p { color:var(--card-muted); line-height:1.6; margin:0; }\n.c-card__footer { align-items:center; border-block-start:1px solid var(--card-border); display:flex; gap:0.75rem; justify-content:space-between; padding:1rem 1.5rem; }\n.c-card a { color:var(--card-text); font-weight:650; }\n.c-card a:focus-visible { outline:0.2rem solid var(--card-focus); outline-offset:0.15rem; }\n@media (max-width:32rem) { .c-card-demo { padding:1rem; } .c-card__footer { align-items:flex-start; flex-direction:column; } }",
+            "javascript": "export function createCard(root) {\n  if (!root.matches('[data-component=\"card\"]') || !root.querySelector('.c-card')) {\n    throw new Error('createCard markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"card\"]').forEach(createCard);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "horizontal",
+          "title": "Horizontal card",
+          "summary": "A media-and-content card that uses two columns when space allows and stacks naturally on narrow screens.",
+          "tags": [
+            "horizontal",
+            "responsive",
+            "media"
+          ],
+          "useWhen": "Use a horizontal card in wider lists where media helps identification and the text should remain compact.",
+          "avoidWhen": "Avoid forcing a two-column card into a narrow sidebar or when the media is decorative noise.",
+          "customization": [
+            "The media column is content-driven and the card switches to one column below 38rem.",
+            "Replace the CSS gradient with a local or product-provided asset; remote preview assets are intentionally excluded.",
+            "Keep the heading and primary link descriptive when cards appear in a repeated list."
+          ],
+          "example": {
+            "slug": "horizontal",
+            "title": "Responsive resource card",
+            "description": "Switch to a narrow preview and confirm that media stacks above the content without changing reading order.",
+            "canvasHeight": 390,
+            "source": {
+              "html": "<div class=\"c-card-demo\" data-component=\"horizontal-card\"><article class=\"c-card c-card--horizontal\" aria-labelledby=\"resource-title\"><div class=\"c-card__media\"><span class=\"c-card__eyebrow\">12 min read</span></div><div class=\"c-card__content\"><div class=\"c-card__body\"><span class=\"c-card__eyebrow\">Design systems</span><h2 id=\"resource-title\">Naming interface tokens</h2><p>Build a vocabulary that describes intent and survives visual redesigns.</p></div><footer class=\"c-card__footer\"><span class=\"c-card__eyebrow\">Guide</span><a href=\"#read-token-guide\">Read guide</a></footer></div></article></div>",
+              "css": ".c-card-demo {\n  --card-accent:#b9f474; --card-accent-text:#162600; --card-border:#dcddd4; --card-border-strong:#bfc1b7; --card-canvas:#f5f5ef; --card-focus:#b9f474; --card-font:Inter, ui-sans-serif, system-ui, sans-serif; --card-muted:#62665d; --card-radius:0.75rem; --card-surface:#ffffff; --card-text:#171915; --card-shadow:0 1.5rem 5rem rgb(20 24 18 / 22%);\n  align-content:center; background:var(--card-canvas); color:var(--card-text); display:grid; font-family:var(--card-font); min-height:100%; padding:2rem;\n}\n.c-card { background:var(--card-surface); border:1px solid var(--card-border); border-radius:var(--card-radius); display:grid; inline-size:min(100%, 28rem); margin-inline:auto; overflow:hidden; }\n.c-card__media { align-items:end; background:linear-gradient(135deg, var(--card-accent), var(--card-canvas)); display:flex; min-height:9rem; padding:1rem; }\n.c-card__eyebrow { color:var(--card-muted); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; }\n.c-card__body { display:grid; gap:0.75rem; padding:1.5rem; }\n.c-card h2 { font-size:clamp(1.55rem, 5vw, 2rem); letter-spacing:-0.04em; line-height:1.05; margin:0; }\n.c-card p { color:var(--card-muted); line-height:1.6; margin:0; }\n.c-card__footer { align-items:center; border-block-start:1px solid var(--card-border); display:flex; gap:0.75rem; justify-content:space-between; padding:1rem 1.5rem; }\n.c-card a { color:var(--card-text); font-weight:650; }\n.c-card a:focus-visible { outline:0.2rem solid var(--card-focus); outline-offset:0.15rem; }\n@media (max-width:32rem) { .c-card-demo { padding:1rem; } .c-card__footer { align-items:flex-start; flex-direction:column; } }\n.c-card--horizontal { grid-template-columns:minmax(9rem, 0.8fr) minmax(0, 1.4fr); inline-size:min(100%, 48rem); }\n.c-card--horizontal .c-card__media { min-height:100%; }\n.c-card--horizontal .c-card__content { display:grid; }\n@media (max-width:38rem) { .c-card--horizontal { grid-template-columns:1fr; } .c-card--horizontal .c-card__media { min-height:8rem; } }",
+              "javascript": "export function createHorizontalCard(root) {\n  if (!root.matches('[data-component=\"horizontal-card\"]') || !root.querySelector('.c-card--horizontal')) {\n    throw new Error('createHorizontalCard markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"horizontal-card\"]').forEach(createHorizontalCard);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Container",
+          "description": "An article, section, or generic element selected for the content's real semantics."
+        },
+        {
+          "name": "Optional media",
+          "description": "A visual preview that supports identification without replacing text."
+        },
+        {
+          "name": "Body",
+          "description": "Heading and concise supporting content."
+        },
+        {
+          "name": "Footer",
+          "description": "Metadata or a small number of related actions."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--card-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--card-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--card-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--card-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Emphasized control borders."
+        },
+        {
+          "name": "--card-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--card-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--card-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--card-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--card-radius",
+          "defaultValue": "0.75rem",
+          "description": "Nested surface radius."
+        },
+        {
+          "name": "--card-surface",
+          "defaultValue": "#ffffff",
+          "description": "Primary component surface."
+        },
+        {
+          "name": "--card-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        },
+        {
+          "name": "--card-shadow",
+          "defaultValue": "0 1.5rem 5rem rgb(20 24 18 / 22%)",
+          "description": "Optional floating-card elevation."
+        }
+      ],
+      "accessibility": [
+        "Use article only when the card is independently meaningful; otherwise choose section or div.",
+        "Give repeated cards distinct headings and descriptive link text.",
+        "Do not add role=button or tabindex to a noninteractive card.",
+        "Keep source order logical when the horizontal layout collapses.",
+        "Avoid nested interactive controls inside a link that stretches over the entire card."
+      ],
+      "responsive": "Cards cap their reading width. Horizontal cards switch from two columns to one below 38rem, preserving media-first source order.",
+      "limitations": [
+        "The media treatment is a local CSS placeholder rather than a remote asset.",
+        "This recipe does not make the entire card clickable because doing so often creates nested-interaction and text-selection problems."
+      ],
+      "provenance": {
+        "label": "Cross-library card behavior study",
+        "url": "https://primeng.dev/card",
+        "note": "PrimeNG Card, Bootstrap Card, and Angular Material Card informed the content regions. This semantic HTML and styling are original."
+      }
+    }
+  },
+  {
+    "slug": "progress-bar",
+    "type": "component",
+    "title": "Progress bar",
+    "summary": "A determinate or indeterminate task indicator with programmatic updates and reduced-motion behavior.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "progress",
+      "loading",
+      "async"
+    ],
+    "overview": "A dependency-free progress indicator with explicit task labeling. Determinate progress exposes a real numeric value; indeterminate progress deliberately omits one.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a progress bar for work that takes long enough for feedback to help people understand whether the task is advancing.",
+      "avoidWhen": "Avoid progress bars for instant actions, decorative percentages, or unknown-duration work presented with a misleading numeric value.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Determinate progress",
+          "description": "Set several completion values and inspect the synchronized visual width, text value, and aria-valuenow.",
+          "canvasHeight": 330,
+          "source": {
+            "html": "<div class=\"c-progress-demo\" data-component=\"progress-bar\"><div class=\"c-progress-demo__header\"><strong id=\"upload-label\">Uploading files</strong><span data-progress-value>40%</span></div><div class=\"c-progress\" role=\"progressbar\" aria-labelledby=\"upload-label\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"40\"><div class=\"c-progress__bar\" data-progress-bar style=\"--progress-value:40%\"></div></div><div class=\"c-progress-demo__controls\"><button type=\"button\" data-progress-set=\"25\">25%</button><button type=\"button\" data-progress-set=\"60\">60%</button><button type=\"button\" data-progress-set=\"100\">Complete</button></div></div>",
+            "css": ".c-progress-demo {\n  --progress-accent:#b9f474; --progress-accent-text:#162600; --progress-border:#dcddd4; --progress-border-strong:#bfc1b7; --progress-canvas:#f5f5ef; --progress-focus:#b9f474; --progress-font:Inter, ui-sans-serif, system-ui, sans-serif; --progress-muted:#62665d; --progress-radius:0.75rem; --progress-surface:#ffffff; --progress-text:#171915;\n  align-content:center; background:var(--progress-canvas); color:var(--progress-text); display:grid; font-family:var(--progress-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-progress-demo__header { align-items:center; display:flex; justify-content:space-between; }\n.c-progress-demo__header strong { font-weight:650; }\n.c-progress-demo__header span { color:var(--progress-muted); }\n.c-progress { background:var(--progress-surface); border:1px solid var(--progress-border); border-radius:999px; height:1rem; overflow:hidden; }\n.c-progress__bar { background:var(--progress-accent); height:100%; inline-size:var(--progress-value); }\n.c-progress-demo__controls { display:flex; flex-wrap:wrap; gap:0.75rem; }\n.c-progress-demo button { background:var(--progress-surface); border:1px solid var(--progress-border-strong); border-radius:0.55rem; color:var(--progress-text); cursor:pointer; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; }\n.c-progress-demo button:focus-visible { outline:0.2rem solid var(--progress-focus); outline-offset:0.15rem; }\n@media (max-width:32rem) { .c-progress-demo { padding:1rem; } }",
+            "javascript": "export function createProgressBar(root) {\n  const progress = root.querySelector('[role=\"progressbar\"]');\n  const bar = root.querySelector('[data-progress-bar]');\n  const valueLabel = root.querySelector('[data-progress-value]');\n  const buttons = [...root.querySelectorAll('[data-progress-set]')];\n  if (!(progress instanceof HTMLElement) || !(bar instanceof HTMLElement) || !(valueLabel instanceof HTMLElement) || !buttons.length) throw new Error('Progress bar markup is incomplete.');\n\n  const setValue = (nextValue) => {\n    const value = Math.max(0, Math.min(100, Number(nextValue)));\n    progress.setAttribute('aria-valuenow', String(value));\n    bar.style.setProperty('--progress-value', `${value}%`);\n    valueLabel.textContent = `${value}%`;\n    root.dispatchEvent(new CustomEvent('progress:change', { detail: { value } }));\n  };\n  const handleClick = (event) => setValue(event.currentTarget.dataset.progressSet);\n  buttons.forEach((button) => button.addEventListener('click', handleClick));\n  return { setValue, destroy() { buttons.forEach((button) => button.removeEventListener('click', handleClick)); } };\n}\ndocument.querySelectorAll('[data-component=\"progress-bar\"]').forEach(createProgressBar);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "indeterminate",
+          "title": "Indeterminate progress",
+          "summary": "A labeled activity bar for work whose completion percentage cannot be calculated.",
+          "tags": [
+            "indeterminate",
+            "loading",
+            "reduced-motion"
+          ],
+          "useWhen": "Use indeterminate progress when an operation is active but no honest completion estimate exists.",
+          "avoidWhen": "Avoid leaving indeterminate progress onscreen without a task label, cancellation path, or eventual timeout handling.",
+          "customization": [
+            "Omit aria-valuenow, aria-valuemin, and aria-valuemax when the amount is unknown.",
+            "The animation becomes a static filled track under reduced-motion preferences.",
+            "Replace the status text when the task completes; hiding the bar alone can be ambiguous."
+          ],
+          "example": {
+            "slug": "indeterminate",
+            "title": "Unknown-duration import",
+            "description": "Observe the activity indicator and test reduced-motion mode, where it becomes a static busy track.",
+            "canvasHeight": 280,
+            "source": {
+              "html": "<div class=\"c-progress-demo\" data-component=\"indeterminate-progress\"><div class=\"c-progress-demo__header\"><strong id=\"import-label\">Importing records</strong><span>Working…</span></div><div class=\"c-progress\" role=\"progressbar\" aria-labelledby=\"import-label\"><div class=\"c-progress__bar c-progress__bar--indeterminate\"></div></div></div>",
+              "css": ".c-progress-demo {\n  --progress-accent:#b9f474; --progress-accent-text:#162600; --progress-border:#dcddd4; --progress-border-strong:#bfc1b7; --progress-canvas:#f5f5ef; --progress-focus:#b9f474; --progress-font:Inter, ui-sans-serif, system-ui, sans-serif; --progress-muted:#62665d; --progress-radius:0.75rem; --progress-surface:#ffffff; --progress-text:#171915;\n  align-content:center; background:var(--progress-canvas); color:var(--progress-text); display:grid; font-family:var(--progress-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-progress-demo__header { align-items:center; display:flex; justify-content:space-between; }\n.c-progress-demo__header strong { font-weight:650; }\n.c-progress-demo__header span { color:var(--progress-muted); }\n.c-progress { background:var(--progress-surface); border:1px solid var(--progress-border); border-radius:999px; height:1rem; overflow:hidden; }\n.c-progress__bar { background:var(--progress-accent); height:100%; inline-size:var(--progress-value); }\n.c-progress-demo__controls { display:flex; flex-wrap:wrap; gap:0.75rem; }\n.c-progress-demo button { background:var(--progress-surface); border:1px solid var(--progress-border-strong); border-radius:0.55rem; color:var(--progress-text); cursor:pointer; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; }\n.c-progress-demo button:focus-visible { outline:0.2rem solid var(--progress-focus); outline-offset:0.15rem; }\n@media (max-width:32rem) { .c-progress-demo { padding:1rem; } }\n.c-progress__bar--indeterminate { animation:progress-slide 1.2s ease-in-out infinite; inline-size:40%; transform:translateX(-100%); }\n@keyframes progress-slide { 50% { transform:translateX(150%); } 100% { transform:translateX(350%); } }\n@media (prefers-reduced-motion:reduce) { .c-progress__bar--indeterminate { animation:none; inline-size:100%; opacity:0.55; transform:none; } }",
+              "javascript": "export function createIndeterminateProgress(root) {\n  if (!root.matches('[data-component=\"indeterminate-progress\"]') || !root.querySelector('[role=\"progressbar\"]')) {\n    throw new Error('createIndeterminateProgress markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"indeterminate-progress\"]').forEach(createIndeterminateProgress);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Task label",
+          "description": "Text identifying the operation being measured."
+        },
+        {
+          "name": "Track",
+          "description": "The total available progress range."
+        },
+        {
+          "name": "Bar",
+          "description": "The completed proportion or an activity cue when indeterminate."
+        },
+        {
+          "name": "Value text",
+          "description": "A visible value synchronized with aria-valuenow for determinate work."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--progress-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--progress-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--progress-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--progress-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Emphasized control borders."
+        },
+        {
+          "name": "--progress-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--progress-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--progress-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--progress-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--progress-radius",
+          "defaultValue": "0.75rem",
+          "description": "Nested surface radius."
+        },
+        {
+          "name": "--progress-surface",
+          "defaultValue": "#ffffff",
+          "description": "Primary component surface."
+        },
+        {
+          "name": "--progress-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Label the progressbar with visible text using aria-labelledby.",
+        "Set aria-valuemin, aria-valuemax, and aria-valuenow only when progress is determinate.",
+        "Keep visible percentage text synchronized with the programmatic value.",
+        "Respect reduced-motion preferences for indeterminate animation.",
+        "Announce completion in nearby status text when it is not otherwise obvious."
+      ],
+      "responsive": "The track uses the full available width and the control row wraps on narrow screens.",
+      "limitations": [
+        "The demo controls simulate application updates; production code must derive values from real work.",
+        "The indeterminate variant does not provide cancellation or timeout behavior."
+      ],
+      "provenance": {
+        "label": "Cross-library progress behavior study",
+        "url": "https://primeng.dev/progressbar",
+        "note": "PrimeNG ProgressBar, Bootstrap Progress, and Angular Material Progress Bar informed the states. This implementation is original and dependency-free."
+      }
+    }
+  },
+  {
+    "slug": "skeleton",
+    "type": "component",
+    "title": "Skeleton",
+    "summary": "A noninteractive loading placeholder for cards and lists with hidden status text and reduced-motion support.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "skeleton",
+      "loading",
+      "placeholder"
+    ],
+    "overview": "A dependency-free loading placeholder that mirrors the broad shape of incoming content without pretending to be usable content itself.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a skeleton when the layout is known, content retrieval is noticeable, and preserving spatial stability improves the experience.",
+      "avoidWhen": "Avoid skeletons for instant loads, unknown layouts, or operations where a labeled progress indicator provides more meaningful feedback.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Card skeleton",
+          "description": "Inspect the placeholder as decorative content paired with a concise screen-reader status.",
+          "canvasHeight": 430,
+          "source": {
+            "html": "<div class=\"c-skeleton-demo\" data-component=\"skeleton\"><p class=\"c-visually-hidden\" role=\"status\">Loading project details.</p><div class=\"c-skeleton-card\" aria-hidden=\"true\"><span class=\"c-skeleton c-skeleton--media\"></span><span class=\"c-skeleton c-skeleton--title\"></span><span class=\"c-skeleton c-skeleton--text\"></span><span class=\"c-skeleton c-skeleton--short\"></span></div></div>",
+            "css": ".c-skeleton-demo {\n  --skeleton-accent:#b9f474; --skeleton-accent-text:#162600; --skeleton-border:#dcddd4; --skeleton-border-strong:#bfc1b7; --skeleton-canvas:#f5f5ef; --skeleton-focus:#b9f474; --skeleton-font:Inter, ui-sans-serif, system-ui, sans-serif; --skeleton-muted:#62665d; --skeleton-radius:0.75rem; --skeleton-surface:#ffffff; --skeleton-text:#171915;\n  align-content:center; background:var(--skeleton-canvas); color:var(--skeleton-text); display:grid; font-family:var(--skeleton-font); min-height:100%; padding:2rem;\n}\n.c-skeleton-card { background:var(--skeleton-surface); border:1px solid var(--skeleton-border); border-radius:var(--skeleton-radius); display:grid; gap:1rem; inline-size:min(100%, 30rem); margin-inline:auto; padding:1.5rem; }\n.c-skeleton { animation:skeleton-pulse 1.4s ease-in-out infinite; background:var(--skeleton-border); border-radius:0.55rem; display:block; min-height:1rem; }\n.c-skeleton--media { min-height:10rem; }\n.c-skeleton--title { inline-size:65%; min-height:1.5rem; }\n.c-skeleton--text { inline-size:100%; }\n.c-skeleton--short { inline-size:45%; }\n.c-visually-hidden { block-size:1px; clip-path:inset(50%); inline-size:1px; overflow:hidden; position:absolute; white-space:nowrap; }\n@keyframes skeleton-pulse { 50% { opacity:0.45; } }\n@media (prefers-reduced-motion:reduce) { .c-skeleton { animation:none; } }\n@media (max-width:32rem) { .c-skeleton-demo { padding:1rem; } }",
+            "javascript": "export function createSkeleton(root) {\n  if (!root.matches('[data-component=\"skeleton\"]') || !root.querySelector('.c-skeleton-card')) {\n    throw new Error('createSkeleton markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"skeleton\"]').forEach(createSkeleton);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "list",
+          "title": "List skeleton",
+          "summary": "Repeated avatar-and-copy placeholders that preserve the expected dimensions of a loading list.",
+          "tags": [
+            "list",
+            "avatar",
+            "repeated",
+            "layout-stability"
+          ],
+          "useWhen": "Use a list skeleton when the number and basic shape of rows are predictable before data arrives.",
+          "avoidWhen": "Avoid rendering many placeholder rows; show only enough to establish the expected structure.",
+          "customization": [
+            "Match placeholder count to the initial viewport rather than the full dataset.",
+            "Keep the entire placeholder list aria-hidden and announce loading once.",
+            "The avatar remains circular while text lengths vary to avoid a mechanical appearance."
+          ],
+          "example": {
+            "slug": "list",
+            "title": "Loading people list",
+            "description": "Review three decorative placeholder rows and the single accessible loading announcement.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<div class=\"c-skeleton-demo\" data-component=\"list-skeleton\"><p class=\"c-visually-hidden\" role=\"status\">Loading team members.</p><div class=\"c-skeleton-list\" aria-hidden=\"true\"><div class=\"c-skeleton-list__item\"><span class=\"c-skeleton c-skeleton--avatar\"></span><span class=\"c-skeleton-list__copy\"><span class=\"c-skeleton c-skeleton--title\"></span><span class=\"c-skeleton c-skeleton--text\"></span></span></div><div class=\"c-skeleton-list__item\"><span class=\"c-skeleton c-skeleton--avatar\"></span><span class=\"c-skeleton-list__copy\"><span class=\"c-skeleton c-skeleton--short\"></span><span class=\"c-skeleton c-skeleton--text\"></span></span></div><div class=\"c-skeleton-list__item\"><span class=\"c-skeleton c-skeleton--avatar\"></span><span class=\"c-skeleton-list__copy\"><span class=\"c-skeleton c-skeleton--title\"></span><span class=\"c-skeleton c-skeleton--short\"></span></span></div></div></div>",
+              "css": ".c-skeleton-demo {\n  --skeleton-accent:#b9f474; --skeleton-accent-text:#162600; --skeleton-border:#dcddd4; --skeleton-border-strong:#bfc1b7; --skeleton-canvas:#f5f5ef; --skeleton-focus:#b9f474; --skeleton-font:Inter, ui-sans-serif, system-ui, sans-serif; --skeleton-muted:#62665d; --skeleton-radius:0.75rem; --skeleton-surface:#ffffff; --skeleton-text:#171915;\n  align-content:center; background:var(--skeleton-canvas); color:var(--skeleton-text); display:grid; font-family:var(--skeleton-font); min-height:100%; padding:2rem;\n}\n.c-skeleton-card { background:var(--skeleton-surface); border:1px solid var(--skeleton-border); border-radius:var(--skeleton-radius); display:grid; gap:1rem; inline-size:min(100%, 30rem); margin-inline:auto; padding:1.5rem; }\n.c-skeleton { animation:skeleton-pulse 1.4s ease-in-out infinite; background:var(--skeleton-border); border-radius:0.55rem; display:block; min-height:1rem; }\n.c-skeleton--media { min-height:10rem; }\n.c-skeleton--title { inline-size:65%; min-height:1.5rem; }\n.c-skeleton--text { inline-size:100%; }\n.c-skeleton--short { inline-size:45%; }\n.c-visually-hidden { block-size:1px; clip-path:inset(50%); inline-size:1px; overflow:hidden; position:absolute; white-space:nowrap; }\n@keyframes skeleton-pulse { 50% { opacity:0.45; } }\n@media (prefers-reduced-motion:reduce) { .c-skeleton { animation:none; } }\n@media (max-width:32rem) { .c-skeleton-demo { padding:1rem; } }\n.c-skeleton-list { background:var(--skeleton-surface); border:1px solid var(--skeleton-border); border-radius:var(--skeleton-radius); display:grid; inline-size:min(100%, 34rem); margin-inline:auto; }\n.c-skeleton-list__item { align-items:center; display:grid; gap:1rem; grid-template-columns:3rem 1fr; padding:1rem; }\n.c-skeleton-list__item + .c-skeleton-list__item { border-block-start:1px solid var(--skeleton-border); }\n.c-skeleton--avatar { border-radius:50%; height:3rem; width:3rem; }\n.c-skeleton-list__copy { display:grid; gap:0.5rem; }",
+              "javascript": "export function createListSkeleton(root) {\n  if (!root.matches('[data-component=\"list-skeleton\"]') || !root.querySelector('.c-skeleton-list')) {\n    throw new Error('createListSkeleton markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"list-skeleton\"]').forEach(createListSkeleton);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Status",
+          "description": "One visually hidden live message describing what is loading."
+        },
+        {
+          "name": "Placeholder group",
+          "description": "An aria-hidden shape approximation of the incoming layout."
+        },
+        {
+          "name": "Shape",
+          "description": "A block representing media, a heading, copy, or an avatar."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--skeleton-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--skeleton-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--skeleton-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--skeleton-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Emphasized control borders."
+        },
+        {
+          "name": "--skeleton-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--skeleton-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--skeleton-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--skeleton-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--skeleton-radius",
+          "defaultValue": "0.75rem",
+          "description": "Nested surface radius."
+        },
+        {
+          "name": "--skeleton-surface",
+          "defaultValue": "#ffffff",
+          "description": "Primary component surface."
+        },
+        {
+          "name": "--skeleton-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Hide decorative placeholder shapes from assistive technology.",
+        "Provide one concise role=status message for the loading region.",
+        "Remove or update the loading status when real content replaces the skeleton.",
+        "Disable pulse animation under prefers-reduced-motion.",
+        "Never make skeleton shapes focusable or interactive."
+      ],
+      "responsive": "Skeleton groups fill their container up to a readable maximum width and preserve their internal proportions on narrow screens.",
+      "limitations": [
+        "Skeletons do not communicate measurable progress.",
+        "The example does not perform data loading or replacement; the consumer owns that lifecycle."
+      ],
+      "provenance": {
+        "label": "Cross-library skeleton behavior study",
+        "url": "https://primeng.dev/skeleton",
+        "note": "PrimeNG Skeleton and Bootstrap Placeholders informed the feature inventory. The markup and animation are original and dependency-free."
+      }
+    }
+  },
+  {
+    "slug": "breadcrumb",
+    "type": "component",
+    "title": "Breadcrumb",
+    "summary": "A semantic location trail with horizontal overflow and a native collapsed-middle variant.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "breadcrumb",
+      "navigation",
+      "responsive"
+    ],
+    "overview": "A dependency-free breadcrumb that identifies the current page with aria-current and keeps navigation semantics separate from interactive tabs or step progress.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use breadcrumbs in a hierarchical site or application where people may need to move to an ancestor level.",
+      "avoidWhen": "Avoid them for shallow structures, browsing history, workflow steps, or a list of sibling filters.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Location trail",
+          "description": "Follow ancestor links and inspect the final non-link item marked as the current page.",
+          "canvasHeight": 250,
+          "source": {
+            "html": "<div class=\"c-breadcrumb-demo\" data-component=\"breadcrumb\"><nav class=\"c-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#home\">Home</a></li><li><a href=\"#projects\">Projects</a></li><li><a href=\"#field-notes\">Field notes</a></li><li><span aria-current=\"page\">Settings</span></li></ol></nav></div>",
+            "css": ".c-breadcrumb-demo {\n  --breadcrumb-accent:#b9f474; --breadcrumb-accent-text:#162600; --breadcrumb-border:#dcddd4; --breadcrumb-border-strong:#bfc1b7; --breadcrumb-canvas:#f5f5ef; --breadcrumb-focus:#b9f474; --breadcrumb-font:Inter, ui-sans-serif, system-ui, sans-serif; --breadcrumb-muted:#62665d; --breadcrumb-radius:0.75rem; --breadcrumb-surface:#ffffff; --breadcrumb-text:#171915;\n  align-content:center; background:var(--breadcrumb-canvas); color:var(--breadcrumb-text); display:grid; font-family:var(--breadcrumb-font); min-height:100%; padding:2rem;\n}\n.c-breadcrumb { background:var(--breadcrumb-surface); border:1px solid var(--breadcrumb-border); border-radius:var(--breadcrumb-radius); max-width:100%; overflow-x:auto; padding:0.75rem 1rem; }\n.c-breadcrumb ol { align-items:center; display:flex; gap:0.5rem; list-style:none; margin:0; padding:0; white-space:nowrap; }\n.c-breadcrumb li { align-items:center; display:flex; gap:0.5rem; }\n.c-breadcrumb li + li::before { color:var(--breadcrumb-muted); content:\"/\"; }\n.c-breadcrumb a { color:var(--breadcrumb-text); text-underline-offset:0.2rem; }\n.c-breadcrumb a:focus-visible, .c-breadcrumb summary:focus-visible { outline:0.2rem solid var(--breadcrumb-focus); outline-offset:0.15rem; }\n.c-breadcrumb [aria-current=\"page\"] { color:var(--breadcrumb-muted); font-weight:650; }\n@media (max-width:32rem) { .c-breadcrumb-demo { padding:1rem; } }",
+            "javascript": "export function createBreadcrumb(root) {\n  if (!root.matches('[data-component=\"breadcrumb\"]') || !root.querySelector('nav[aria-label]')) {\n    throw new Error('createBreadcrumb markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"breadcrumb\"]').forEach(createBreadcrumb);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "collapsed-middle",
+          "title": "Collapsed middle",
+          "summary": "A long hierarchy whose intermediate ancestors are available from a native details disclosure.",
+          "tags": [
+            "collapsed",
+            "overflow",
+            "details",
+            "deep-hierarchy"
+          ],
+          "useWhen": "Use a collapsed middle when a deep hierarchy would otherwise dominate a narrow header.",
+          "avoidWhen": "Avoid hiding the immediate parent or the current page, which are usually the most useful orientation cues.",
+          "customization": [
+            "Keep Home, the immediate parent, and current page visible.",
+            "The details summary has a descriptive accessible label rather than only an ellipsis.",
+            "The popup contains ordinary links and closes with the native details behavior."
+          ],
+          "example": {
+            "slug": "collapsed-middle",
+            "title": "Deep hierarchy",
+            "description": "Open the middle-level disclosure to reach hidden ancestors while the root, parent, and current page remain visible.",
+            "canvasHeight": 340,
+            "source": {
+              "html": "<div class=\"c-breadcrumb-demo\" data-component=\"collapsed-breadcrumb\"><nav class=\"c-breadcrumb\" aria-label=\"Breadcrumb\"><ol><li><a href=\"#home\">Home</a></li><li><details><summary aria-label=\"Show 2 intermediate locations\">…</summary><ul><li><a href=\"#workspace\">Workspace</a></li><li><a href=\"#projects\">Projects</a></li></ul></details></li><li><a href=\"#field-notes\">Field notes</a></li><li><span aria-current=\"page\">Settings</span></li></ol></nav></div>",
+              "css": ".c-breadcrumb-demo {\n  --breadcrumb-accent:#b9f474; --breadcrumb-accent-text:#162600; --breadcrumb-border:#dcddd4; --breadcrumb-border-strong:#bfc1b7; --breadcrumb-canvas:#f5f5ef; --breadcrumb-focus:#b9f474; --breadcrumb-font:Inter, ui-sans-serif, system-ui, sans-serif; --breadcrumb-muted:#62665d; --breadcrumb-radius:0.75rem; --breadcrumb-surface:#ffffff; --breadcrumb-text:#171915;\n  align-content:center; background:var(--breadcrumb-canvas); color:var(--breadcrumb-text); display:grid; font-family:var(--breadcrumb-font); min-height:100%; padding:2rem;\n}\n.c-breadcrumb { background:var(--breadcrumb-surface); border:1px solid var(--breadcrumb-border); border-radius:var(--breadcrumb-radius); max-width:100%; overflow-x:auto; padding:0.75rem 1rem; }\n.c-breadcrumb ol { align-items:center; display:flex; gap:0.5rem; list-style:none; margin:0; padding:0; white-space:nowrap; }\n.c-breadcrumb li { align-items:center; display:flex; gap:0.5rem; }\n.c-breadcrumb li + li::before { color:var(--breadcrumb-muted); content:\"/\"; }\n.c-breadcrumb a { color:var(--breadcrumb-text); text-underline-offset:0.2rem; }\n.c-breadcrumb a:focus-visible, .c-breadcrumb summary:focus-visible { outline:0.2rem solid var(--breadcrumb-focus); outline-offset:0.15rem; }\n.c-breadcrumb [aria-current=\"page\"] { color:var(--breadcrumb-muted); font-weight:650; }\n@media (max-width:32rem) { .c-breadcrumb-demo { padding:1rem; } }\n.c-breadcrumb details { position:relative; }\n.c-breadcrumb summary { border-radius:0.55rem; cursor:pointer; list-style:none; padding:0.25rem 0.5rem; }\n.c-breadcrumb summary::-webkit-details-marker { display:none; }\n.c-breadcrumb details ul { background:var(--breadcrumb-surface); border:1px solid var(--breadcrumb-border); border-radius:var(--breadcrumb-radius); box-shadow:0 1.5rem 5rem rgb(20 24 18 / 22%); display:grid; gap:0.25rem; inset:calc(100% + 0.5rem) auto auto 0; list-style:none; margin:0; min-width:12rem; padding:0.5rem; position:absolute; z-index:1; }\n.c-breadcrumb details li::before { content:none; }\n.c-breadcrumb details a { display:block; padding:0.5rem; }",
+              "javascript": "export function createCollapsedBreadcrumb(root) {\n  if (!root.matches('[data-component=\"collapsed-breadcrumb\"]') || !root.querySelector('details')) {\n    throw new Error('createCollapsedBreadcrumb markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"collapsed-breadcrumb\"]').forEach(createCollapsedBreadcrumb);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Navigation landmark",
+          "description": "A nav labeled Breadcrumb."
+        },
+        {
+          "name": "Ordered trail",
+          "description": "Ancestor locations in hierarchy order."
+        },
+        {
+          "name": "Ancestor link",
+          "description": "A navigable parent level."
+        },
+        {
+          "name": "Current page",
+          "description": "A non-link final item marked with aria-current=page."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--breadcrumb-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--breadcrumb-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--breadcrumb-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--breadcrumb-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Emphasized control borders."
+        },
+        {
+          "name": "--breadcrumb-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--breadcrumb-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--breadcrumb-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--breadcrumb-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--breadcrumb-radius",
+          "defaultValue": "0.75rem",
+          "description": "Nested surface radius."
+        },
+        {
+          "name": "--breadcrumb-surface",
+          "defaultValue": "#ffffff",
+          "description": "Primary component surface."
+        },
+        {
+          "name": "--breadcrumb-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Wrap the trail in a labeled navigation landmark.",
+        "Use an ordered list to preserve hierarchy.",
+        "Mark the final item with aria-current=page and do not link it to itself.",
+        "Keep link text concise and unique enough in context.",
+        "Allow horizontal overflow rather than shrinking targets or clipping text."
+      ],
+      "responsive": "The default trail scrolls horizontally within its own surface. The collapsed variant reduces deep middle levels while retaining orientation anchors.",
+      "limitations": [
+        "The collapsed details popup uses simple static positioning and does not perform viewport collision detection.",
+        "Breadcrumbs represent information architecture, not the user's chronological browser history."
+      ],
+      "provenance": {
+        "label": "Cross-library breadcrumb behavior study",
+        "url": "https://primeng.dev/breadcrumb",
+        "note": "PrimeNG Breadcrumb and Bootstrap Breadcrumb informed the feature inventory. This native navigation pattern and styling are original."
+      }
+    }
+  }
+]
+

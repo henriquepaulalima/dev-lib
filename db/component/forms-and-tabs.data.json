@@ -1,0 +1,962 @@
+[
+  {
+    "slug": "checkbox",
+    "type": "component",
+    "title": "Checkbox",
+    "summary": "Native independent choices with grouped labeling, disabled support, and a synchronized indeterminate select-all state.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "checkbox",
+      "form",
+      "indeterminate"
+    ],
+    "overview": "A dependency-free checkbox recipe that preserves the native input and its established keyboard, form, validation, and high-contrast behavior.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use checkboxes when people may select zero, one, or several independent options.",
+      "avoidWhen": "Avoid checkboxes for mutually exclusive choices, immediate on/off settings better expressed as switches, or commands that should be buttons.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Checkbox group",
+          "description": "Select any combination of notification channels and observe the synchronized text summary.",
+          "canvasHeight": 410,
+          "source": {
+            "html": "<div class=\"c-checkbox-demo\" data-component=\"checkbox-group\"><fieldset class=\"c-checkbox-group\"><legend>Notification channels</legend><label class=\"c-checkbox\"><input type=\"checkbox\" name=\"notifications\" value=\"Email\" checked><span>Email<small>Weekly summaries and account notices.</small></span></label><label class=\"c-checkbox\"><input type=\"checkbox\" name=\"notifications\" value=\"Push\"><span>Push<small>Time-sensitive activity on signed-in devices.</small></span></label><label class=\"c-checkbox\"><input type=\"checkbox\" name=\"notifications\" value=\"SMS\" disabled><span>SMS<small>Unavailable until a phone number is verified.</small></span></label></fieldset><p class=\"c-checkbox-demo__status\" data-checkbox-status aria-live=\"polite\">Selected: Email.</p></div>",
+            "css": ".c-checkbox-demo {\n  --checkbox-accent:#b9f474; --checkbox-accent-text:#162600; --checkbox-border:#dcddd4; --checkbox-border-strong:#bfc1b7; --checkbox-canvas:#f5f5ef; --checkbox-focus:#b9f474; --checkbox-font:Inter, ui-sans-serif, system-ui, sans-serif; --checkbox-muted:#62665d; --checkbox-radius:0.55rem; --checkbox-surface:#ffffff; --checkbox-text:#171915;\n  align-content:center; background:var(--checkbox-canvas); color:var(--checkbox-text); display:grid; font-family:var(--checkbox-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-checkbox-group { background:var(--checkbox-surface); border:1px solid var(--checkbox-border); border-radius:0.75rem; display:grid; gap:0.75rem; inline-size:min(100%, 30rem); margin:0 auto; padding:1.5rem; }\n.c-checkbox-group legend { font-weight:650; padding:0 0.5rem; }\n.c-checkbox { align-items:start; cursor:pointer; display:grid; gap:0.75rem; grid-template-columns:auto 1fr; line-height:1.5; }\n.c-checkbox input { accent-color:var(--checkbox-accent); height:1.25rem; margin:0.15rem 0 0; width:1.25rem; }\n.c-checkbox input:focus-visible { outline:0.2rem solid var(--checkbox-focus); outline-offset:0.15rem; }\n.c-checkbox small { color:var(--checkbox-muted); display:block; margin-block-start:0.25rem; }\n.c-checkbox input:disabled + span { color:var(--checkbox-muted); cursor:not-allowed; }\n.c-checkbox-demo__status { color:var(--checkbox-muted); margin:0 auto; inline-size:min(100%, 30rem); }\n@media (max-width:32rem){.c-checkbox-demo{padding:1rem;}}",
+            "javascript": "export function createCheckboxGroup(root) {\n  const inputs=[...root.querySelectorAll('input[type=\"checkbox\"]')];\n  const status=root.querySelector('[data-checkbox-status]');\n  if(!inputs.length || !(status instanceof HTMLElement)) throw new Error('Checkbox group markup is incomplete.');\n  const update=()=>{const selected=inputs.filter(input=>input.checked).map(input=>input.value);status.textContent=selected.length?`Selected: ${selected.join(', ')}.`:'No notifications selected.';};\n  inputs.forEach(input=>input.addEventListener('change',update));\n  return {destroy(){inputs.forEach(input=>input.removeEventListener('change',update));}};\n}\ndocument.querySelectorAll('[data-component=\"checkbox-group\"]').forEach(createCheckboxGroup);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "indeterminate-select-all",
+          "title": "Indeterminate select all",
+          "summary": "A parent checkbox whose mixed visual state reflects partially selected child options.",
+          "tags": [
+            "indeterminate",
+            "select-all",
+            "group"
+          ],
+          "useWhen": "Use a select-all control when it applies to a clearly bounded set of related checkboxes.",
+          "avoidWhen": "Avoid it for paginated or partially loaded data unless the scope of all is explicit.",
+          "customization": [
+            "Set the native indeterminate property in JavaScript because it has no HTML attribute.",
+            "The parent checked state means every child is selected; mixed means some but not all.",
+            "Recalculate after every child or parent change and after dynamic list updates."
+          ],
+          "example": {
+            "slug": "indeterminate-select-all",
+            "title": "Select notification channels",
+            "description": "Toggle individual channels to produce the native mixed state, then use Select all to synchronize them.",
+            "canvasHeight": 440,
+            "source": {
+              "html": "<div class=\"c-checkbox-demo\" data-component=\"indeterminate-checkbox\"><fieldset class=\"c-checkbox-group\"><legend>Delivery channels</legend><label class=\"c-checkbox\"><input type=\"checkbox\" data-select-all><span><strong>Select all</strong><small>Apply the choice to every channel below.</small></span></label><hr><label class=\"c-checkbox\"><input type=\"checkbox\" data-child-checkbox checked><span>Email</span></label><label class=\"c-checkbox\"><input type=\"checkbox\" data-child-checkbox><span>Push</span></label><label class=\"c-checkbox\"><input type=\"checkbox\" data-child-checkbox><span>SMS</span></label></fieldset><p class=\"c-checkbox-demo__status\" data-checkbox-status aria-live=\"polite\"></p></div>",
+              "css": ".c-checkbox-demo {\n  --checkbox-accent:#b9f474; --checkbox-accent-text:#162600; --checkbox-border:#dcddd4; --checkbox-border-strong:#bfc1b7; --checkbox-canvas:#f5f5ef; --checkbox-focus:#b9f474; --checkbox-font:Inter, ui-sans-serif, system-ui, sans-serif; --checkbox-muted:#62665d; --checkbox-radius:0.55rem; --checkbox-surface:#ffffff; --checkbox-text:#171915;\n  align-content:center; background:var(--checkbox-canvas); color:var(--checkbox-text); display:grid; font-family:var(--checkbox-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-checkbox-group { background:var(--checkbox-surface); border:1px solid var(--checkbox-border); border-radius:0.75rem; display:grid; gap:0.75rem; inline-size:min(100%, 30rem); margin:0 auto; padding:1.5rem; }\n.c-checkbox-group legend { font-weight:650; padding:0 0.5rem; }\n.c-checkbox { align-items:start; cursor:pointer; display:grid; gap:0.75rem; grid-template-columns:auto 1fr; line-height:1.5; }\n.c-checkbox input { accent-color:var(--checkbox-accent); height:1.25rem; margin:0.15rem 0 0; width:1.25rem; }\n.c-checkbox input:focus-visible { outline:0.2rem solid var(--checkbox-focus); outline-offset:0.15rem; }\n.c-checkbox small { color:var(--checkbox-muted); display:block; margin-block-start:0.25rem; }\n.c-checkbox input:disabled + span { color:var(--checkbox-muted); cursor:not-allowed; }\n.c-checkbox-demo__status { color:var(--checkbox-muted); margin:0 auto; inline-size:min(100%, 30rem); }\n@media (max-width:32rem){.c-checkbox-demo{padding:1rem;}}\n.c-checkbox-group hr { border:0; border-block-start:1px solid var(--checkbox-border); inline-size:100%; margin:0; }",
+              "javascript": "export function createIndeterminateCheckbox(root) {\n  const selectAll=root.querySelector('[data-select-all]');\n  const children=[...root.querySelectorAll('[data-child-checkbox]')];\n  const status=root.querySelector('[data-checkbox-status]');\n  if(!(selectAll instanceof HTMLInputElement)||!children.length||!(status instanceof HTMLElement)) throw new Error('Indeterminate checkbox markup is incomplete.');\n  const update=()=>{const count=children.filter(input=>input.checked).length;selectAll.checked=count===children.length;selectAll.indeterminate=count>0&&count<children.length;status.textContent=`${count} of ${children.length} channels selected.`;};\n  const toggleAll=()=>{children.forEach(input=>{input.checked=selectAll.checked;});update();};\n  selectAll.addEventListener('change',toggleAll);children.forEach(input=>input.addEventListener('change',update));update();\n  return {destroy(){selectAll.removeEventListener('change',toggleAll);children.forEach(input=>input.removeEventListener('change',update));}};\n}\ndocument.querySelectorAll('[data-component=\"indeterminate-checkbox\"]').forEach(createIndeterminateCheckbox);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Fieldset",
+          "description": "A semantic container for related independent choices."
+        },
+        {
+          "name": "Legend",
+          "description": "The question or category shared by the group."
+        },
+        {
+          "name": "Native input",
+          "description": "The focusable checkbox that owns checked, disabled, and indeterminate states."
+        },
+        {
+          "name": "Label",
+          "description": "A clickable name with optional helper text."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--checkbox-accent",
+          "defaultValue": "#b9f474",
+          "description": "Selected state and focus-support color."
+        },
+        {
+          "name": "--checkbox-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--checkbox-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--checkbox-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--checkbox-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--checkbox-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--checkbox-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--checkbox-muted",
+          "defaultValue": "#62665d",
+          "description": "Helper and secondary text."
+        },
+        {
+          "name": "--checkbox-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control corner radius."
+        },
+        {
+          "name": "--checkbox-surface",
+          "defaultValue": "#ffffff",
+          "description": "Control and panel surface."
+        },
+        {
+          "name": "--checkbox-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Keep the native checkbox in the accessibility tree and connect every input to a visible label.",
+        "Use fieldset and legend for a related group.",
+        "Do not use checked state to represent a partial group; set the indeterminate property.",
+        "Disabled checkboxes leave the tab sequence and must include an explanation when availability is not obvious.",
+        "Space toggles the focused native checkbox without custom keyboard code."
+      ],
+      "responsive": "Labels wrap beside a fixed-size native control, and the group fills its container up to 30rem.",
+      "limitations": [
+        "Indeterminate is a visual state and is not submitted as a distinct form value.",
+        "The select-all example assumes all children are present in the DOM."
+      ],
+      "provenance": {
+        "label": "Cross-library checkbox behavior study",
+        "url": "https://primeng.dev/checkbox",
+        "note": "PrimeNG Checkbox, Bootstrap Checks, and Angular Material Checkbox informed the states. The implementation keeps the native input and is original."
+      }
+    }
+  },
+  {
+    "slug": "radio-group",
+    "type": "component",
+    "title": "Radio group",
+    "summary": "A native mutually exclusive choice set with descriptive options and a responsive card presentation.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "radio",
+      "form",
+      "choice"
+    ],
+    "overview": "A dependency-free radio group that relies on shared name attributes for selection and native arrow-key behavior.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use radio buttons when exactly one choice may be selected from a visible set of mutually exclusive options.",
+      "avoidWhen": "Avoid them for independent choices, very long lists, or a single immediate on/off setting.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Deployment region",
+          "description": "Move through the radios with arrow keys and observe the selected-region status.",
+          "canvasHeight": 430,
+          "source": {
+            "html": "<div class=\"c-radio-demo\" data-component=\"radio-group\"><fieldset class=\"c-radio-group\"><legend>Deployment region</legend><label class=\"c-radio\"><input type=\"radio\" name=\"region\" value=\"US East\" checked><span>US East<small>Lowest latency for North American traffic.</small></span></label><label class=\"c-radio\"><input type=\"radio\" name=\"region\" value=\"EU West\"><span>EU West<small>Data residency in Frankfurt.</small></span></label><label class=\"c-radio\"><input type=\"radio\" name=\"region\" value=\"Asia Pacific\"><span>Asia Pacific<small>Regional hosting in Singapore.</small></span></label></fieldset><p class=\"c-radio-demo__status\" data-radio-status aria-live=\"polite\">Selected region: US East.</p></div>",
+            "css": ".c-radio-demo {\n  --radio-accent:#b9f474; --radio-accent-text:#162600; --radio-border:#dcddd4; --radio-border-strong:#bfc1b7; --radio-canvas:#f5f5ef; --radio-focus:#b9f474; --radio-font:Inter, ui-sans-serif, system-ui, sans-serif; --radio-muted:#62665d; --radio-radius:0.55rem; --radio-surface:#ffffff; --radio-text:#171915;\n  align-content:center; background:var(--radio-canvas); color:var(--radio-text); display:grid; font-family:var(--radio-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-radio-group { background:var(--radio-surface); border:1px solid var(--radio-border); border-radius:0.75rem; display:grid; gap:0.75rem; inline-size:min(100%, 32rem); margin:0 auto; padding:1.5rem; }\n.c-radio-group legend { font-weight:650; padding:0 0.5rem; }\n.c-radio { align-items:start; cursor:pointer; display:grid; gap:0.75rem; grid-template-columns:auto 1fr; line-height:1.5; }\n.c-radio input { accent-color:var(--radio-accent); height:1.25rem; margin:0.15rem 0 0; width:1.25rem; }\n.c-radio input:focus-visible { outline:0.2rem solid var(--radio-focus); outline-offset:0.15rem; }\n.c-radio small { color:var(--radio-muted); display:block; margin-block-start:0.25rem; }\n.c-radio-demo__status { color:var(--radio-muted); inline-size:min(100%, 32rem); margin:0 auto; }\n@media(max-width:32rem){.c-radio-demo{padding:1rem;}}",
+            "javascript": "export function createRadioGroup(root) {\n  const radios=[...root.querySelectorAll('input[type=\"radio\"]')];const status=root.querySelector('[data-radio-status]');\n  if(!radios.length||!(status instanceof HTMLElement))throw new Error('Radio group markup is incomplete.');\n  const update=(event)=>{status.textContent=`Selected region: ${event.currentTarget.value}.`;root.dispatchEvent(new CustomEvent('radio:change',{detail:{value:event.currentTarget.value}}));};\n  radios.forEach(radio=>radio.addEventListener('change',update));\n  return{destroy(){radios.forEach(radio=>radio.removeEventListener('change',update));}};\n}\ndocument.querySelectorAll('[data-component=\"radio-group\"]').forEach(createRadioGroup);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "choice-cards",
+          "title": "Choice cards",
+          "summary": "Radio options styled as responsive cards while preserving visible native controls and one shared group.",
+          "tags": [
+            "cards",
+            "plans",
+            "responsive"
+          ],
+          "useWhen": "Use radio cards when each exclusive option needs a short description or price to support comparison.",
+          "avoidWhen": "Avoid them when options are simple labels; ordinary radios are faster to scan.",
+          "customization": [
+            "The entire label is clickable while the native radio remains visible.",
+            "The checked card gains a strong border in addition to the radio state.",
+            "Cards collapse to one column below 38rem without changing keyboard or reading order."
+          ],
+          "example": {
+            "slug": "choice-cards",
+            "title": "Choose a plan",
+            "description": "Select a plan from the responsive cards using pointer, Space, or arrow keys.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<div class=\"c-radio-demo\" data-component=\"radio-cards\"><fieldset class=\"c-radio-group c-radio-group--cards\"><legend>Choose a plan</legend><label class=\"c-radio c-radio--card\"><input type=\"radio\" name=\"plan\" value=\"Starter\" checked><span><strong>Starter</strong><small>$0 · Personal experiments</small></span></label><label class=\"c-radio c-radio--card\"><input type=\"radio\" name=\"plan\" value=\"Pro\"><span><strong>Pro</strong><small>$29 · Growing teams</small></span></label><label class=\"c-radio c-radio--card\"><input type=\"radio\" name=\"plan\" value=\"Enterprise\"><span><strong>Enterprise</strong><small>Custom · Large organizations</small></span></label></fieldset></div>",
+              "css": ".c-radio-demo {\n  --radio-accent:#b9f474; --radio-accent-text:#162600; --radio-border:#dcddd4; --radio-border-strong:#bfc1b7; --radio-canvas:#f5f5ef; --radio-focus:#b9f474; --radio-font:Inter, ui-sans-serif, system-ui, sans-serif; --radio-muted:#62665d; --radio-radius:0.55rem; --radio-surface:#ffffff; --radio-text:#171915;\n  align-content:center; background:var(--radio-canvas); color:var(--radio-text); display:grid; font-family:var(--radio-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-radio-group { background:var(--radio-surface); border:1px solid var(--radio-border); border-radius:0.75rem; display:grid; gap:0.75rem; inline-size:min(100%, 32rem); margin:0 auto; padding:1.5rem; }\n.c-radio-group legend { font-weight:650; padding:0 0.5rem; }\n.c-radio { align-items:start; cursor:pointer; display:grid; gap:0.75rem; grid-template-columns:auto 1fr; line-height:1.5; }\n.c-radio input { accent-color:var(--radio-accent); height:1.25rem; margin:0.15rem 0 0; width:1.25rem; }\n.c-radio input:focus-visible { outline:0.2rem solid var(--radio-focus); outline-offset:0.15rem; }\n.c-radio small { color:var(--radio-muted); display:block; margin-block-start:0.25rem; }\n.c-radio-demo__status { color:var(--radio-muted); inline-size:min(100%, 32rem); margin:0 auto; }\n@media(max-width:32rem){.c-radio-demo{padding:1rem;}}\n.c-radio-group--cards { grid-template-columns:repeat(3,minmax(0,1fr)); }\n.c-radio--card { background:var(--radio-surface); border:1px solid var(--radio-border); border-radius:0.75rem; padding:1rem; }\n.c-radio--card:has(input:checked) { border-color:var(--radio-text); box-shadow:inset 0 0 0 1px var(--radio-text); }\n@media(max-width:38rem){.c-radio-group--cards{grid-template-columns:1fr;}}",
+              "javascript": "export function createRadioCards(root) {\n  if (!root.matches('[data-component=\"radio-cards\"]') || !root.querySelector('input[type=\"radio\"]')) throw new Error('createRadioCards markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"radio-cards\"]').forEach(createRadioCards);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Fieldset",
+          "description": "The semantic boundary for one exclusive choice."
+        },
+        {
+          "name": "Legend",
+          "description": "The question answered by the options."
+        },
+        {
+          "name": "Native radio",
+          "description": "The focusable selection control sharing one name with its siblings."
+        },
+        {
+          "name": "Option label",
+          "description": "The choice name and optional concise description."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--radio-accent",
+          "defaultValue": "#b9f474",
+          "description": "Selected state and focus-support color."
+        },
+        {
+          "name": "--radio-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--radio-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--radio-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--radio-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--radio-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--radio-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--radio-muted",
+          "defaultValue": "#62665d",
+          "description": "Helper and secondary text."
+        },
+        {
+          "name": "--radio-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control corner radius."
+        },
+        {
+          "name": "--radio-surface",
+          "defaultValue": "#ffffff",
+          "description": "Control and panel surface."
+        },
+        {
+          "name": "--radio-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Group related radios with fieldset and legend.",
+        "Give every radio the same name and a unique value.",
+        "Keep the native input visible or visually hidden without removing it from the accessibility tree.",
+        "Browsers provide arrow-key movement and selection within a named group.",
+        "Do not preselect an option when no default is genuinely appropriate."
+      ],
+      "responsive": "The basic group remains stacked. Choice cards use three columns when space allows and one column below 38rem.",
+      "limitations": [
+        "The demo does not submit a form or persist the chosen value.",
+        "Card styling uses :has(), which requires a current browser; selection remains usable without it."
+      ],
+      "provenance": {
+        "label": "Cross-library radio behavior study",
+        "url": "https://primeng.dev/radiobutton",
+        "note": "PrimeNG RadioButton, Bootstrap Checks, and Angular Material Radio informed the variants. The native implementation is original."
+      }
+    }
+  },
+  {
+    "slug": "switch",
+    "type": "component",
+    "title": "Switch",
+    "summary": "An immediate native on/off setting styled as a switch with explicit state feedback and reduced motion.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "switch",
+      "toggle",
+      "settings"
+    ],
+    "overview": "A dependency-free switch built on a native checkbox with role=switch. It is reserved for settings that take effect immediately, not form answers awaiting submission.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a switch for a binary setting that takes effect immediately when toggled.",
+      "avoidWhen": "Avoid switches for selecting items, agreeing to terms, submitting a command, or choosing among more than two values.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Immediate setting",
+          "description": "Toggle automatic backups with pointer or Space and observe the explicit status update.",
+          "canvasHeight": 300,
+          "source": {
+            "html": "<div class=\"c-switch-demo\" data-component=\"switch\"><div class=\"c-switch-list\"><label class=\"c-switch\"><span><strong>Automatic backups</strong><small>Save an encrypted snapshot every day.</small></span><input type=\"checkbox\" role=\"switch\" checked></label></div><p class=\"c-switch-demo__status\" data-switch-status aria-live=\"polite\">Automatic backups are on.</p></div>",
+            "css": ".c-switch-demo {\n  --switch-accent:#b9f474; --switch-accent-text:#162600; --switch-border:#dcddd4; --switch-border-strong:#bfc1b7; --switch-canvas:#f5f5ef; --switch-focus:#b9f474; --switch-font:Inter, ui-sans-serif, system-ui, sans-serif; --switch-muted:#62665d; --switch-radius:0.55rem; --switch-surface:#ffffff; --switch-text:#171915;\n  align-content:center; background:var(--switch-canvas); color:var(--switch-text); display:grid; font-family:var(--switch-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-switch-list { background:var(--switch-surface); border:1px solid var(--switch-border); border-radius:0.75rem; display:grid; inline-size:min(100%,34rem); margin:0 auto; }\n.c-switch { align-items:center; cursor:pointer; display:grid; gap:1rem; grid-template-columns:1fr auto; padding:1rem 1.5rem; }\n.c-switch + .c-switch { border-block-start:1px solid var(--switch-border); }\n.c-switch strong { display:block; }\n.c-switch small { color:var(--switch-muted); display:block; line-height:1.5; margin-block-start:0.25rem; }\n.c-switch input { appearance:none; background:var(--switch-border-strong); border:1px solid var(--switch-border-strong); border-radius:999px; cursor:pointer; height:1.75rem; margin:0; padding:0.2rem; width:3rem; }\n.c-switch input::before { background:var(--switch-surface); border-radius:50%; content:\"\"; display:block; height:1.2rem; transform:translateX(0); transition:transform 170ms ease; width:1.2rem; }\n.c-switch input:checked { background:var(--switch-accent); border-color:var(--switch-accent); }\n.c-switch input:checked::before { transform:translateX(1.15rem); }\n.c-switch input:focus-visible { outline:0.2rem solid var(--switch-focus); outline-offset:0.15rem; }\n.c-switch input:disabled { cursor:not-allowed; opacity:0.55; }\n.c-switch-demo__status { color:var(--switch-muted); inline-size:min(100%,34rem); margin:0 auto; }\n@media(prefers-reduced-motion:reduce){.c-switch input::before{transition:none;}}\n@media(max-width:32rem){.c-switch-demo{padding:1rem;}.c-switch{padding-inline:1rem;}}",
+            "javascript": "export function createSwitch(root) {\n  const input=root.querySelector('input[role=\"switch\"]');const status=root.querySelector('[data-switch-status]');\n  if(!(input instanceof HTMLInputElement)||!(status instanceof HTMLElement))throw new Error('Switch markup is incomplete.');\n  const update=()=>{status.textContent=`Automatic backups are ${input.checked?'on':'off'}.`;root.dispatchEvent(new CustomEvent('switch:change',{detail:{checked:input.checked}}));};\n  input.addEventListener('change',update);\n  return{setChecked(checked){input.checked=Boolean(checked);update();},destroy(){input.removeEventListener('change',update);}};\n}\ndocument.querySelectorAll('[data-component=\"switch\"]').forEach(createSwitch);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "settings-list",
+          "title": "Settings list",
+          "summary": "Several independent switches presented as a structured list with disabled-state context.",
+          "tags": [
+            "settings",
+            "list",
+            "disabled"
+          ],
+          "useWhen": "Use a settings list when several independent immediate preferences belong to one section.",
+          "avoidWhen": "Avoid using switches as a substitute for a multi-select form that is saved only after submission.",
+          "customization": [
+            "Each row is its own label and maintains a minimum comfortable target.",
+            "Disabled settings include visible text explaining why they are unavailable.",
+            "Do not add a group role unless the collection has a shared accessible label."
+          ],
+          "example": {
+            "slug": "settings-list",
+            "title": "Privacy settings",
+            "description": "Toggle the available preferences and inspect the disabled setting with its explanation.",
+            "canvasHeight": 410,
+            "source": {
+              "html": "<div class=\"c-switch-demo\" data-component=\"switch-list\"><div class=\"c-switch-list\" aria-label=\"Privacy settings\"><label class=\"c-switch\"><span><strong>Share activity</strong><small>Show recent edits to workspace members.</small></span><input type=\"checkbox\" role=\"switch\" checked></label><label class=\"c-switch\"><span><strong>Weekly digest</strong><small>Receive one email every Monday.</small></span><input type=\"checkbox\" role=\"switch\"></label><label class=\"c-switch\"><span><strong>Public profile</strong><small>Unavailable for private workspaces.</small></span><input type=\"checkbox\" role=\"switch\" disabled></label></div></div>",
+              "css": ".c-switch-demo {\n  --switch-accent:#b9f474; --switch-accent-text:#162600; --switch-border:#dcddd4; --switch-border-strong:#bfc1b7; --switch-canvas:#f5f5ef; --switch-focus:#b9f474; --switch-font:Inter, ui-sans-serif, system-ui, sans-serif; --switch-muted:#62665d; --switch-radius:0.55rem; --switch-surface:#ffffff; --switch-text:#171915;\n  align-content:center; background:var(--switch-canvas); color:var(--switch-text); display:grid; font-family:var(--switch-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-switch-list { background:var(--switch-surface); border:1px solid var(--switch-border); border-radius:0.75rem; display:grid; inline-size:min(100%,34rem); margin:0 auto; }\n.c-switch { align-items:center; cursor:pointer; display:grid; gap:1rem; grid-template-columns:1fr auto; padding:1rem 1.5rem; }\n.c-switch + .c-switch { border-block-start:1px solid var(--switch-border); }\n.c-switch strong { display:block; }\n.c-switch small { color:var(--switch-muted); display:block; line-height:1.5; margin-block-start:0.25rem; }\n.c-switch input { appearance:none; background:var(--switch-border-strong); border:1px solid var(--switch-border-strong); border-radius:999px; cursor:pointer; height:1.75rem; margin:0; padding:0.2rem; width:3rem; }\n.c-switch input::before { background:var(--switch-surface); border-radius:50%; content:\"\"; display:block; height:1.2rem; transform:translateX(0); transition:transform 170ms ease; width:1.2rem; }\n.c-switch input:checked { background:var(--switch-accent); border-color:var(--switch-accent); }\n.c-switch input:checked::before { transform:translateX(1.15rem); }\n.c-switch input:focus-visible { outline:0.2rem solid var(--switch-focus); outline-offset:0.15rem; }\n.c-switch input:disabled { cursor:not-allowed; opacity:0.55; }\n.c-switch-demo__status { color:var(--switch-muted); inline-size:min(100%,34rem); margin:0 auto; }\n@media(prefers-reduced-motion:reduce){.c-switch input::before{transition:none;}}\n@media(max-width:32rem){.c-switch-demo{padding:1rem;}.c-switch{padding-inline:1rem;}}",
+              "javascript": "export function createSwitchList(root) {\n  if (!root.matches('[data-component=\"switch-list\"]') || !root.querySelector('input[role=\"switch\"]')) throw new Error('createSwitchList markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"switch-list\"]').forEach(createSwitchList);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "description": "The stable name of the setting."
+        },
+        {
+          "name": "Description",
+          "description": "Optional consequences or scope of changing the setting."
+        },
+        {
+          "name": "Native input",
+          "description": "A checkbox with role=switch that owns focus and checked state."
+        },
+        {
+          "name": "Track and thumb",
+          "description": "CSS visuals driven by native checked and disabled states."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--switch-accent",
+          "defaultValue": "#b9f474",
+          "description": "Selected state and focus-support color."
+        },
+        {
+          "name": "--switch-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--switch-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--switch-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--switch-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--switch-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--switch-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--switch-muted",
+          "defaultValue": "#62665d",
+          "description": "Helper and secondary text."
+        },
+        {
+          "name": "--switch-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control corner radius."
+        },
+        {
+          "name": "--switch-surface",
+          "defaultValue": "#ffffff",
+          "description": "Control and panel surface."
+        },
+        {
+          "name": "--switch-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Use role=switch on the native checkbox so checked state is announced as on or off.",
+        "Keep a visible label that remains stable when the state changes.",
+        "Use Space to toggle through native checkbox behavior.",
+        "Pair disabled settings with a visible reason.",
+        "Do not put On or Off inside the accessible name; state is announced separately."
+      ],
+      "responsive": "Rows keep text and the fixed-size switch in two columns; descriptions wrap without shrinking the control.",
+      "limitations": [
+        "Custom switch appearance depends on appearance:none; the native checkbox semantics remain intact.",
+        "The example emits state changes but does not persist them or handle save failures."
+      ],
+      "provenance": {
+        "label": "Cross-library switch behavior study",
+        "url": "https://primeng.dev/toggleswitch",
+        "note": "PrimeNG ToggleSwitch, Bootstrap Switch checks, and Angular Material Slide Toggle informed the behavior. The native input implementation and styling are original."
+      }
+    }
+  },
+  {
+    "slug": "text-field",
+    "type": "component",
+    "title": "Text field",
+    "summary": "A labeled native text input with helper text, character counting, and an accessible validation-error state.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "input",
+      "text-field",
+      "form",
+      "validation"
+    ],
+    "overview": "A dependency-free text field that keeps label, purpose, constraints, helper text, and errors explicit around a native input.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a text field for short free-form values that fit on one line.",
+      "avoidWhen": "Avoid it for known option sets, long prose, formatted rich content, or data better collected by a purpose-specific native input type.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Field with character count",
+          "description": "Enter a project name and observe the count without changing the input's stable accessible name.",
+          "canvasHeight": 300,
+          "source": {
+            "html": "<div class=\"c-field-demo\" data-component=\"text-field\"><div class=\"c-field\"><label for=\"project-name\">Project name</label><input id=\"project-name\" name=\"projectName\" type=\"text\" maxlength=\"40\" aria-describedby=\"project-name-help project-name-count\"><div class=\"c-field__meta\"><span id=\"project-name-help\">Use a short name your team will recognize.</span><span id=\"project-name-count\" data-field-count>0 / 40</span></div></div></div>",
+            "css": ".c-field-demo {\n  --field-accent:#b9f474; --field-accent-text:#162600; --field-border:#dcddd4; --field-border-strong:#bfc1b7; --field-canvas:#f5f5ef; --field-focus:#b9f474; --field-font:Inter, ui-sans-serif, system-ui, sans-serif; --field-muted:#62665d; --field-radius:0.55rem; --field-surface:#ffffff; --field-text:#171915; --field-danger:#8f251e;\n  align-content:center; background:var(--field-canvas); color:var(--field-text); display:grid; font-family:var(--field-font); min-height:100%; padding:2rem;\n}\n.c-field { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-field label { font-weight:650; }\n.c-field input { background:var(--field-surface); border:1px solid var(--field-border-strong); border-radius:var(--field-radius); color:var(--field-text); font:inherit; min-height:2.75rem; padding:0.75rem 1rem; width:100%; }\n.c-field input:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n.c-field__meta { color:var(--field-muted); display:flex; gap:1rem; justify-content:space-between; line-height:1.5; }\n.c-field__error { color:var(--field-danger); margin:0; }\n.c-field input[aria-invalid=\"true\"] { border-color:var(--field-danger); box-shadow:inset 0 0 0 1px var(--field-danger); }\n.c-field button { background:var(--field-accent); border:1px solid var(--field-accent); border-radius:var(--field-radius); color:var(--field-accent-text); cursor:pointer; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; justify-self:start; }\n.c-field button:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n@media(max-width:32rem){.c-field-demo{padding:1rem;}.c-field__meta{align-items:start;flex-direction:column;gap:0.25rem;}}",
+            "javascript": "export function createTextField(root) {\n  const input=root.querySelector('input[maxlength]');const count=root.querySelector('[data-field-count]');\n  if(!(input instanceof HTMLInputElement)||!(count instanceof HTMLElement))throw new Error('Text field markup is incomplete.');\n  const update=()=>{count.textContent=`${input.value.length} / ${input.maxLength}`;};\n  input.addEventListener('input',update);update();\n  return{destroy(){input.removeEventListener('input',update);}};\n}\ndocument.querySelectorAll('[data-component=\"text-field\"]').forEach(createTextField);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "validation-error",
+          "title": "Validation error",
+          "summary": "A submit-time invalid state with linked error text, focus recovery, and native email validation.",
+          "tags": [
+            "invalid",
+            "error",
+            "aria-describedby",
+            "focus"
+          ],
+          "useWhen": "Use an invalid state after validation has run and the user needs a specific correction.",
+          "avoidWhen": "Avoid showing errors before the person has had a reasonable chance to complete the field.",
+          "customization": [
+            "aria-invalid changes only after validation and clears once the value becomes valid.",
+            "The persistent description and conditional error both appear in aria-describedby.",
+            "Failed submission moves focus to the first invalid field in this compact example."
+          ],
+          "example": {
+            "slug": "validation-error",
+            "title": "Email validation",
+            "description": "Submit an empty or malformed email, then correct it and observe the linked error clear.",
+            "canvasHeight": 350,
+            "source": {
+              "html": "<div class=\"c-field-demo\" data-component=\"validated-field\"><form class=\"c-field\" novalidate><label for=\"contact-email\">Email address</label><input id=\"contact-email\" name=\"email\" type=\"email\" required aria-invalid=\"false\" aria-describedby=\"contact-email-help contact-email-error\"><span id=\"contact-email-help\" class=\"c-field__meta\">We will send the receipt to this address.</span><p id=\"contact-email-error\" class=\"c-field__error\" data-field-error hidden>Enter a complete email address such as name@example.com.</p><button type=\"submit\">Continue</button></form></div>",
+              "css": ".c-field-demo {\n  --field-accent:#b9f474; --field-accent-text:#162600; --field-border:#dcddd4; --field-border-strong:#bfc1b7; --field-canvas:#f5f5ef; --field-focus:#b9f474; --field-font:Inter, ui-sans-serif, system-ui, sans-serif; --field-muted:#62665d; --field-radius:0.55rem; --field-surface:#ffffff; --field-text:#171915; --field-danger:#8f251e;\n  align-content:center; background:var(--field-canvas); color:var(--field-text); display:grid; font-family:var(--field-font); min-height:100%; padding:2rem;\n}\n.c-field { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-field label { font-weight:650; }\n.c-field input { background:var(--field-surface); border:1px solid var(--field-border-strong); border-radius:var(--field-radius); color:var(--field-text); font:inherit; min-height:2.75rem; padding:0.75rem 1rem; width:100%; }\n.c-field input:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n.c-field__meta { color:var(--field-muted); display:flex; gap:1rem; justify-content:space-between; line-height:1.5; }\n.c-field__error { color:var(--field-danger); margin:0; }\n.c-field input[aria-invalid=\"true\"] { border-color:var(--field-danger); box-shadow:inset 0 0 0 1px var(--field-danger); }\n.c-field button { background:var(--field-accent); border:1px solid var(--field-accent); border-radius:var(--field-radius); color:var(--field-accent-text); cursor:pointer; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; justify-self:start; }\n.c-field button:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n@media(max-width:32rem){.c-field-demo{padding:1rem;}.c-field__meta{align-items:start;flex-direction:column;gap:0.25rem;}}",
+              "javascript": "export function createValidatedField(root) {\n  const form=root.querySelector('form');const input=root.querySelector('input');const error=root.querySelector('[data-field-error]');\n  if(!(form instanceof HTMLFormElement)||!(input instanceof HTMLInputElement)||!(error instanceof HTMLElement))throw new Error('Validated field markup is incomplete.');\n  const validate=()=>{const valid=input.validity.valid;input.setAttribute('aria-invalid',String(!valid));error.hidden=valid;return valid;};\n  const submit=(event)=>{event.preventDefault();if(!validate())input.focus();};\n  const clear=()=>{if(input.getAttribute('aria-invalid')==='true')validate();};\n  form.addEventListener('submit',submit);input.addEventListener('input',clear);\n  return{validate,destroy(){form.removeEventListener('submit',submit);input.removeEventListener('input',clear);}};\n}\ndocument.querySelectorAll('[data-component=\"validated-field\"]').forEach(createValidatedField);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "description": "A visible, stable name connected with for and id."
+        },
+        {
+          "name": "Native input",
+          "description": "The control carrying type, name, autocomplete, required, and value."
+        },
+        {
+          "name": "Helper text",
+          "description": "Persistent format or purpose guidance connected with aria-describedby."
+        },
+        {
+          "name": "Error",
+          "description": "Specific correction guidance shown only after validation."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--field-accent",
+          "defaultValue": "#b9f474",
+          "description": "Selected state and focus-support color."
+        },
+        {
+          "name": "--field-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--field-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--field-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--field-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--field-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--field-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--field-muted",
+          "defaultValue": "#62665d",
+          "description": "Helper and secondary text."
+        },
+        {
+          "name": "--field-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control corner radius."
+        },
+        {
+          "name": "--field-surface",
+          "defaultValue": "#ffffff",
+          "description": "Control and panel surface."
+        },
+        {
+          "name": "--field-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        },
+        {
+          "name": "--field-danger",
+          "defaultValue": "#8f251e",
+          "description": "Invalid border and error text."
+        }
+      ],
+      "accessibility": [
+        "Every field needs a persistent visible label; placeholder text is not a replacement.",
+        "Choose the most specific native input type and autocomplete token available.",
+        "Connect helper and error text with aria-describedby.",
+        "Set aria-invalid only after validation has identified a problem.",
+        "Keep character counts outside the label so the accessible name remains stable."
+      ],
+      "responsive": "Fields fill their container up to 32rem. Helper metadata stacks below 32rem to avoid cramped wrapping.",
+      "limitations": [
+        "Native email validity rules are intentionally broad and do not prove that an address exists.",
+        "The recipe demonstrates one field; full forms need ordered error handling across every invalid control."
+      ],
+      "provenance": {
+        "label": "Cross-library text input study",
+        "url": "https://primeng.dev/inputtext",
+        "note": "PrimeNG InputText, Bootstrap Forms, and Angular Material Input informed the states. The native form implementation is original."
+      }
+    }
+  },
+  {
+    "slug": "select",
+    "type": "component",
+    "title": "Select",
+    "summary": "A labeled native single-select with placeholder guidance, grouped options, and synchronized feedback.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "select",
+      "form",
+      "options"
+    ],
+    "overview": "A dependency-free select that preserves the platform picker, mobile presentation, keyboard type-ahead, form submission, and optgroup semantics.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a native select for one choice from a moderate, known list where seeing every option at once is not necessary.",
+      "avoidWhen": "Avoid it for very few options that radios can expose, large searchable datasets, or multiple free-form values.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Single select",
+          "description": "Choose a timezone using the native picker and observe the synchronized visible status.",
+          "canvasHeight": 310,
+          "source": {
+            "html": "<div class=\"c-select-demo\" data-component=\"select\"><div class=\"c-select\"><label for=\"timezone\">Timezone</label><select id=\"timezone\" name=\"timezone\" aria-describedby=\"timezone-help\"><option value=\"\" selected disabled>Choose a timezone</option><option value=\"america-sao-paulo\">America/São Paulo</option><option value=\"america-new-york\">America/New York</option><option value=\"europe-london\">Europe/London</option><option value=\"asia-tokyo\">Asia/Tokyo</option></select><small id=\"timezone-help\">Dates will be displayed in this timezone.</small></div><p class=\"c-select-demo__status\" data-select-status aria-live=\"polite\">No timezone selected.</p></div>",
+            "css": ".c-select-demo {\n  --select-accent:#b9f474; --select-accent-text:#162600; --select-border:#dcddd4; --select-border-strong:#bfc1b7; --select-canvas:#f5f5ef; --select-focus:#b9f474; --select-font:Inter, ui-sans-serif, system-ui, sans-serif; --select-muted:#62665d; --select-radius:0.55rem; --select-surface:#ffffff; --select-text:#171915;\n  align-content:center; background:var(--select-canvas); color:var(--select-text); display:grid; font-family:var(--select-font); min-height:100%; padding:2rem;\n}\n.c-select { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-select label { font-weight:650; }\n.c-select select { appearance:auto; background:var(--select-surface); border:1px solid var(--select-border-strong); border-radius:var(--select-radius); color:var(--select-text); font:inherit; min-height:2.75rem; padding:0.75rem; width:100%; }\n.c-select select:focus-visible { outline:0.2rem solid var(--select-focus); outline-offset:0.15rem; }\n.c-select small,.c-select-demo__status { color:var(--select-muted); line-height:1.5; }\n.c-select-demo__status { inline-size:min(100%,32rem); margin:1rem auto 0; }\n@media(max-width:32rem){.c-select-demo{padding:1rem;}}",
+            "javascript": "export function createSelect(root) {\n  const select=root.querySelector('select');const status=root.querySelector('[data-select-status]');\n  if(!(select instanceof HTMLSelectElement)||!(status instanceof HTMLElement))throw new Error('Select markup is incomplete.');\n  const update=()=>{const label=select.selectedOptions[0]?.textContent.trim()||'None';status.textContent=`Selected: ${label}.`;root.dispatchEvent(new CustomEvent('select:change',{detail:{value:select.value}}));};\n  select.addEventListener('change',update);\n  return{destroy(){select.removeEventListener('change',update);}};\n}\ndocument.querySelectorAll('[data-component=\"select\"]').forEach(createSelect);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "grouped-options",
+          "title": "Grouped options",
+          "summary": "A native select organized with optgroup labels for a longer but still manageable list.",
+          "tags": [
+            "optgroup",
+            "grouped",
+            "regions"
+          ],
+          "useWhen": "Use optgroups when meaningful categories make a moderate option list easier to scan.",
+          "avoidWhen": "Avoid deeply nested taxonomies or hundreds of options; use a purpose-built searchable picker instead.",
+          "customization": [
+            "Optgroup labels describe categories but are not selectable values.",
+            "Keep option labels understandable outside their group when the chosen value is displayed later.",
+            "The placeholder remains disabled so it cannot become a submitted choice."
+          ],
+          "example": {
+            "slug": "grouped-options",
+            "title": "Grouped deployment region",
+            "description": "Open the native picker and scan regions grouped by continent.",
+            "canvasHeight": 290,
+            "source": {
+              "html": "<div class=\"c-select-demo\" data-component=\"grouped-select\"><div class=\"c-select\"><label for=\"deployment-location\">Deployment location</label><select id=\"deployment-location\" name=\"location\"><option value=\"\" selected disabled>Choose a location</option><optgroup label=\"Americas\"><option value=\"us-east\">US East</option><option value=\"sa-east\">South America East</option></optgroup><optgroup label=\"Europe\"><option value=\"eu-west\">Europe West</option><option value=\"eu-central\">Europe Central</option></optgroup><optgroup label=\"Asia Pacific\"><option value=\"ap-south\">Asia Pacific South</option><option value=\"ap-northeast\">Asia Pacific Northeast</option></optgroup></select></div></div>",
+              "css": ".c-select-demo {\n  --select-accent:#b9f474; --select-accent-text:#162600; --select-border:#dcddd4; --select-border-strong:#bfc1b7; --select-canvas:#f5f5ef; --select-focus:#b9f474; --select-font:Inter, ui-sans-serif, system-ui, sans-serif; --select-muted:#62665d; --select-radius:0.55rem; --select-surface:#ffffff; --select-text:#171915;\n  align-content:center; background:var(--select-canvas); color:var(--select-text); display:grid; font-family:var(--select-font); min-height:100%; padding:2rem;\n}\n.c-select { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-select label { font-weight:650; }\n.c-select select { appearance:auto; background:var(--select-surface); border:1px solid var(--select-border-strong); border-radius:var(--select-radius); color:var(--select-text); font:inherit; min-height:2.75rem; padding:0.75rem; width:100%; }\n.c-select select:focus-visible { outline:0.2rem solid var(--select-focus); outline-offset:0.15rem; }\n.c-select small,.c-select-demo__status { color:var(--select-muted); line-height:1.5; }\n.c-select-demo__status { inline-size:min(100%,32rem); margin:1rem auto 0; }\n@media(max-width:32rem){.c-select-demo{padding:1rem;}}",
+              "javascript": "export function createGroupedSelect(root) {\n  if (!root.matches('[data-component=\"grouped-select\"]') || !root.querySelector('optgroup')) throw new Error('createGroupedSelect markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"grouped-select\"]').forEach(createGroupedSelect);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Label",
+          "description": "A visible name connected to the select."
+        },
+        {
+          "name": "Native select",
+          "description": "The focusable picker and submitted form control."
+        },
+        {
+          "name": "Placeholder option",
+          "description": "A disabled prompt when no default is appropriate."
+        },
+        {
+          "name": "Option group",
+          "description": "An optional labeled category for related choices."
+        },
+        {
+          "name": "Helper text",
+          "description": "Persistent context connected with aria-describedby."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--select-accent",
+          "defaultValue": "#b9f474",
+          "description": "Selected state and focus-support color."
+        },
+        {
+          "name": "--select-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--select-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--select-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--select-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--select-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--select-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--select-muted",
+          "defaultValue": "#62665d",
+          "description": "Helper and secondary text."
+        },
+        {
+          "name": "--select-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control corner radius."
+        },
+        {
+          "name": "--select-surface",
+          "defaultValue": "#ffffff",
+          "description": "Control and panel surface."
+        },
+        {
+          "name": "--select-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Connect every select to a visible label.",
+        "Use a disabled placeholder only when no valid default exists.",
+        "Keep option labels concise and unique.",
+        "Use optgroup for one meaningful category level only.",
+        "Do not replace the native picker solely to control popup styling."
+      ],
+      "responsive": "The select fills its container and uses the operating system's native narrow-screen picker.",
+      "limitations": [
+        "Native option popup styling varies by browser and operating system.",
+        "This component does not provide search, multi-select chips, remote loading, or virtualization."
+      ],
+      "provenance": {
+        "label": "Cross-library select behavior study",
+        "url": "https://primeng.dev/select",
+        "note": "PrimeNG Select, Bootstrap Selects, and Angular Material Select informed the inventory. This recipe intentionally uses the native select and original styling."
+      }
+    }
+  },
+  {
+    "slug": "tabs",
+    "type": "component",
+    "title": "Tabs",
+    "summary": "A manual-activation tab set with complete ARIA relationships, roving focus, and a responsive vertical variant.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "tabs",
+      "tabpanel",
+      "keyboard"
+    ],
+    "overview": "A dependency-free tabs pattern for switching among peer views in the same context. It distinguishes focus from selection in the default manual-activation model.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use tabs for a small set of peer sections where only one panel needs to be visible and switching should not navigate to a new URL.",
+      "avoidWhen": "Avoid tabs for sequential steps, primary site navigation, content people need to compare simultaneously, or headings that should remain searchable on one page.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Manual activation tabs",
+          "description": "Use Left/Right, Home, and End to move focus; press Enter or Space to reveal the focused panel.",
+          "canvasHeight": 400,
+          "source": {
+            "html": "<div class=\"c-tabs-demo\" data-component=\"tabs\"><div class=\"c-tabs\"><div class=\"c-tabs__list\" role=\"tablist\"><button role=\"tab\" id=\"tabs-tab-profile\" aria-controls=\"tabs-panel-profile\" aria-selected=\"true\" tabindex=\"0\">Profile</button><button role=\"tab\" id=\"tabs-tab-team\" aria-controls=\"tabs-panel-team\" aria-selected=\"false\" tabindex=\"-1\">Team</button><button role=\"tab\" id=\"tabs-tab-billing\" aria-controls=\"tabs-panel-billing\" aria-selected=\"false\" tabindex=\"-1\">Billing</button></div><section role=\"tabpanel\" id=\"tabs-panel-profile\" aria-labelledby=\"tabs-tab-profile\"><h2>Profile</h2><p>Update your display name, contact details, and preferred language.</p></section><section role=\"tabpanel\" id=\"tabs-panel-team\" aria-labelledby=\"tabs-tab-team\" hidden><h2>Team</h2><p>Invite collaborators and manage workspace roles.</p></section><section role=\"tabpanel\" id=\"tabs-panel-billing\" aria-labelledby=\"tabs-tab-billing\" hidden><h2>Billing</h2><p>Review invoices and update the payment method.</p></section></div></div>",
+            "css": ".c-tabs-demo {\n  --tabs-accent:#b9f474; --tabs-accent-text:#162600; --tabs-border:#dcddd4; --tabs-border-strong:#bfc1b7; --tabs-canvas:#f5f5ef; --tabs-focus:#b9f474; --tabs-font:Inter, ui-sans-serif, system-ui, sans-serif; --tabs-muted:#62665d; --tabs-radius:0.55rem; --tabs-surface:#ffffff; --tabs-text:#171915;\n  align-content:center; background:var(--tabs-canvas); color:var(--tabs-text); display:grid; font-family:var(--tabs-font); min-height:100%; padding:2rem;\n}\n.c-tabs { background:var(--tabs-surface); border:1px solid var(--tabs-border); border-radius:0.75rem; inline-size:min(100%,44rem); margin:0 auto; overflow:hidden; }\n.c-tabs__list { border-block-end:1px solid var(--tabs-border); display:flex; overflow-x:auto; padding:0 0.5rem; }\n.c-tabs [role=\"tab\"] { background:transparent; border:0; border-block-end:0.2rem solid transparent; color:var(--tabs-muted); cursor:pointer; flex:0 0 auto; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; }\n.c-tabs [role=\"tab\"][aria-selected=\"true\"] { border-block-end-color:var(--tabs-text); color:var(--tabs-text); }\n.c-tabs [role=\"tab\"]:focus-visible { outline:0.2rem solid var(--tabs-focus); outline-offset:-0.3rem; }\n.c-tabs [role=\"tabpanel\"] { line-height:1.6; min-height:10rem; padding:1.5rem; }\n.c-tabs [role=\"tabpanel\"] h2 { font-size:clamp(1.55rem,5vw,2rem); letter-spacing:-0.04em; line-height:1.05; margin:0 0 0.75rem; }\n.c-tabs [role=\"tabpanel\"] p { color:var(--tabs-muted); margin:0; }\n@media(max-width:32rem){.c-tabs-demo{padding:1rem;}.c-tabs [role=\"tabpanel\"]{padding:1rem;}}",
+            "javascript": "export function createTabs(root) {\n  const tabs=[...root.querySelectorAll('[role=\"tab\"]')];const panels=[...root.querySelectorAll('[role=\"tabpanel\"]')];\n  if(!tabs.length||tabs.length!==panels.length)throw new Error('Tabs markup is incomplete.');\n  const activate=(tab,{focus=true}={})=>{tabs.forEach((item,index)=>{const selected=item===tab;item.setAttribute('aria-selected',String(selected));item.tabIndex=selected?0:-1;panels[index].hidden=!selected;});if(focus)tab.focus();root.dispatchEvent(new CustomEvent('tabs:change',{detail:{id:tab.id}}));};\n  const handleClick=(event)=>activate(event.currentTarget,{focus:false});\n  const handleKeydown=(event)=>{const index=tabs.indexOf(event.currentTarget);let next=index;if(event.key==='ArrowRight')next=(index+1)%tabs.length;else if(event.key==='ArrowLeft')next=(index-1+tabs.length)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else if(event.key==='Enter'||event.key===' '){event.preventDefault();activate(event.currentTarget);return;}else return;event.preventDefault();tabs[next].focus();};\n  tabs.forEach(tab=>{tab.addEventListener('click',handleClick);tab.addEventListener('keydown',handleKeydown);});\n  return{activate(index){if(tabs[index])activate(tabs[index]);},destroy(){tabs.forEach(tab=>{tab.removeEventListener('click',handleClick);tab.removeEventListener('keydown',handleKeydown);});}};\n}\ndocument.querySelectorAll('[data-component=\"tabs\"]').forEach(createTabs);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "vertical",
+          "title": "Vertical tabs",
+          "summary": "A left-aligned tab list with automatic Up/Down activation that collapses to a horizontal list on narrow screens.",
+          "tags": [
+            "vertical",
+            "automatic-activation",
+            "responsive"
+          ],
+          "useWhen": "Use vertical tabs when labels need more width and panel changes are immediate enough for automatic activation.",
+          "avoidWhen": "Avoid automatic activation when switching triggers network work, heavy rendering, or a disruptive context change.",
+          "customization": [
+            "aria-orientation=vertical tells assistive technology to expect Up and Down navigation.",
+            "Focus and selection move together because every panel is already available locally.",
+            "Below 38rem the visual list becomes horizontal; keyboard behavior remains Up/Down, so use the default variant if orientation must change semantically too."
+          ],
+          "example": {
+            "slug": "vertical",
+            "title": "Vertical settings tabs",
+            "description": "Use Up/Down, Home, and End to move and activate tabs, then inspect the stacked narrow-screen layout.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<div class=\"c-tabs-demo\" data-component=\"vertical-tabs\"><div class=\"c-tabs c-tabs--vertical\"><div class=\"c-tabs__list\" role=\"tablist\" aria-orientation=\"vertical\"><button role=\"tab\" id=\"vertical-tabs-tab-profile\" aria-controls=\"vertical-tabs-panel-profile\" aria-selected=\"true\" tabindex=\"0\">Profile</button><button role=\"tab\" id=\"vertical-tabs-tab-team\" aria-controls=\"vertical-tabs-panel-team\" aria-selected=\"false\" tabindex=\"-1\">Team</button><button role=\"tab\" id=\"vertical-tabs-tab-billing\" aria-controls=\"vertical-tabs-panel-billing\" aria-selected=\"false\" tabindex=\"-1\">Billing</button></div><section role=\"tabpanel\" id=\"vertical-tabs-panel-profile\" aria-labelledby=\"vertical-tabs-tab-profile\"><h2>Profile</h2><p>Update your display name, contact details, and preferred language.</p></section><section role=\"tabpanel\" id=\"vertical-tabs-panel-team\" aria-labelledby=\"vertical-tabs-tab-team\" hidden><h2>Team</h2><p>Invite collaborators and manage workspace roles.</p></section><section role=\"tabpanel\" id=\"vertical-tabs-panel-billing\" aria-labelledby=\"vertical-tabs-tab-billing\" hidden><h2>Billing</h2><p>Review invoices and update the payment method.</p></section></div></div>",
+              "css": ".c-tabs-demo {\n  --tabs-accent:#b9f474; --tabs-accent-text:#162600; --tabs-border:#dcddd4; --tabs-border-strong:#bfc1b7; --tabs-canvas:#f5f5ef; --tabs-focus:#b9f474; --tabs-font:Inter, ui-sans-serif, system-ui, sans-serif; --tabs-muted:#62665d; --tabs-radius:0.55rem; --tabs-surface:#ffffff; --tabs-text:#171915;\n  align-content:center; background:var(--tabs-canvas); color:var(--tabs-text); display:grid; font-family:var(--tabs-font); min-height:100%; padding:2rem;\n}\n.c-tabs { background:var(--tabs-surface); border:1px solid var(--tabs-border); border-radius:0.75rem; inline-size:min(100%,44rem); margin:0 auto; overflow:hidden; }\n.c-tabs__list { border-block-end:1px solid var(--tabs-border); display:flex; overflow-x:auto; padding:0 0.5rem; }\n.c-tabs [role=\"tab\"] { background:transparent; border:0; border-block-end:0.2rem solid transparent; color:var(--tabs-muted); cursor:pointer; flex:0 0 auto; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; }\n.c-tabs [role=\"tab\"][aria-selected=\"true\"] { border-block-end-color:var(--tabs-text); color:var(--tabs-text); }\n.c-tabs [role=\"tab\"]:focus-visible { outline:0.2rem solid var(--tabs-focus); outline-offset:-0.3rem; }\n.c-tabs [role=\"tabpanel\"] { line-height:1.6; min-height:10rem; padding:1.5rem; }\n.c-tabs [role=\"tabpanel\"] h2 { font-size:clamp(1.55rem,5vw,2rem); letter-spacing:-0.04em; line-height:1.05; margin:0 0 0.75rem; }\n.c-tabs [role=\"tabpanel\"] p { color:var(--tabs-muted); margin:0; }\n@media(max-width:32rem){.c-tabs-demo{padding:1rem;}.c-tabs [role=\"tabpanel\"]{padding:1rem;}}\n.c-tabs--vertical { display:grid; grid-template-columns:12rem 1fr; }\n.c-tabs--vertical .c-tabs__list { border-block-end:0; border-inline-end:1px solid var(--tabs-border); display:grid; overflow:visible; padding:0.5rem; }\n.c-tabs--vertical [role=\"tab\"] { border-block-end:0; border-inline-end:0.2rem solid transparent; text-align:start; }\n.c-tabs--vertical [role=\"tab\"][aria-selected=\"true\"] { border-inline-end-color:var(--tabs-text); }\n@media(max-width:38rem){.c-tabs--vertical{grid-template-columns:1fr}.c-tabs--vertical .c-tabs__list{border-block-end:1px solid var(--tabs-border);border-inline-end:0;display:flex;overflow-x:auto}.c-tabs--vertical [role=\"tab\"]{border-block-end:0.2rem solid transparent;border-inline-end:0}.c-tabs--vertical [role=\"tab\"][aria-selected=\"true\"]{border-block-end-color:var(--tabs-text)}}",
+              "javascript": "export function createVerticalTabs(root) {\n  const tabs=[...root.querySelectorAll('[role=\"tab\"]')];const panels=[...root.querySelectorAll('[role=\"tabpanel\"]')];\n  if(!tabs.length||tabs.length!==panels.length)throw new Error('Vertical tabs markup is incomplete.');\n  const activate=(tab)=>{tabs.forEach((item,index)=>{const selected=item===tab;item.setAttribute('aria-selected',String(selected));item.tabIndex=selected?0:-1;panels[index].hidden=!selected;});tab.focus();};\n  const click=(event)=>activate(event.currentTarget);\n  const keydown=(event)=>{const index=tabs.indexOf(event.currentTarget);let next=index;if(event.key==='ArrowDown')next=(index+1)%tabs.length;else if(event.key==='ArrowUp')next=(index-1+tabs.length)%tabs.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=tabs.length-1;else return;event.preventDefault();activate(tabs[next]);};\n  tabs.forEach(tab=>{tab.addEventListener('click',click);tab.addEventListener('keydown',keydown);});\n  return{destroy(){tabs.forEach(tab=>{tab.removeEventListener('click',click);tab.removeEventListener('keydown',keydown);});}};\n}\ndocument.querySelectorAll('[data-component=\"vertical-tabs\"]').forEach(createVerticalTabs);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Tab list",
+          "description": "The composite control containing peer tabs."
+        },
+        {
+          "name": "Tab",
+          "description": "A button with selection state and a reference to one panel."
+        },
+        {
+          "name": "Panel",
+          "description": "The content region labeled by its controlling tab."
+        },
+        {
+          "name": "Roving focus",
+          "description": "Only the selected tab participates in ordinary Tab navigation."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--tabs-accent",
+          "defaultValue": "#b9f474",
+          "description": "Selected state and focus-support color."
+        },
+        {
+          "name": "--tabs-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--tabs-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries and dividers."
+        },
+        {
+          "name": "--tabs-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Interactive control borders."
+        },
+        {
+          "name": "--tabs-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas background."
+        },
+        {
+          "name": "--tabs-focus",
+          "defaultValue": "#b9f474",
+          "description": "Visible keyboard focus outline."
+        },
+        {
+          "name": "--tabs-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font stack."
+        },
+        {
+          "name": "--tabs-muted",
+          "defaultValue": "#62665d",
+          "description": "Helper and secondary text."
+        },
+        {
+          "name": "--tabs-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control corner radius."
+        },
+        {
+          "name": "--tabs-surface",
+          "defaultValue": "#ffffff",
+          "description": "Control and panel surface."
+        },
+        {
+          "name": "--tabs-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Use role=tablist, role=tab, and role=tabpanel only for dynamic same-page views.",
+        "Connect every tab and panel bidirectionally with aria-controls and aria-labelledby.",
+        "Keep exactly one tab selected and in the tab order.",
+        "Manual activation uses arrows for focus and Enter or Space for selection.",
+        "Do not use tab semantics for navigation links that load another route."
+      ],
+      "responsive": "The horizontal list scrolls within its surface. Vertical tabs become a one-column visual layout below 38rem.",
+      "limitations": [
+        "The vertical variant keeps vertical keyboard semantics after its narrow visual reflow; choose the default pattern when this mismatch is undesirable.",
+        "Tabs do not update the URL, preserve deep links, or lazy-load panels."
+      ],
+      "provenance": {
+        "label": "Cross-library tabs behavior study",
+        "url": "https://primeng.dev/tabs",
+        "note": "PrimeNG Tabs, Bootstrap Navs and Tabs, Angular Material Tabs, and the ARIA tabs pattern informed behavior. The implementation is original native JavaScript."
+      }
+    }
+  }
+]
+

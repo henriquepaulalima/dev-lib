@@ -1,0 +1,618 @@
+[
+  {
+    "slug": "avatar",
+    "type": "component",
+    "title": "Avatar",
+    "summary": "Initial-based person representations with documented naming and a compact overlapping group.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "avatar",
+      "identity",
+      "group"
+    ],
+    "overview": "A dependency-free avatar that uses initials so previews need no remote images. The surrounding context supplies the person's name unless the avatar itself conveys otherwise unavailable information.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use an avatar as a compact visual reference to a person or organization next to a visible name or in a labeled group.",
+      "avoidWhen": "Avoid treating an avatar as the only source of identity, or making a noninteractive avatar focusable.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Initial avatars",
+          "description": "Compare circular and square shapes at supported sizes; each is decorative beside real identity text in production.",
+          "canvasHeight": 260,
+          "source": {
+            "html": "<div class=\"c-avatar-demo\" data-component=\"avatar\"><div class=\"c-avatar-demo__row\"><span class=\"c-avatar c-avatar--sm\" aria-hidden=\"true\">AM</span><span class=\"c-avatar\" aria-hidden=\"true\">JL</span><span class=\"c-avatar c-avatar--lg\" aria-hidden=\"true\">RK</span><span class=\"c-avatar c-avatar--square\" aria-hidden=\"true\">NS</span></div></div>",
+            "css": ".c-avatar-demo{--avatar-accent:#b9f474;--avatar-accent-text:#162600;--avatar-border:#dcddd4;--avatar-border-strong:#bfc1b7;--avatar-canvas:#f5f5ef;--avatar-focus:#b9f474;--avatar-font:Inter,ui-sans-serif,system-ui,sans-serif;--avatar-muted:#62665d;--avatar-radius:0.55rem;--avatar-surface:#ffffff;--avatar-text:#171915;align-content:center;background:var(--avatar-canvas);color:var(--avatar-text);display:grid;font-family:var(--avatar-font);min-height:100%;padding:2rem}.c-avatar-demo__row{align-items:center;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center}.c-avatar{align-items:center;background:var(--avatar-accent);border:1px solid var(--avatar-border);border-radius:50%;color:var(--avatar-accent-text);display:inline-flex;font-weight:650;height:3rem;justify-content:center;width:3rem}.c-avatar--square{border-radius:var(--avatar-radius)}.c-avatar--sm{font-size:.75rem;height:2.25rem;width:2.25rem}.c-avatar--lg{font-size:1.25rem;height:4rem;width:4rem}@media(max-width:32rem){.c-avatar-demo{padding:1rem}}",
+            "javascript": "export function createAvatar(root) {\n  if (!root.matches('[data-component=\"avatar\"]') || !root.querySelector('.c-avatar')) throw new Error('createAvatar markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"avatar\"]').forEach(createAvatar);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "group",
+          "title": "Avatar group",
+          "summary": "Overlapping member avatars followed by a visible overflow count and one complete accessible group label.",
+          "tags": [
+            "group",
+            "overlap",
+            "overflow",
+            "count"
+          ],
+          "useWhen": "Use an avatar group to summarize membership when individual names are available elsewhere or in the accessible label.",
+          "avoidWhen": "Avoid it when every member must be identified or selected directly.",
+          "customization": [
+            "The group carries one accessible label while decorative initials are hidden.",
+            "The +2 item states overflow visually; include hidden names elsewhere when they matter.",
+            "Overlap uses a canvas-colored ring to keep every circle distinct."
+          ],
+          "example": {
+            "slug": "group",
+            "title": "Project members",
+            "description": "Inspect the grouped label and compact +2 overflow representation.",
+            "canvasHeight": 260,
+            "source": {
+              "html": "<div class=\"c-avatar-demo\" data-component=\"avatar-group\"><div class=\"c-avatar-group\" role=\"img\" aria-label=\"Project members: Ana Martins, João Lima, Ravi Kumar, and 2 more\"><span class=\"c-avatar\">AM</span><span class=\"c-avatar\">JL</span><span class=\"c-avatar\">RK</span><span class=\"c-avatar c-avatar--more\">+2</span></div></div>",
+              "css": ".c-avatar-demo{--avatar-accent:#b9f474;--avatar-accent-text:#162600;--avatar-border:#dcddd4;--avatar-border-strong:#bfc1b7;--avatar-canvas:#f5f5ef;--avatar-focus:#b9f474;--avatar-font:Inter,ui-sans-serif,system-ui,sans-serif;--avatar-muted:#62665d;--avatar-radius:0.55rem;--avatar-surface:#ffffff;--avatar-text:#171915;align-content:center;background:var(--avatar-canvas);color:var(--avatar-text);display:grid;font-family:var(--avatar-font);min-height:100%;padding:2rem}.c-avatar-demo__row{align-items:center;display:flex;flex-wrap:wrap;gap:1rem;justify-content:center}.c-avatar{align-items:center;background:var(--avatar-accent);border:1px solid var(--avatar-border);border-radius:50%;color:var(--avatar-accent-text);display:inline-flex;font-weight:650;height:3rem;justify-content:center;width:3rem}.c-avatar--square{border-radius:var(--avatar-radius)}.c-avatar--sm{font-size:.75rem;height:2.25rem;width:2.25rem}.c-avatar--lg{font-size:1.25rem;height:4rem;width:4rem}@media(max-width:32rem){.c-avatar-demo{padding:1rem}}.c-avatar-group{display:flex;justify-content:center;padding-inline-start:.75rem}.c-avatar-group .c-avatar{box-shadow:0 0 0 .2rem var(--avatar-canvas);margin-inline-start:-.75rem}.c-avatar--more{background:var(--avatar-surface);color:var(--avatar-text)}",
+              "javascript": "export function createAvatarGroup(root) {\n  if (!root.matches('[data-component=\"avatar-group\"]') || !root.querySelector('.c-avatar-group')) throw new Error('createAvatarGroup markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"avatar-group\"]').forEach(createAvatarGroup);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Shape",
+          "description": "A fixed circular or softly square identity surface."
+        },
+        {
+          "name": "Initials",
+          "description": "A short visual fallback derived from the display name."
+        },
+        {
+          "name": "Context",
+          "description": "Nearby visible text or a group label that communicates the full identity."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--avatar-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--avatar-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--avatar-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries."
+        },
+        {
+          "name": "--avatar-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Strong control boundaries."
+        },
+        {
+          "name": "--avatar-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas."
+        },
+        {
+          "name": "--avatar-focus",
+          "defaultValue": "#b9f474",
+          "description": "Keyboard focus outline."
+        },
+        {
+          "name": "--avatar-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font."
+        },
+        {
+          "name": "--avatar-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--avatar-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control radius."
+        },
+        {
+          "name": "--avatar-surface",
+          "defaultValue": "#ffffff",
+          "description": "Surface color."
+        },
+        {
+          "name": "--avatar-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Hide an avatar with aria-hidden when the person's visible name is adjacent.",
+        "Use role=img and an accessible name only when the avatar communicates identity unavailable in nearby text.",
+        "Do not put noninteractive avatars in the tab order.",
+        "Treat initials as a visual fallback, not a reliable accessible name."
+      ],
+      "responsive": "Avatar sizes remain fixed while rows wrap and groups retain controlled overlap.",
+      "limitations": [
+        "Remote images are intentionally excluded from the preview.",
+        "The initials algorithm and image-failure fallback belong to consuming application data logic."
+      ],
+      "provenance": {
+        "label": "Cross-library avatar study",
+        "url": "https://primeng.dev/avatar",
+        "note": "PrimeNG Avatar and Angular Material avatar patterns informed the inventory. The initials-only recipe and styling are original."
+      }
+    }
+  },
+  {
+    "slug": "chip",
+    "type": "component",
+    "title": "Chip",
+    "summary": "Compact entity labels with a separately focusable and specifically named remove action.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "chip",
+      "tag",
+      "remove"
+    ],
+    "overview": "A dependency-free chip for representing selected filters, people, or compact entities. Static chips remain plain text; removal is a real button.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use chips to show compact selected values or entities that benefit from grouping and optional removal.",
+      "avoidWhen": "Avoid chips for status severity, primary actions, paragraphs, or a dense substitute for ordinary links.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Entity chips",
+          "description": "Review static chips as noninteractive list items.",
+          "canvasHeight": 260,
+          "source": {
+            "html": "<div class=\"c-chip-demo\" data-component=\"chip\"><ul class=\"c-chip-list\" aria-label=\"Selected topics\"><li class=\"c-chip c-chip--accent\">Accessibility</li><li class=\"c-chip\">CSS</li><li class=\"c-chip\">JavaScript</li></ul></div>",
+            "css": ".c-chip-demo{--chip-accent:#b9f474;--chip-accent-text:#162600;--chip-border:#dcddd4;--chip-border-strong:#bfc1b7;--chip-canvas:#f5f5ef;--chip-focus:#b9f474;--chip-font:Inter,ui-sans-serif,system-ui,sans-serif;--chip-muted:#62665d;--chip-radius:.55rem;--chip-surface:#ffffff;--chip-text:#171915;align-content:center;background:var(--chip-canvas);color:var(--chip-text);display:grid;font-family:var(--chip-font);gap:1rem;min-height:100%;padding:2rem}.c-chip-list{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0;padding:0}.c-chip{align-items:center;background:var(--chip-surface);border:1px solid var(--chip-border);border-radius:999px;display:inline-flex;font-size:.875rem;gap:.5rem;min-height:2.25rem;padding:.35rem .75rem}.c-chip--accent{background:var(--chip-accent);border-color:var(--chip-accent);color:var(--chip-accent-text)}.c-chip button{align-items:center;background:transparent;border:1px solid transparent;border-radius:50%;color:inherit;cursor:pointer;display:inline-flex;font:inherit;height:1.75rem;justify-content:center;margin:-.2rem -.45rem -.2rem 0;width:1.75rem}.c-chip button:hover{border-color:currentColor}.c-chip button:focus-visible{outline:.2rem solid var(--chip-focus);outline-offset:.15rem}.c-chip-demo__status{color:var(--chip-muted);margin:0}@media(max-width:32rem){.c-chip-demo{padding:1rem}}",
+            "javascript": "export function createChip(root) {\n  if (!root.matches('[data-component=\"chip\"]') || !root.querySelector('.c-chip')) throw new Error('createChip markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"chip\"]').forEach(createChip);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "removable",
+          "title": "Removable chips",
+          "summary": "Selected entities with native remove buttons, precise accessible names, and polite removal feedback.",
+          "tags": [
+            "removable",
+            "button",
+            "selection",
+            "aria-live"
+          ],
+          "useWhen": "Use removable chips when people can directly remove values from a selected set.",
+          "avoidWhen": "Avoid making the entire chip keyboard interactive; removal belongs to its explicit button.",
+          "customization": [
+            "Every remove button names the specific entity it affects.",
+            "Event delegation supports chips removed after initialization.",
+            "The polite status confirms removal without moving focus."
+          ],
+          "example": {
+            "slug": "removable",
+            "title": "Remove selected filters",
+            "description": "Remove filters with pointer, Enter, or Space and observe the status message.",
+            "canvasHeight": 300,
+            "source": {
+              "html": "<div class=\"c-chip-demo\" data-component=\"removable-chips\"><ul class=\"c-chip-list\" data-chip-list aria-label=\"Selected filters\"><li class=\"c-chip\" data-chip><span data-chip-label>In progress</span><button type=\"button\" data-chip-remove aria-label=\"Remove In progress\">×</button></li><li class=\"c-chip\" data-chip><span data-chip-label>Assigned to me</span><button type=\"button\" data-chip-remove aria-label=\"Remove Assigned to me\">×</button></li><li class=\"c-chip\" data-chip><span data-chip-label>High priority</span><button type=\"button\" data-chip-remove aria-label=\"Remove High priority\">×</button></li></ul><p class=\"c-chip-demo__status\" data-chip-status aria-live=\"polite\">Three filters selected.</p></div>",
+              "css": ".c-chip-demo{--chip-accent:#b9f474;--chip-accent-text:#162600;--chip-border:#dcddd4;--chip-border-strong:#bfc1b7;--chip-canvas:#f5f5ef;--chip-focus:#b9f474;--chip-font:Inter,ui-sans-serif,system-ui,sans-serif;--chip-muted:#62665d;--chip-radius:.55rem;--chip-surface:#ffffff;--chip-text:#171915;align-content:center;background:var(--chip-canvas);color:var(--chip-text);display:grid;font-family:var(--chip-font);gap:1rem;min-height:100%;padding:2rem}.c-chip-list{display:flex;flex-wrap:wrap;gap:.5rem;list-style:none;margin:0;padding:0}.c-chip{align-items:center;background:var(--chip-surface);border:1px solid var(--chip-border);border-radius:999px;display:inline-flex;font-size:.875rem;gap:.5rem;min-height:2.25rem;padding:.35rem .75rem}.c-chip--accent{background:var(--chip-accent);border-color:var(--chip-accent);color:var(--chip-accent-text)}.c-chip button{align-items:center;background:transparent;border:1px solid transparent;border-radius:50%;color:inherit;cursor:pointer;display:inline-flex;font:inherit;height:1.75rem;justify-content:center;margin:-.2rem -.45rem -.2rem 0;width:1.75rem}.c-chip button:hover{border-color:currentColor}.c-chip button:focus-visible{outline:.2rem solid var(--chip-focus);outline-offset:.15rem}.c-chip-demo__status{color:var(--chip-muted);margin:0}@media(max-width:32rem){.c-chip-demo{padding:1rem}}",
+              "javascript": "export function createRemovableChips(root) {\n  const list=root.querySelector('[data-chip-list]');const status=root.querySelector('[data-chip-status]');\n  if(!(list instanceof HTMLElement)||!(status instanceof HTMLElement))throw new Error('Removable chip markup is incomplete.');\n  const remove=(button)=>{const chip=button.closest('[data-chip]');if(!chip)return;const label=chip.querySelector('[data-chip-label]')?.textContent.trim()||'Item';chip.remove();status.textContent=`${label} removed.`;root.dispatchEvent(new CustomEvent('chip:remove',{detail:{label}}));};\n  const click=(event)=>{const button=event.target.closest('[data-chip-remove]');if(button&&root.contains(button))remove(button);};\n  root.addEventListener('click',click);\n  return{destroy(){root.removeEventListener('click',click);}};\n}\ndocument.querySelectorAll('[data-component=\"removable-chips\"]').forEach(createRemovableChips);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Entity label",
+          "description": "The visible selected value or category."
+        },
+        {
+          "name": "Optional remove button",
+          "description": "A native button whose name includes the entity."
+        },
+        {
+          "name": "List",
+          "description": "A semantic collection when several chips form one selected set."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--chip-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--chip-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--chip-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries."
+        },
+        {
+          "name": "--chip-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Strong control boundaries."
+        },
+        {
+          "name": "--chip-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas."
+        },
+        {
+          "name": "--chip-focus",
+          "defaultValue": "#b9f474",
+          "description": "Keyboard focus outline."
+        },
+        {
+          "name": "--chip-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font."
+        },
+        {
+          "name": "--chip-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--chip-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control radius."
+        },
+        {
+          "name": "--chip-surface",
+          "defaultValue": "#ffffff",
+          "description": "Surface color."
+        },
+        {
+          "name": "--chip-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Keep static chips noninteractive and out of the tab order.",
+        "Represent a chip collection as a list when order or grouping is meaningful.",
+        "Use a native button for removal and include the item name in its accessible name.",
+        "Announce removal politely when the visual disappearance is not sufficient."
+      ],
+      "responsive": "Chip lists wrap across lines without truncating labels or shrinking remove targets.",
+      "limitations": [
+        "The example removes DOM nodes but does not update application data or restore deleted values.",
+        "Input-driven tag creation is a separate composite component."
+      ],
+      "provenance": {
+        "label": "Cross-library chip behavior study",
+        "url": "https://primeng.dev/chip",
+        "note": "PrimeNG Chip, Bootstrap badges, and Angular Material Chips informed the inventory. The list and removal implementation are original."
+      }
+    }
+  },
+  {
+    "slug": "divider",
+    "type": "component",
+    "title": "Divider",
+    "summary": "Horizontal, labeled, and responsive vertical separators for visually distinct content regions.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "divider",
+      "separator",
+      "layout"
+    ],
+    "overview": "A dependency-free separator. Decorative rules stay out of the accessibility tree, while semantic separation uses hr or role=separator only when the content structure benefits.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a divider when spacing alone does not make a meaningful boundary between adjacent content regions clear.",
+      "avoidWhen": "Avoid excessive rules that fragment a page or imply structure not present in the document outline.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Horizontal divider",
+          "description": "Review two content sections separated by a native thematic break.",
+          "canvasHeight": 330,
+          "source": {
+            "html": "<div class=\"c-divider-demo\" data-component=\"divider\"><section><h2>Account</h2><p>Update profile and sign-in preferences.</p></section><hr class=\"c-divider\"><section><h2>Privacy</h2><p>Control visibility and activity sharing.</p></section></div>",
+            "css": ".c-divider-demo{--divider-accent:#b9f474;--divider-accent-text:#162600;--divider-border:#dcddd4;--divider-border-strong:#bfc1b7;--divider-canvas:#f5f5ef;--divider-focus:#b9f474;--divider-font:Inter,ui-sans-serif,system-ui,sans-serif;--divider-muted:#62665d;--divider-radius:.55rem;--divider-surface:#ffffff;--divider-text:#171915;align-content:center;background:var(--divider-canvas);color:var(--divider-text);display:grid;font-family:var(--divider-font);gap:1.5rem;min-height:100%;padding:2rem}.c-divider-demo section{line-height:1.6}.c-divider-demo h2{margin:0 0 .5rem}.c-divider-demo p{color:var(--divider-muted);margin:0}.c-divider{border:0;border-block-start:1px solid var(--divider-border);margin:0}.c-divider--labeled{align-items:center;border:0;display:flex;gap:1rem}.c-divider--labeled::before,.c-divider--labeled::after{border-block-start:1px solid var(--divider-border);content:\"\";flex:1}.c-divider--labeled span{color:var(--divider-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}.c-divider-layout{display:flex;gap:1.5rem}.c-divider-layout section{flex:1}.c-divider--vertical{border:0;border-inline-start:1px solid var(--divider-border);margin:0}@media(max-width:32rem){.c-divider-demo{padding:1rem}.c-divider-layout{display:grid}.c-divider--vertical{border-block-start:1px solid var(--divider-border);border-inline-start:0}}",
+            "javascript": "export function createDivider(root) {\n  if (!root.matches('[data-component=\"divider\"]') || !root.querySelector('hr')) throw new Error('createDivider markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"divider\"]').forEach(createDivider);"
+          }
+        }
+      ],
+      "variants": [
+        {
+          "slug": "labeled",
+          "title": "Labeled divider",
+          "summary": "A decorative centered rule with a visible text transition that carries the meaning.",
+          "tags": [
+            "label",
+            "content",
+            "horizontal"
+          ],
+          "useWhen": "Use a labeled divider to introduce a short transition such as Or between equivalent paths.",
+          "avoidWhen": "Avoid giving a decorative rule separator semantics when the visible label already explains the transition.",
+          "customization": [
+            "The pseudo-element rules are decorative and absent from the accessibility tree.",
+            "Keep the label short and avoid using it as a substitute for a real heading."
+          ],
+          "example": {
+            "slug": "labeled",
+            "title": "Alternative sign-in path",
+            "description": "Read the visible Or label between two content blocks.",
+            "canvasHeight": 270,
+            "source": {
+              "html": "<div class=\"c-divider-demo\" data-component=\"labeled-divider\"><p>Continue with your workspace account.</p><div class=\"c-divider--labeled\"><span>Or</span></div><p>Use a one-time access code.</p></div>",
+              "css": ".c-divider-demo{--divider-accent:#b9f474;--divider-accent-text:#162600;--divider-border:#dcddd4;--divider-border-strong:#bfc1b7;--divider-canvas:#f5f5ef;--divider-focus:#b9f474;--divider-font:Inter,ui-sans-serif,system-ui,sans-serif;--divider-muted:#62665d;--divider-radius:.55rem;--divider-surface:#ffffff;--divider-text:#171915;align-content:center;background:var(--divider-canvas);color:var(--divider-text);display:grid;font-family:var(--divider-font);gap:1.5rem;min-height:100%;padding:2rem}.c-divider-demo section{line-height:1.6}.c-divider-demo h2{margin:0 0 .5rem}.c-divider-demo p{color:var(--divider-muted);margin:0}.c-divider{border:0;border-block-start:1px solid var(--divider-border);margin:0}.c-divider--labeled{align-items:center;border:0;display:flex;gap:1rem}.c-divider--labeled::before,.c-divider--labeled::after{border-block-start:1px solid var(--divider-border);content:\"\";flex:1}.c-divider--labeled span{color:var(--divider-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}.c-divider-layout{display:flex;gap:1.5rem}.c-divider-layout section{flex:1}.c-divider--vertical{border:0;border-inline-start:1px solid var(--divider-border);margin:0}@media(max-width:32rem){.c-divider-demo{padding:1rem}.c-divider-layout{display:grid}.c-divider--vertical{border-block-start:1px solid var(--divider-border);border-inline-start:0}}",
+              "javascript": "export function createLabeledDivider(root) {\n  if (!root.matches('[data-component=\"labeled-divider\"]') || !root.querySelector('.c-divider--labeled')) throw new Error('createLabeledDivider markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"labeled-divider\"]').forEach(createLabeledDivider);"
+            }
+          }
+        },
+        {
+          "slug": "vertical",
+          "title": "Responsive vertical divider",
+          "summary": "A vertical separator between peer columns that becomes horizontal when the layout stacks.",
+          "tags": [
+            "vertical",
+            "responsive",
+            "columns"
+          ],
+          "useWhen": "Use a vertical divider between two peer regions that remain visually close in a horizontal layout.",
+          "avoidWhen": "Avoid vertical rules between unrelated regions or when generous spacing already creates a clear boundary.",
+          "customization": [
+            "aria-orientation reflects the wide-screen separator; the visual orientation changes below 32rem.",
+            "If assistive orientation must also change dynamically, update aria-orientation with matchMedia.",
+            "Source order remains unchanged when columns stack."
+          ],
+          "example": {
+            "slug": "vertical",
+            "title": "Split summary",
+            "description": "Switch to a narrow preview to see the vertical boundary become horizontal.",
+            "canvasHeight": 310,
+            "source": {
+              "html": "<div class=\"c-divider-demo\" data-component=\"vertical-divider\"><div class=\"c-divider-layout\"><section><h2>Drafts</h2><p>6 documents</p></section><div class=\"c-divider--vertical\" role=\"separator\" aria-orientation=\"vertical\"></div><section><h2>Published</h2><p>24 documents</p></section></div></div>",
+              "css": ".c-divider-demo{--divider-accent:#b9f474;--divider-accent-text:#162600;--divider-border:#dcddd4;--divider-border-strong:#bfc1b7;--divider-canvas:#f5f5ef;--divider-focus:#b9f474;--divider-font:Inter,ui-sans-serif,system-ui,sans-serif;--divider-muted:#62665d;--divider-radius:.55rem;--divider-surface:#ffffff;--divider-text:#171915;align-content:center;background:var(--divider-canvas);color:var(--divider-text);display:grid;font-family:var(--divider-font);gap:1.5rem;min-height:100%;padding:2rem}.c-divider-demo section{line-height:1.6}.c-divider-demo h2{margin:0 0 .5rem}.c-divider-demo p{color:var(--divider-muted);margin:0}.c-divider{border:0;border-block-start:1px solid var(--divider-border);margin:0}.c-divider--labeled{align-items:center;border:0;display:flex;gap:1rem}.c-divider--labeled::before,.c-divider--labeled::after{border-block-start:1px solid var(--divider-border);content:\"\";flex:1}.c-divider--labeled span{color:var(--divider-muted);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase}.c-divider-layout{display:flex;gap:1.5rem}.c-divider-layout section{flex:1}.c-divider--vertical{border:0;border-inline-start:1px solid var(--divider-border);margin:0}@media(max-width:32rem){.c-divider-demo{padding:1rem}.c-divider-layout{display:grid}.c-divider--vertical{border-block-start:1px solid var(--divider-border);border-inline-start:0}}",
+              "javascript": "export function createVerticalDivider(root) {\n  if (!root.matches('[data-component=\"vertical-divider\"]') || !root.querySelector('[role=\"separator\"]')) throw new Error('createVerticalDivider markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"vertical-divider\"]').forEach(createVerticalDivider);"
+            }
+          }
+        }
+      ],
+      "anatomy": [
+        {
+          "name": "Adjacent regions",
+          "description": "Content whose relationship justifies a visible boundary."
+        },
+        {
+          "name": "Rule",
+          "description": "A horizontal or vertical one-pixel separator."
+        },
+        {
+          "name": "Optional label",
+          "description": "Short transition text carried separately from decorative lines."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--divider-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--divider-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--divider-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries."
+        },
+        {
+          "name": "--divider-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Strong control boundaries."
+        },
+        {
+          "name": "--divider-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas."
+        },
+        {
+          "name": "--divider-focus",
+          "defaultValue": "#b9f474",
+          "description": "Keyboard focus outline."
+        },
+        {
+          "name": "--divider-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font."
+        },
+        {
+          "name": "--divider-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--divider-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control radius."
+        },
+        {
+          "name": "--divider-surface",
+          "defaultValue": "#ffffff",
+          "description": "Surface color."
+        },
+        {
+          "name": "--divider-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Use hr for a thematic break in content.",
+        "Use role=separator and aria-orientation for a meaningful non-hr vertical separator.",
+        "Keep purely decorative rules out of the accessibility tree.",
+        "Do not use a separator where a heading is needed to describe a new section."
+      ],
+      "responsive": "Vertical dividers become horizontal when their two-column layout stacks below 32rem.",
+      "limitations": [
+        "The responsive vertical example does not dynamically change aria-orientation; its customization notes describe that enhancement.",
+        "Border styles beyond the shared solid rule are intentionally omitted as decorative permutations."
+      ],
+      "provenance": {
+        "label": "Cross-library divider study",
+        "url": "https://primeng.dev/divider",
+        "note": "PrimeNG Divider, Bootstrap borders, and Angular Material Divider informed the inventory. The semantic recipes and styling are original."
+      }
+    }
+  },
+  {
+    "slug": "tooltip",
+    "type": "component",
+    "title": "Tooltip",
+    "summary": "A concise noninteractive description shown on both hover and focus, dismissible with Escape.",
+    "tags": [
+      "html",
+      "css",
+      "javascript",
+      "a11y",
+      "tooltip",
+      "hover",
+      "focus",
+      "escape"
+    ],
+    "overview": "A dependency-free tooltip for supplemental text. It never contains actions, appears for keyboard and pointer users, and remains connected to its trigger through aria-describedby.",
+    "dependencies": [],
+    "sections": [],
+    "component": {
+      "status": "draft",
+      "useWhen": "Use a tooltip for brief supplemental clarification of a control whose visible label remains understandable on its own.",
+      "avoidWhen": "Avoid tooltips for essential instructions, errors, rich content, actions, touch-only discovery, or information needed before focusing a control.",
+      "examples": [
+        {
+          "slug": "basic",
+          "title": "Hover and focus tooltip",
+          "description": "Hover or focus the button to show its description, then press Escape to dismiss it.",
+          "canvasHeight": 300,
+          "source": {
+            "html": "<div class=\"c-tooltip-demo\" data-component=\"tooltip\"><div class=\"c-tooltip-wrap\"><button class=\"c-tooltip-trigger\" type=\"button\" aria-describedby=\"archive-tooltip\" data-tooltip-trigger>Archive</button><div class=\"c-tooltip\" id=\"archive-tooltip\" role=\"tooltip\" hidden>Move this project out of active lists.</div></div></div>",
+            "css": ".c-tooltip-demo{--tooltip-accent:#b9f474;--tooltip-accent-text:#162600;--tooltip-border:#dcddd4;--tooltip-border-strong:#bfc1b7;--tooltip-canvas:#f5f5ef;--tooltip-focus:#b9f474;--tooltip-font:Inter,ui-sans-serif,system-ui,sans-serif;--tooltip-muted:#62665d;--tooltip-radius:.55rem;--tooltip-surface:#ffffff;--tooltip-text:#171915;align-items:center;background:var(--tooltip-canvas);color:var(--tooltip-text);display:flex;font-family:var(--tooltip-font);justify-content:center;min-height:100%;padding:3rem}.c-tooltip-wrap{position:relative}.c-tooltip-trigger{background:var(--tooltip-surface);border:1px solid var(--tooltip-border-strong);border-radius:var(--tooltip-radius);color:var(--tooltip-text);cursor:pointer;font:inherit;font-weight:650;min-height:2.75rem;padding:.75rem 1rem}.c-tooltip-trigger:focus-visible{outline:.2rem solid var(--tooltip-focus);outline-offset:.15rem}.c-tooltip{background:var(--tooltip-text);border-radius:var(--tooltip-radius);bottom:calc(100% + .75rem);color:var(--tooltip-surface);font-size:.875rem;left:50%;line-height:1.4;max-width:16rem;padding:.5rem .75rem;position:absolute;text-align:center;transform:translateX(-50%);width:max-content;z-index:1}.c-tooltip::after{border:.4rem solid transparent;border-top-color:var(--tooltip-text);content:\"\";left:50%;position:absolute;top:100%;transform:translateX(-50%)}.c-tooltip[hidden]{display:none}@media(max-width:32rem){.c-tooltip-demo{padding:2rem 1rem}.c-tooltip{max-width:calc(100vw - 2rem)}}",
+            "javascript": "export function createTooltip(root) {\n  const trigger=root.querySelector('[data-tooltip-trigger]');const tooltip=root.querySelector('[role=\"tooltip\"]');\n  if(!(trigger instanceof HTMLElement)||!(tooltip instanceof HTMLElement))throw new Error('Tooltip markup is incomplete.');\n  let hovered=false;let focused=false;\n  const sync=()=>{tooltip.hidden=!(hovered||focused);};\n  const enter=()=>{hovered=true;sync();};const leave=()=>{hovered=false;sync();};const focus=()=>{focused=true;sync();};const blur=()=>{focused=false;sync();};\n  const keydown=(event)=>{if(event.key==='Escape'){hovered=false;focused=false;tooltip.hidden=true;trigger.focus();}};\n  trigger.addEventListener('pointerenter',enter);trigger.addEventListener('pointerleave',leave);trigger.addEventListener('focus',focus);trigger.addEventListener('blur',blur);trigger.addEventListener('keydown',keydown);\n  return{show(){focused=true;sync();},hide(){hovered=false;focused=false;sync();},destroy(){trigger.removeEventListener('pointerenter',enter);trigger.removeEventListener('pointerleave',leave);trigger.removeEventListener('focus',focus);trigger.removeEventListener('blur',blur);trigger.removeEventListener('keydown',keydown);}};\n}\ndocument.querySelectorAll('[data-component=\"tooltip\"]').forEach(createTooltip);"
+          }
+        }
+      ],
+      "variants": [],
+      "anatomy": [
+        {
+          "name": "Trigger",
+          "description": "An existing interactive element with aria-describedby."
+        },
+        {
+          "name": "Tooltip",
+          "description": "A noninteractive role=tooltip element containing concise text."
+        },
+        {
+          "name": "Positioning wrapper",
+          "description": "A local containing block for simple placement."
+        }
+      ],
+      "tokens": [
+        {
+          "name": "--tooltip-accent",
+          "defaultValue": "#b9f474",
+          "description": "Primary emphasis and focus-support color."
+        },
+        {
+          "name": "--tooltip-accent-text",
+          "defaultValue": "#162600",
+          "description": "Text shown on the accent."
+        },
+        {
+          "name": "--tooltip-border",
+          "defaultValue": "#dcddd4",
+          "description": "Quiet boundaries."
+        },
+        {
+          "name": "--tooltip-border-strong",
+          "defaultValue": "#bfc1b7",
+          "description": "Strong control boundaries."
+        },
+        {
+          "name": "--tooltip-canvas",
+          "defaultValue": "#f5f5ef",
+          "description": "Preview canvas."
+        },
+        {
+          "name": "--tooltip-focus",
+          "defaultValue": "#b9f474",
+          "description": "Keyboard focus outline."
+        },
+        {
+          "name": "--tooltip-font",
+          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
+          "description": "Component font."
+        },
+        {
+          "name": "--tooltip-muted",
+          "defaultValue": "#62665d",
+          "description": "Secondary text."
+        },
+        {
+          "name": "--tooltip-radius",
+          "defaultValue": "0.55rem",
+          "description": "Control radius."
+        },
+        {
+          "name": "--tooltip-surface",
+          "defaultValue": "#ffffff",
+          "description": "Surface color."
+        },
+        {
+          "name": "--tooltip-text",
+          "defaultValue": "#171915",
+          "description": "Primary text."
+        }
+      ],
+      "accessibility": [
+        "Show the tooltip on both hover and keyboard focus.",
+        "Connect it to the trigger with aria-describedby.",
+        "Allow Escape to dismiss without activating or blurring the trigger.",
+        "Keep tooltip content noninteractive and concise.",
+        "Do not duplicate the trigger's accessible name verbatim."
+      ],
+      "responsive": "Tooltip width is capped to the viewport gutter; essential information must still exist outside the tooltip on touch devices.",
+      "limitations": [
+        "The local CSS placement does not detect viewport collisions or port the tooltip to the top layer.",
+        "Touch behavior varies, so tooltips cannot be the only source of required information.",
+        "Only top placement is included because positional permutations do not change the component contract."
+      ],
+      "provenance": {
+        "label": "Cross-library tooltip behavior study",
+        "url": "https://primeng.dev/tooltip",
+        "note": "PrimeNG Tooltip, Bootstrap Tooltips, and Angular Material Tooltip informed the interaction contract. The implementation is original and dependency-free."
+      }
+    }
+  }
+]
+
