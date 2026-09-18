@@ -25,41 +25,69 @@
         {
           "slug": "basic",
           "title": "Feedback severities",
-          "description": "Compare informational, success, warning, and error messages with visible labels and semantic live-region roles.",
+          "description": "Compare informational, success, warning, and error messages, then dismiss any message with its labeled close control.",
           "canvasHeight": 520,
           "source": {
-            "html": "<div class=\"c-alert-demo\" data-component=\"alert\">\n  <div class=\"c-alert c-alert--info\" role=\"status\"><span class=\"c-alert__icon\" aria-hidden=\"true\">i</span><div class=\"c-alert__content\"><strong>Information</strong><p>Your workspace will be archived after 30 days of inactivity.</p></div></div>\n  <div class=\"c-alert c-alert--success\" role=\"status\"><span class=\"c-alert__icon\" aria-hidden=\"true\">✓</span><div class=\"c-alert__content\"><strong>Changes saved</strong><p>Your notification preferences are up to date.</p></div></div>\n  <div class=\"c-alert c-alert--warning\" role=\"status\"><span class=\"c-alert__icon\" aria-hidden=\"true\">!</span><div class=\"c-alert__content\"><strong>Storage almost full</strong><p>Remove unused files before the next upload.</p></div></div>\n  <div class=\"c-alert c-alert--danger\" role=\"alert\"><span class=\"c-alert__icon\" aria-hidden=\"true\">×</span><div class=\"c-alert__content\"><strong>Upload failed</strong><p>The file is larger than the 10 MB limit.</p></div></div>\n</div>",
-            "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }",
-            "javascript": "export function createAlert(root) {\n  if (!root.matches('[data-component=\"alert\"]') || !root.querySelector('.c-alert')) {\n    throw new Error('createAlert markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"alert\"]').forEach(createAlert);"
+            "html": "<div class=\"c-alert-demo\" data-component=\"alert\">\n  <div class=\"c-alert c-alert--info c-alert--dismissible\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">i</span>\n    <div class=\"c-alert__content\"><strong>Information</strong><p>Your workspace will be archived after 30 days of inactivity.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss information message\" data-alert-close>×</button>\n  </div>\n  <div class=\"c-alert c-alert--success c-alert--dismissible\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">✓</span>\n    <div class=\"c-alert__content\"><strong>Changes saved</strong><p>Your notification preferences are up to date.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss changes saved message\" data-alert-close>×</button>\n  </div>\n  <div class=\"c-alert c-alert--warning c-alert--dismissible\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">!</span>\n    <div class=\"c-alert__content\"><strong>Storage almost full</strong><p>Remove unused files before the next upload.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss storage warning\" data-alert-close>×</button>\n  </div>\n  <div class=\"c-alert c-alert--danger c-alert--dismissible\" role=\"alert\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">×</span>\n    <div class=\"c-alert__content\"><strong>Upload failed</strong><p>The file is larger than the 10 MB limit.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss upload error\" data-alert-close>×</button>\n  </div>\n</div>",
+            "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert--dismissible { grid-template-columns: auto 1fr auto; }\n.c-alert__close { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 0.55rem; color: currentColor; cursor: pointer; display: inline-flex; font: inherit; font-size: 1.25rem; height: 2.75rem; justify-content: center; width: 2.75rem; }\n.c-alert__close:hover { border-color: currentColor; }",
+            "javascript": "export function createAlert(root) {\n  const alerts = [...root.querySelectorAll('[data-alert]')];\n  const controls = alerts.map((alert) => {\n    const closeButton = alert.querySelector(':scope > [data-alert-close]');\n    if (!(closeButton instanceof HTMLButtonElement)) {\n      throw new Error('Alert dismiss controls are incomplete.');\n    }\n\n    const close = () => {\n      if (alert.hidden) return;\n      alert.hidden = true;\n      root.dispatchEvent(new CustomEvent('alert:close', { detail: { alert } }));\n    };\n\n    closeButton.addEventListener('click', close);\n    return { alert, close, closeButton };\n  });\n\n  if (!alerts.length) {\n    throw new Error('Alert markup is incomplete.');\n  }\n\n  return {\n    close(index = 0) {\n      controls[index]?.close();\n    },\n    destroy() {\n      controls.forEach(({ close, closeButton }) => closeButton.removeEventListener('click', close));\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"alert\"]').forEach(createAlert);"
           }
         }
       ],
       "variants": [
         {
-          "slug": "dismissible",
-          "title": "Dismissible alert",
-          "summary": "A persistent inline message with a labeled close control and a programmatic close method.",
+          "slug": "action",
+          "title": "Actionable alert",
+          "summary": "An inline message that offers a focused recovery action while retaining a labeled dismiss control.",
           "tags": [
+            "action",
             "dismissible",
-            "close",
-            "persistent"
+            "recovery"
           ],
-          "useWhen": "Use dismissal when a noncritical message would otherwise occupy useful space after it has been read.",
-          "avoidWhen": "Do not let people dismiss validation errors or safety information that remains unresolved.",
+          "useWhen": "Use an action when the alert can guide people directly to the next useful recovery step.",
+          "avoidWhen": "Avoid stacking several competing actions inside one alert or using the action as a substitute for clear message text.",
           "customization": [
-            "Keep the close control a native button with an explicit accessible name.",
-            "The close() method and button use the same path and emit alert:close.",
-            "Hidden removes the dismissed message from both the layout and accessibility tree."
+            "Keep the action label specific to the recovery step and expose it as a native button.",
+            "The close control remains available for noncritical messages and uses the same alert:close event path.",
+            "Listen for alert:action to connect the button to the surrounding workflow."
           ],
           "example": {
-            "slug": "dismissible",
-            "title": "Dismiss a warning",
-            "description": "Close the warning with its labeled button and listen for alert:close when integrating it.",
+            "slug": "action",
+            "title": "Offer a recovery action",
+            "description": "Use the action button to start the recommended recovery step, or dismiss the noncritical message.",
             "canvasHeight": 300,
             "source": {
-              "html": "<div class=\"c-alert-demo\" data-component=\"dismissible-alert\">\n  <div class=\"c-alert c-alert--warning c-alert--dismissible\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">!</span>\n    <div class=\"c-alert__content\"><strong>Maintenance scheduled</strong><p>Editing will be unavailable from 02:00 to 02:15 UTC.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss maintenance notice\" data-alert-close>×</button>\n  </div>\n</div>",
-              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert--dismissible { grid-template-columns: auto 1fr auto; }\n.c-alert__close { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 0.55rem; color: currentColor; cursor: pointer; display: inline-flex; font: inherit; font-size: 1.25rem; height: 2.75rem; justify-content: center; width: 2.75rem; }\n.c-alert__close:hover { border-color: currentColor; }",
-              "javascript": "export function createDismissibleAlert(root) {\n  const alert = root.querySelector('[data-alert]');\n  const closeButton = root.querySelector('[data-alert-close]');\n  if (!(alert instanceof HTMLElement) || !(closeButton instanceof HTMLButtonElement)) {\n    throw new Error('Dismissible alert markup is incomplete.');\n  }\n\n  const close = () => {\n    alert.hidden = true;\n    root.dispatchEvent(new CustomEvent('alert:close'));\n  };\n\n  closeButton.addEventListener('click', close);\n  return {\n    close,\n    destroy() { closeButton.removeEventListener('click', close); }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"dismissible-alert\"]').forEach(createDismissibleAlert);"
+              "html": "<div class=\"c-alert-demo\" data-component=\"action-alert\">\n  <div class=\"c-alert c-alert--warning c-alert--dismissible c-alert--action\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">!</span>\n    <div class=\"c-alert__content\">\n      <strong>Storage almost full</strong>\n      <p>Remove unused files before the next upload.</p>\n      <button class=\"c-alert__action\" type=\"button\" data-alert-action>Review storage</button>\n    </div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss storage warning\" data-alert-close>×</button>\n  </div>\n</div>",
+              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert--dismissible { grid-template-columns: auto 1fr auto; }\n.c-alert__close { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 0.55rem; color: currentColor; cursor: pointer; display: inline-flex; font: inherit; font-size: 1.25rem; height: 2.75rem; justify-content: center; width: 2.75rem; }\n.c-alert__close:hover { border-color: currentColor; }\n.c-alert--action .c-alert__content { display: grid; gap: 0.75rem; }\n.c-alert__action { background: var(--alert-surface); border: 1px solid currentColor; border-radius: 0.55rem; color: currentColor; cursor: pointer; font: inherit; font-weight: 650; justify-self: start; min-height: 2.75rem; padding: 0.75rem 1rem; }\n.c-alert__action:hover { background: transparent; }",
+              "javascript": "export function createActionAlert(root) {\n  const alert = root.querySelector('[data-alert]');\n  const closeButton = alert?.querySelector('[data-alert-close]');\n  const actionButton = alert?.querySelector('[data-alert-action]');\n\n  if (!(alert instanceof HTMLElement)\n      || !(closeButton instanceof HTMLButtonElement)\n      || !(actionButton instanceof HTMLButtonElement)) {\n    throw new Error('Action alert markup is incomplete.');\n  }\n\n  const close = () => {\n    if (alert.hidden) return;\n    alert.hidden = true;\n    root.dispatchEvent(new CustomEvent('alert:close', { detail: { alert } }));\n  };\n  const handleAction = () => {\n    root.dispatchEvent(new CustomEvent('alert:action', { detail: { alert } }));\n  };\n\n  closeButton.addEventListener('click', close);\n  actionButton.addEventListener('click', handleAction);\n\n  return {\n    close,\n    destroy() {\n      closeButton.removeEventListener('click', close);\n      actionButton.removeEventListener('click', handleAction);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"action-alert\"]').forEach(createActionAlert);"
+            }
+          }
+        },
+        {
+          "slug": "minimal",
+          "title": "Minimal-size alert",
+          "summary": "A smaller alert treatment with tighter spacing for dense layouts while preserving severity and dismissal.",
+          "tags": [
+            "size",
+            "minimal",
+            "compact"
+          ],
+          "useWhen": "Use the minimal size when an alert must fit into a dense panel, toolbar, or compact form region.",
+          "avoidWhen": "Avoid the minimal size for long explanations, urgent failures, or contexts where comfortable reading space is important.",
+          "customization": [
+            "The minimal modifier reduces surface padding, gap, and supporting text scale without changing the alert semantics.",
+            "Keep the native dismiss button at the shared control size so it remains easy to target.",
+            "Use the normal size when the message needs more visual breathing room."
+          ],
+          "example": {
+            "slug": "minimal",
+            "title": "Minimal alert",
+            "description": "Compare the compact surface with the normal alert size while keeping the same labeled dismiss behavior.",
+            "canvasHeight": 300,
+            "source": {
+              "html": "<div class=\"c-alert-demo\" data-component=\"minimal-alert\">\n  <div class=\"c-alert c-alert--info c-alert--dismissible c-alert--minimal\" role=\"status\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">i</span>\n    <div class=\"c-alert__content\"><strong>Sync paused</strong><p>Reconnect to continue syncing your workspace.</p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss sync paused message\" data-alert-close>×</button>\n  </div>\n</div>",
+              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert--dismissible { grid-template-columns: auto 1fr auto; }\n.c-alert__close { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 0.55rem; color: currentColor; cursor: pointer; display: inline-flex; font: inherit; font-size: 1.25rem; height: 2.75rem; justify-content: center; width: 2.75rem; }\n.c-alert__close:hover { border-color: currentColor; }\n.c-alert--minimal { gap: 0.5rem; line-height: 1.4; padding: 0.75rem; }\n.c-alert--minimal .c-alert__content { font-size: 0.875rem; }\n.c-alert--minimal .c-alert__content strong { margin-block-end: 0.125rem; }\n.c-alert--minimal .c-alert__icon { font-size: 0.875rem; }\n.c-alert--minimal .c-alert__close { font-size: 1rem; }",
+              "javascript": "export function createMinimalAlert(root) {\n  const alert = root.querySelector('[data-alert]');\n  const closeButton = alert?.querySelector('[data-alert-close]');\n  if (!(alert instanceof HTMLElement) || !(closeButton instanceof HTMLButtonElement)) {\n    throw new Error('Minimal alert markup is incomplete.');\n  }\n\n  const close = () => {\n    if (alert.hidden) return;\n    alert.hidden = true;\n    root.dispatchEvent(new CustomEvent('alert:close', { detail: { alert } }));\n  };\n\n  closeButton.addEventListener('click', close);\n  return {\n    close,\n    destroy() { closeButton.removeEventListener('click', close); }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"minimal-alert\"]').forEach(createMinimalAlert);"
             }
           }
         },
@@ -77,7 +105,7 @@
           "avoidWhen": "Avoid announcing validation assertively on every keystroke; validate on blur or submission and preserve user input.",
           "customization": [
             "Move focus to the summary only after submission when doing so helps users recover.",
-            "Each summary link targets the invalid field, which also references its inline error with aria-describedby.",
+            "The summary link is disabled in this isolated preview to avoid navigating the host page; integrations can enable it when the field target is available.",
             "Keep aria-invalid synchronized with the real validation state."
           ],
           "example": {
@@ -86,9 +114,9 @@
             "description": "Follow the error link to the invalid email field and inspect the linked inline explanation.",
             "canvasHeight": 390,
             "source": {
-              "html": "<div class=\"c-alert-demo\" data-component=\"form-error-alert\">\n  <div class=\"c-alert c-alert--danger\" role=\"alert\" tabindex=\"-1\">\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">×</span>\n    <div class=\"c-alert__content\"><strong>Fix one field</strong><p><a href=\"#account-email\">Email must include an @ sign.</a></p></div>\n  </div>\n  <label for=\"account-email\">Email address</label>\n  <input id=\"account-email\" type=\"email\" value=\"invalid.email\" aria-invalid=\"true\" aria-describedby=\"account-email-error\">\n  <p id=\"account-email-error\">Enter an address such as name@example.com.</p>\n</div>",
-              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert-demo label { font-weight: 650; }\n.c-alert-demo input { background: var(--alert-surface); border: 1px solid var(--alert-danger-text); border-radius: 0.55rem; color: var(--alert-text); font: inherit; min-height: 2.75rem; padding: 0.75rem; }\n.c-alert-demo input:focus-visible, .c-alert a:focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n.c-alert-demo > p { color: var(--alert-danger-text); margin: -0.25rem 0 0; }\n.c-alert a { color: inherit; font-weight: 650; }",
-              "javascript": "export function createFormErrorAlert(root) {\n  if (!root.matches('[data-component=\"form-error-alert\"]') || !root.querySelector('input[aria-invalid]')) {\n    throw new Error('createFormErrorAlert markup is incomplete.');\n  }\n\n  return { destroy() {} };\n}\n\ndocument.querySelectorAll('[data-component=\"form-error-alert\"]').forEach(createFormErrorAlert);"
+              "html": "<div class=\"c-alert-demo\" data-component=\"form-error-alert\">\n  <div class=\"c-alert c-alert--danger c-alert--dismissible\" role=\"alert\" tabindex=\"-1\" data-alert>\n    <span class=\"c-alert__icon\" aria-hidden=\"true\">×</span>\n    <div class=\"c-alert__content\"><strong>Fix one field</strong><p><a href=\"#account-email\" aria-disabled=\"true\" tabindex=\"-1\" data-alert-link>Email must include an @ sign.</a></p></div>\n    <button class=\"c-alert__close\" type=\"button\" aria-label=\"Dismiss form error summary\" data-alert-close>×</button>\n  </div>\n  <label for=\"account-email\">Email address</label>\n  <input id=\"account-email\" type=\"email\" value=\"invalid.email\" aria-invalid=\"true\" aria-describedby=\"account-email-error\">\n  <p id=\"account-email-error\">Enter an address such as name@example.com.</p>\n</div>",
+              "css": ".c-alert-demo {\n  --alert-accent: #b9f474;\n  --alert-accent-text: #162600;\n  --alert-border: #dcddd4;\n  --alert-border-strong: #bfc1b7;\n  --alert-canvas: #f5f5ef;\n  --alert-focus: #b9f474;\n  --alert-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --alert-muted: #62665d;\n  --alert-radius: 0.75rem;\n  --alert-surface: #ffffff;\n  --alert-text: #171915;\n  --alert-info-bg: #eef5ff;\n  --alert-info-text: #174a7c;\n  --alert-success-bg: #edf8e5;\n  --alert-success-text: #245c16;\n  --alert-warning-bg: #fff5d9;\n  --alert-warning-text: #6b4b00;\n  --alert-danger-bg: #fff0ee;\n  --alert-danger-text: #8f251e;\n\n  align-content: center;\n  background: var(--alert-canvas);\n  color: var(--alert-text);\n  display: grid;\n  font-family: var(--alert-font);\n  gap: 0.75rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n.c-alert { align-items: start; background: var(--alert-surface); border: 1px solid var(--alert-border); border-radius: var(--alert-radius); display: grid; gap: 0.75rem; grid-template-columns: auto 1fr; line-height: 1.5; padding: 1rem; }\n.c-alert__icon { font-weight: 650; }\n.c-alert__content strong { display: block; margin-block-end: 0.25rem; }\n.c-alert__content p { margin: 0; }\n.c-alert--info { background: var(--alert-info-bg); color: var(--alert-info-text); }\n.c-alert--success { background: var(--alert-success-bg); color: var(--alert-success-text); }\n.c-alert--warning { background: var(--alert-warning-bg); color: var(--alert-warning-text); }\n.c-alert--danger { background: var(--alert-danger-bg); color: var(--alert-danger-text); }\n.c-alert :focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n@media (max-width: 32rem) { .c-alert-demo { padding: 1rem; } }\n.c-alert-demo label { font-weight: 650; }\n.c-alert-demo input { background: var(--alert-surface); border: 1px solid var(--alert-danger-text); border-radius: 0.55rem; color: var(--alert-text); font: inherit; min-height: 2.75rem; padding: 0.75rem; }\n.c-alert-demo input:focus-visible, .c-alert a:focus-visible { outline: 0.2rem solid var(--alert-focus); outline-offset: 0.15rem; }\n.c-alert-demo > p { color: var(--alert-danger-text); margin: -0.25rem 0 0; }\n.c-alert a { color: inherit; font-weight: 650; }\n.c-alert--dismissible { grid-template-columns: auto 1fr auto; }\n.c-alert__close { align-items: center; background: transparent; border: 1px solid transparent; border-radius: 0.55rem; color: currentColor; cursor: pointer; display: inline-flex; font: inherit; font-size: 1.25rem; height: 2.75rem; justify-content: center; width: 2.75rem; }\n.c-alert__close:hover { border-color: currentColor; }\n.c-alert a[aria-disabled=\"true\"] { cursor: not-allowed; text-decoration: none; }",
+              "javascript": "export function createFormErrorAlert(root) {\n  const alert = root.querySelector('[data-alert]');\n  const closeButton = alert?.querySelector('[data-alert-close]');\n  const errorLink = alert?.querySelector('[data-alert-link]');\n  if (!(alert instanceof HTMLElement)\n      || !(closeButton instanceof HTMLButtonElement)\n      || !(errorLink instanceof HTMLAnchorElement)) {\n    throw new Error('Form error alert markup is incomplete.');\n  }\n\n  const close = () => {\n    if (alert.hidden) return;\n    alert.hidden = true;\n    root.dispatchEvent(new CustomEvent('alert:close', { detail: { alert } }));\n  };\n  const handleLinkClick = (event) => {\n    event.preventDefault();\n  };\n\n  closeButton.addEventListener('click', close);\n  errorLink.addEventListener('click', handleLinkClick);\n  return {\n    close,\n    destroy() {\n      closeButton.removeEventListener('click', close);\n      errorLink.removeEventListener('click', handleLinkClick);\n    }\n  };\n}\n\ndocument.querySelectorAll('[data-component=\"form-error-alert\"]').forEach(createFormErrorAlert);"
             }
           }
         }
@@ -107,8 +135,8 @@
           "description": "Concise context and a recovery step when action is required."
         },
         {
-          "name": "Optional close",
-          "description": "A labeled native button for dismissible, noncritical messages."
+          "name": "Dismiss control",
+          "description": "A labeled native button that removes a noncritical alert from layout and the accessibility tree."
         }
       ],
       "tokens": [
@@ -222,8 +250,7 @@
       ],
       "provenance": {
         "label": "Cross-library message behavior study",
-        "url": "https://primeng.dev/message",
-        "note": "PrimeNG Message and Bootstrap Alerts informed the behavior inventory. This is original native markup, styling, and JavaScript with no copied library source."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -404,8 +431,7 @@
       ],
       "provenance": {
         "label": "Cross-library badge behavior study",
-        "url": "https://primeng.dev/badge",
-        "note": "PrimeNG Badge, Bootstrap Badges, and Angular Material Badge informed the feature inventory. The implementation and styling are original and dependency-free."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -567,8 +593,7 @@
       ],
       "provenance": {
         "label": "Cross-library card behavior study",
-        "url": "https://primeng.dev/card",
-        "note": "PrimeNG Card, Bootstrap Card, and Angular Material Card informed the content regions. This semantic HTML and styling are original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -725,8 +750,7 @@
       ],
       "provenance": {
         "label": "Cross-library progress behavior study",
-        "url": "https://primeng.dev/progressbar",
-        "note": "PrimeNG ProgressBar, Bootstrap Progress, and Angular Material Progress Bar informed the states. This implementation is original and dependency-free."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -880,8 +904,7 @@
       ],
       "provenance": {
         "label": "Cross-library skeleton behavior study",
-        "url": "https://primeng.dev/skeleton",
-        "note": "PrimeNG Skeleton and Bootstrap Placeholders informed the feature inventory. The markup and animation are original and dependency-free."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -1039,10 +1062,8 @@
       ],
       "provenance": {
         "label": "Cross-library breadcrumb behavior study",
-        "url": "https://primeng.dev/breadcrumb",
-        "note": "PrimeNG Breadcrumb and Bootstrap Breadcrumb informed the feature inventory. This native navigation pattern and styling are original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   }
 ]
-

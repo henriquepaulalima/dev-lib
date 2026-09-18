@@ -148,8 +148,7 @@
       ],
       "provenance": {
         "label": "Cross-library avatar study",
-        "url": "https://primeng.dev/avatar",
-        "note": "PrimeNG Avatar and Angular Material avatar patterns informed the inventory. The initials-only recipe and styling are original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -302,8 +301,7 @@
       ],
       "provenance": {
         "label": "Cross-library chip behavior study",
-        "url": "https://primeng.dev/chip",
-        "note": "PrimeNG Chip, Bootstrap badges, and Angular Material Chips informed the inventory. The list and removal implementation are original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -482,8 +480,7 @@
       ],
       "provenance": {
         "label": "Cross-library divider study",
-        "url": "https://primeng.dev/divider",
-        "note": "PrimeNG Divider, Bootstrap borders, and Angular Material Divider informed the inventory. The semantic recipes and styling are original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -609,10 +606,8 @@
       ],
       "provenance": {
         "label": "Cross-library tooltip behavior study",
-        "url": "https://primeng.dev/tooltip",
-        "note": "PrimeNG Tooltip, Bootstrap Tooltips, and Angular Material Tooltip informed the interaction contract. The implementation is original and dependency-free."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   }
 ]
-

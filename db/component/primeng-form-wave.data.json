@@ -110,9 +110,8 @@
         "The CSS :placeholder-shown technique requires a current browser."
       ],
       "provenance": {
-        "label": "PrimeNG Float label study",
-        "url": "https://primeng.dev/floatlabel",
-        "note": "PrimeNG Float label informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+        "label": "Native pattern study",
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -229,9 +228,8 @@
       "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
       "limitations": [],
       "provenance": {
-        "label": "PrimeNG Textarea study",
-        "url": "https://primeng.dev/textarea",
-        "note": "PrimeNG Textarea informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+        "label": "Native pattern study",
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -348,9 +346,8 @@
       "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
       "limitations": [],
       "provenance": {
-        "label": "PrimeNG Slider study",
-        "url": "https://primeng.dev/slider",
-        "note": "PrimeNG Slider informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+        "label": "Native pattern study",
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -467,9 +464,8 @@
       "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
       "limitations": [],
       "provenance": {
-        "label": "PrimeNG Date picker study",
-        "url": "https://primeng.dev/datepicker",
-        "note": "PrimeNG Date picker informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+        "label": "Native pattern study",
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -582,11 +578,9 @@
       "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
       "limitations": [],
       "provenance": {
-        "label": "PrimeNG Toggle button study",
-        "url": "https://primeng.dev/togglebutton",
-        "note": "PrimeNG Toggle button informed the feature inventory. This recipe is an original native HTML, CSS, and JavaScript implementation; no PrimeNG source is reproduced."
+        "label": "Native pattern study",
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   }
 ]
-

@@ -327,9 +327,8 @@
         "Very old browsers without native dialog support require a polyfill, which is intentionally not included."
       ],
       "provenance": {
-        "label": "PrimeNG Dialog behavior study",
-        "url": "https://v21.primeng.org/dialog",
-        "note": "PrimeNG's documented dialog variants guided the behavior taxonomy. Every recipe here is an original, dependency-free implementation built from native platform primitives; no PrimeNG source is reproduced."
+        "label": "Native pattern study",
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   }

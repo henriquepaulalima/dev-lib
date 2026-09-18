@@ -152,8 +152,7 @@
       ],
       "provenance": {
         "label": "Cross-library checkbox behavior study",
-        "url": "https://primeng.dev/checkbox",
-        "note": "PrimeNG Checkbox, Bootstrap Checks, and Angular Material Checkbox informed the states. The implementation keeps the native input and is original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -310,8 +309,7 @@
       ],
       "provenance": {
         "label": "Cross-library radio behavior study",
-        "url": "https://primeng.dev/radiobutton",
-        "note": "PrimeNG RadioButton, Bootstrap Checks, and Angular Material Radio informed the variants. The native implementation is original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -468,8 +466,7 @@
       ],
       "provenance": {
         "label": "Cross-library switch behavior study",
-        "url": "https://primeng.dev/toggleswitch",
-        "note": "PrimeNG ToggleSwitch, Bootstrap Switch checks, and Angular Material Slide Toggle informed the behavior. The native input implementation and styling are original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -633,8 +630,7 @@
       ],
       "provenance": {
         "label": "Cross-library text input study",
-        "url": "https://primeng.dev/inputtext",
-        "note": "PrimeNG InputText, Bootstrap Forms, and Angular Material Input informed the states. The native form implementation is original."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -795,8 +791,7 @@
       ],
       "provenance": {
         "label": "Cross-library select behavior study",
-        "url": "https://primeng.dev/select",
-        "note": "PrimeNG Select, Bootstrap Selects, and Angular Material Select informed the inventory. This recipe intentionally uses the native select and original styling."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   },
@@ -953,10 +948,8 @@
       ],
       "provenance": {
         "label": "Cross-library tabs behavior study",
-        "url": "https://primeng.dev/tabs",
-        "note": "PrimeNG Tabs, Bootstrap Navs and Tabs, Angular Material Tabs, and the ARIA tabs pattern informed behavior. The implementation is original native JavaScript."
+        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
       }
     }
   }
 ]
-
