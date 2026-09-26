@@ -35,6 +35,35 @@
       ],
       "variants": [
         {
+          "slug": "selectable",
+          "title": "Selectable avatars",
+          "summary": "Interactive avatars that grow on hover or focus and rise above adjacent members in a group.",
+          "tags": [
+            "selection",
+            "interactive",
+            "group",
+            "hover"
+          ],
+          "useWhen": "Use selectable avatars when people can choose one or more members directly from an avatar group.",
+          "avoidWhen": "Avoid this variant when avatars are only decorative or when the available options need visible names or descriptions.",
+          "customization": [
+            "Each avatar is a native button with a visible pointer affordance and keyboard focus state.",
+            "Hovering or focusing an avatar enlarges it and raises it above the overlapping group.",
+            "The selected state is exposed with aria-pressed and announced in the live status."
+          ],
+          "example": {
+            "slug": "selectable",
+            "title": "Choose project members",
+            "description": "Select or deselect members with a pointer, Enter, or Space; hover or focus to bring an avatar forward.",
+            "canvasHeight": 300,
+            "source": {
+              "html": "<div class=\"c-avatar-demo\" data-component=\"selectable-avatars\"><div class=\"c-avatar-group c-avatar-group--selectable\" role=\"group\" aria-label=\"Choose project members\"><button class=\"c-avatar c-avatar--selectable\" type=\"button\" aria-label=\"Ana Martins\" aria-pressed=\"false\" data-avatar-option>AM</button><button class=\"c-avatar c-avatar--selectable\" type=\"button\" aria-label=\"João Lima\" aria-pressed=\"true\" data-avatar-option>JL</button><button class=\"c-avatar c-avatar--selectable\" type=\"button\" aria-label=\"Ravi Kumar\" aria-pressed=\"false\" data-avatar-option>RK</button></div><p class=\"c-avatar-selection-status\" data-avatar-status aria-live=\"polite\">João Lima selected.</p></div>",
+              "css": ".c-avatar-demo{--avatar-accent:#b9f474;--avatar-accent-text:#162600;--avatar-border:#dcddd4;--avatar-border-strong:#bfc1b7;--avatar-canvas:#f5f5ef;--avatar-focus:#b9f474;--avatar-font:Inter,ui-sans-serif,system-ui,sans-serif;--avatar-muted:#62665d;--avatar-radius:.55rem;--avatar-surface:#fff;--avatar-text:#171915;align-content:center;background:var(--avatar-canvas);color:var(--avatar-text);display:grid;font-family:var(--avatar-font);gap:1rem;justify-items:center;min-height:100%;padding:2rem}.c-avatar-group{display:flex;justify-content:center;padding-inline-start:.75rem}.c-avatar{align-items:center;background:var(--avatar-accent);border:1px solid var(--avatar-border);border-radius:50%;color:var(--avatar-accent-text);display:inline-flex;font-weight:650;height:3rem;justify-content:center;width:3rem}.c-avatar-group .c-avatar{box-shadow:0 0 0 .2rem var(--avatar-canvas);margin-inline-start:-.75rem}.c-avatar--selectable{cursor:pointer;font:inherit;position:relative;transition:transform .16s ease,box-shadow .16s ease}.c-avatar--selectable:hover,.c-avatar--selectable:focus-visible{transform:scale(1.15);z-index:1}.c-avatar--selectable[aria-pressed=true]{box-shadow:0 0 0 .2rem var(--avatar-canvas),0 0 0 .35rem var(--avatar-accent)}.c-avatar--selectable:focus-visible{outline:.2rem solid var(--avatar-focus);outline-offset:.35rem}.c-avatar-selection-status{color:var(--avatar-muted);font-size:.875rem;margin:0}@media(prefers-reduced-motion:reduce){.c-avatar--selectable{transition:none}}@media(max-width:32rem){.c-avatar-demo{padding:1rem}}",
+              "javascript": "export function createSelectableAvatars(root) {\n  if (!root.matches('[data-component=\"selectable-avatars\"]')) throw new Error('Selectable avatar markup is incomplete.');\n  const options = [...root.querySelectorAll('[data-avatar-option]')];\n  const status = root.querySelector('[data-avatar-status]');\n  if (!options.length || !status) throw new Error('Selectable avatar markup is incomplete.');\n  const toggle = (event) => {\n    const option = event.target.closest('[data-avatar-option]');\n    if (!option || !root.contains(option)) return;\n    const selected = option.getAttribute('aria-pressed') !== 'true';\n    option.setAttribute('aria-pressed', String(selected));\n    const name = option.getAttribute('aria-label');\n    status.textContent = `${name} ${selected ? 'selected' : 'deselected'}.`;\n  };\n  root.addEventListener('click', toggle);\n  return { destroy() { root.removeEventListener('click', toggle); } };\n}\ndocument.querySelectorAll('[data-component=\"selectable-avatars\"]').forEach(createSelectableAvatars);"
+            }
+          }
+        },
+        {
           "slug": "group",
           "title": "Avatar group",
           "summary": "Overlapping member avatars followed by a visible overflow count and one complete accessible group label.",
