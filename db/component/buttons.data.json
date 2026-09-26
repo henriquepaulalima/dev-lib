@@ -126,6 +126,34 @@
               "typescript": "export interface ButtonController {\n  destroy(): void;\n}\n\nexport function createButton(root: Element): ButtonController {\n  const status = root.querySelector<HTMLElement>('[data-button-status]');\n\n  if (!status) {\n    throw new Error('Button demo markup is incomplete.');\n  }\n\n  const handleClick = (event: Event): void => {\n    const target = event.target;\n    if (!(target instanceof Element)) return;\n\n    const button = target.closest<HTMLButtonElement>('[data-button-action]');\n    if (!button || !root.contains(button)) return;\n\n    const action = button.dataset['buttonAction'] || button.textContent?.trim() || 'Button';\n    status.textContent = `${action} activated.`;\n    root.dispatchEvent(new CustomEvent('button:activate', {\n      detail: { action }\n    }));\n  };\n\n  root.addEventListener('click', handleClick);\n\n  return {\n    destroy(): void {\n      root.removeEventListener('click', handleClick);\n    }\n  };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"responsive-buttons\"]').forEach(createButton);"
             }
           }
+        },
+        {
+          "slug": "button-group",
+          "title": "Button group",
+          "summary": "Related actions arranged as a visually connected group.",
+          "tags": [
+            "group",
+            "toolbar",
+            "related-actions"
+          ],
+          "useWhen": "Group a small set of related actions that operate in the same context.",
+          "avoidWhen": "Avoid grouping unrelated actions or using a toolbar role when the controls do not form a toolbar.",
+          "customization": [
+            "Use role=\"group\" with a concise accessible label for related actions.",
+            "Keep visual emphasis consistent with the action hierarchy.",
+            "Allow the group to wrap on narrow screens."
+          ],
+          "example": {
+            "slug": "button-group",
+            "title": "Grouped actions",
+            "description": "Related actions presented as a connected, responsive group.",
+            "canvasHeight": 320,
+            "source": {
+              "html": "<div class=\"c-button-demo\" data-component=\"button-group\">\n  <div class=\"c-button-demo__group\" role=\"group\" aria-label=\"Document actions\">\n    <button class=\"c-button\" type=\"button\" data-group-action=\"Back\">Back</button>\n    <button class=\"c-button c-button--primary\" type=\"button\" data-group-action=\"Save\">Save</button>\n    <button class=\"c-button\" type=\"button\" data-group-action=\"Publish\">Publish</button>\n  </div>\n  <p class=\"c-button-demo__status\" data-button-status aria-live=\"polite\">Choose an action.</p>\n</div>",
+              "css": ".c-button-demo {\n  --button-accent: #b9f474;\n  --button-accent-text: #162600;\n  --button-border: #dcddd4;\n  --button-border-strong: #bfc1b7;\n  --button-canvas: #f5f5ef;\n  --button-control-height: 2.75rem;\n  --button-focus: #b9f474;\n  --button-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --button-muted: #62665d;\n  --button-radius: 0.55rem;\n  --button-surface: #ffffff;\n  --button-text: #171915;\n\n  align-content: center;\n  background: var(--button-canvas);\n  color: var(--button-text);\n  display: grid;\n  font-family: var(--button-font);\n  gap: 1rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-button-demo__row {\n  align-items: center;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 0.75rem;\n}\n\n.c-button {\n  align-items: center;\n  background: var(--button-surface);\n  border: 1px solid var(--button-border-strong);\n  border-radius: var(--button-radius);\n  color: var(--button-text);\n  cursor: pointer;\n  display: inline-flex;\n  font: inherit;\n  font-weight: 650;\n  gap: 0.5rem;\n  justify-content: center;\n  min-height: var(--button-control-height);\n  padding: 0.75rem 1rem;\n  text-decoration: none;\n}\n\n.c-button:hover:not(:disabled) {\n  border-color: var(--button-text);\n}\n\n.c-button:focus-visible {\n  outline: 0.2rem solid var(--button-focus);\n  outline-offset: 0.15rem;\n}\n\n.c-button:active:not(:disabled) {\n  box-shadow: inset 0 0 0 1px var(--button-text);\n}\n\n.c-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.55;\n}\n\n.c-button--primary {\n  background: var(--button-accent);\n  border-color: var(--button-accent);\n  color: var(--button-accent-text);\n}\n\n.c-button--quiet {\n  background: transparent;\n  border-color: transparent;\n}\n\n.c-button svg {\n  block-size: 1.1rem;\n  inline-size: 1.1rem;\n  stroke: currentColor;\n}\n\n.c-button-demo__status {\n  color: var(--button-muted);\n  line-height: 1.6;\n  margin: 0;\n}\n\n@media (prefers-reduced-motion: reduce) {\n  .c-button {\n    scroll-behavior: auto;\n  }\n}\n\n.c-button-demo__group { display:inline-flex; flex-wrap:wrap; gap:0; }\n.c-button-demo__group .c-button { border-radius:0; margin-inline-start:-1px; }\n.c-button-demo__group .c-button:first-child { border-radius:var(--button-radius) 0 0 var(--button-radius); margin-inline-start:0; }\n.c-button-demo__group .c-button:last-child { border-radius:0 var(--button-radius) var(--button-radius) 0; }\n@media (max-width:32rem) { .c-button-demo__group { display:flex; } .c-button-demo__group .c-button { flex:1 1 auto; } }",
+              "javascript": "export function createButtonGroup(root) {\n  const status = root.querySelector('[data-button-status]');\n  if (!(status instanceof HTMLElement)) throw new Error('Button group markup is incomplete.');\n  const handleClick = (event) => {\n    const target = event.target;\n    if (!(target instanceof Element)) return;\n    const button = target.closest('[data-group-action]');\n    if (!(button instanceof HTMLButtonElement) || !root.contains(button)) return;\n    status.textContent = `${button.dataset.groupAction} activated.`;\n  };\n  root.addEventListener('click', handleClick);\n  return { destroy() { root.removeEventListener('click', handleClick); } };\n}\n\ndocument.querySelectorAll('[data-component=\"button-group\"]').forEach(createButtonGroup);"
+            }
+          }
         }
       ],
       "anatomy": [

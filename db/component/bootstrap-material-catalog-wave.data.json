@@ -1740,122 +1740,6 @@
     }
   },
   {
-    "slug": "button-group",
-    "type": "component",
-    "title": "Button Group",
-    "summary": "A dependency-free button group pattern inspired by Bootstrap.",
-    "tags": [
-      "html",
-      "css",
-      "javascript",
-      "a11y",
-      "button-group"
-    ],
-    "overview": "An original native implementation of the button group interaction contract using platform primitives.",
-    "dependencies": [],
-    "sections": [],
-    "component": {
-      "status": "draft",
-      "useWhen": "Use button group when its semantic contract fits the task.",
-      "avoidWhen": "Avoid button group when a simpler native element communicates the task more clearly.",
-      "examples": [
-        {
-          "slug": "basic",
-          "title": "Basic Button Group",
-          "description": "A complete independently runnable button group preview.",
-          "canvasHeight": 320,
-          "source": {
-            "html": "<div class=\"c-button-group-demo\" data-component=\"button-group\"><div class=\"surface row\" role=\"toolbar\" aria-label=\"Button Group\"><button type=\"button\">Back</button><button type=\"button\">Save</button><button type=\"button\">Publish</button></div></div>",
-            "css": ".c-button-group-demo{--a:#b9f474;--at:#162600;--b:#dcddd4;--bs:#bfc1b7;--bg:#f5f5ef;--m:#62665d;--s:#fff;--t:#171915;align-content:center;background:var(--bg);color:var(--t);display:grid;font-family:Inter,ui-sans-serif,system-ui,sans-serif;gap:1rem;min-height:100%;padding:2rem}.c-button-group-demo *{box-sizing:border-box}.c-button-group-demo .surface{background:var(--s);border:1px solid var(--b);border-radius:.75rem;margin:auto;max-width:42rem;padding:1.5rem;width:min(100%,42rem)}.c-button-group-demo .stack{display:grid;gap:.75rem}.c-button-group-demo .row{align-items:center;display:flex;flex-wrap:wrap;gap:.6rem}.c-button-group-demo .grid{display:grid;gap:.75rem;grid-template-columns:repeat(3,minmax(0,1fr))}.c-button-group-demo :is(button,input,select,textarea){border:1px solid var(--bs);border-radius:.5rem;font:inherit;min-height:2.6rem;padding:.65rem .8rem}.c-button-group-demo button{background:var(--t);color:#fff;cursor:pointer}.c-button-group-demo button:hover{background:#34382f}.c-button-group-demo :focus-visible{outline:.2rem solid var(--a);outline-offset:.15rem}.c-button-group-demo [hidden]{display:none!important}.c-button-group-demo .muted{color:var(--m);font-size:.9rem;line-height:1.5}.c-button-group-demo .eyebrow{color:var(--m);font-size:.7rem;font-weight:700;letter-spacing:.08em;margin:0;text-transform:uppercase}.c-button-group-demo h2,.c-button-group-demo h3,.c-button-group-demo p{margin:0}.c-button-group-demo h2{font-size:1.35rem;letter-spacing:-.03em}.c-button-group-demo .list{display:grid;gap:.4rem;list-style:none;margin:0;padding:0}.c-button-group-demo .list li{background:#fbfbf8;border:1px solid var(--b);border-radius:.5rem;padding:.7rem}.c-button-group-demo .menu-panel{background:var(--s);border:1px solid var(--b);border-radius:.5rem;display:grid;gap:.25rem;margin-top:.5rem;padding:.35rem}.c-button-group-demo .menu-panel button{background:transparent;color:var(--t);text-align:left;width:100%}.c-button-group-demo .menu-panel button:hover{background:var(--a)}.c-button-group-demo .dialog{border:1px solid var(--b);border-radius:.75rem;box-shadow:0 1rem 3rem #17191522;max-width:min(30rem,calc(100% - 2rem));padding:0;width:100%}.c-button-group-demo .dialog::backdrop{background:#17191555}.c-button-group-demo .dialog>div{display:grid;gap:1rem;padding:1.25rem}.c-button-group-demo .field{display:grid;gap:.35rem}.c-button-group-demo .field input,.c-button-group-demo .field select,.c-button-group-demo .field textarea{width:100%}.c-button-group-demo .output{background:#eff8e5;border-radius:.4rem;color:#35551d;padding:.6rem}.c-button-group-demo .table{border-collapse:collapse;width:100%}.c-button-group-demo .table th,.c-button-group-demo .table td{border-bottom:1px solid var(--b);padding:.7rem;text-align:left}.c-button-group-demo .progress{background:#e7eadf;border-radius:99rem;height:.7rem;overflow:hidden}.c-button-group-demo .progress span{background:var(--a);display:block;height:100%;width:68%}.c-button-group-demo .spinner{animation:spin 900ms linear infinite;border:.25rem solid var(--b);border-right-color:var(--t);border-radius:50%;height:2rem;width:2rem}@keyframes spin{to{transform:rotate(360deg)}}.c-button-group-demo .skeleton{display:grid;gap:.6rem}.c-button-group-demo .skeleton span{background:#e9ebe3;border-radius:.35rem;height:.8rem}.c-button-group-demo .skeleton span:first-child{height:4rem}.c-button-group-demo .ratio{align-items:center;aspect-ratio:16/9;background:linear-gradient(135deg,#dff8bd,#fff);border:1px solid var(--b);display:grid;justify-items:center}.c-button-group-demo .ratio strong{font-size:1.4rem}.c-button-group-demo .timeline{border-left:2px solid var(--b);display:grid;gap:1rem;padding-left:1rem}.c-button-group-demo .timeline article{position:relative}.c-button-group-demo .timeline article:before{background:var(--a);border:2px solid var(--s);border-radius:50%;content:\"\";height:.65rem;left:-1.4rem;position:absolute;top:.25rem;width:.65rem}.c-button-group-demo .chips{display:flex;flex-wrap:wrap;gap:.5rem}.c-button-group-demo .chip{background:#e7f9cf;border-radius:99rem;padding:.45rem .7rem}.c-button-group-demo .terminal{background:#171915;border-radius:.5rem;color:#e7f9cf;font-family:ui-monospace,monospace;padding:1rem}.c-button-group-demo .terminal input{background:#2d3329;border-color:#59634e;color:#fff;width:100%}.c-button-group-demo .scroll{max-height:12rem;overflow:auto}.c-button-group-demo .split{display:grid;gap:.75rem;grid-template-columns:1fr 1fr}.c-button-group-demo .divider{border:0;border-top:1px solid var(--b);margin:1rem 0}@media(max-width:32rem){.c-button-group-demo{padding:1rem}.c-button-group-demo .surface{padding:1rem}.c-button-group-demo .grid,.c-button-group-demo .split{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.c-button-group-demo *{animation-duration:.01ms!important;scroll-behavior:auto!important}}",
-            "javascript": "export function createButtonGroup(root){root.classList.add(\"is-ready\");return{destroy(){root.classList.remove(\"is-ready\");}}}document.querySelectorAll(\"[data-component=\\\"button-group\\\"]\").forEach(createButtonGroup);"
-          }
-        }
-      ],
-      "variants": [],
-      "anatomy": [
-        {
-          "name": "Native structure",
-          "description": "Semantic HTML structure for button group."
-        },
-        {
-          "name": "Interaction surface",
-          "description": "The perceivable or focusable component surface."
-        }
-      ],
-      "tokens": [
-        {
-          "name": "--button-group-accent",
-          "defaultValue": "#b9f474",
-          "description": "accent token for Button Group."
-        },
-        {
-          "name": "--button-group-accent-text",
-          "defaultValue": "#162600",
-          "description": "accent-text token for Button Group."
-        },
-        {
-          "name": "--button-group-border",
-          "defaultValue": "#dcddd4",
-          "description": "border token for Button Group."
-        },
-        {
-          "name": "--button-group-border-strong",
-          "defaultValue": "#bfc1b7",
-          "description": "border-strong token for Button Group."
-        },
-        {
-          "name": "--button-group-canvas",
-          "defaultValue": "#f5f5ef",
-          "description": "canvas token for Button Group."
-        },
-        {
-          "name": "--button-group-focus",
-          "defaultValue": "#b9f474",
-          "description": "focus token for Button Group."
-        },
-        {
-          "name": "--button-group-font",
-          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
-          "description": "font token for Button Group."
-        },
-        {
-          "name": "--button-group-muted",
-          "defaultValue": "#62665d",
-          "description": "muted token for Button Group."
-        },
-        {
-          "name": "--button-group-radius",
-          "defaultValue": ".75rem",
-          "description": "radius token for Button Group."
-        },
-        {
-          "name": "--button-group-surface",
-          "defaultValue": "#ffffff",
-          "description": "surface token for Button Group."
-        },
-        {
-          "name": "--button-group-text",
-          "defaultValue": "#171915",
-          "description": "text token for Button Group."
-        }
-      ],
-      "accessibility": [
-        "Prefer native semantics and controls before adding ARIA.",
-        "Keep labels and visible focus available.",
-        "Document unsupported advanced behavior."
-      ],
-      "responsive": "Content-driven width with wrapping at narrow sizes.",
-      "limitations": [
-        "Framework-specific APIs, remote data, and advanced state are intentionally omitted from this baseline recipe."
-      ],
-      "provenance": {
-        "label": "Bootstrap catalog study",
-        "url": "https://getbootstrap.com/docs/5.3/components/button-group/",
-        "note": "Original native HTML, CSS, and JavaScript; no Bootstrap source is copied."
-      }
-    }
-  },
-  {
     "slug": "bottom-sheet",
     "type": "component",
     "title": "Bottom Sheet",
@@ -1878,16 +1762,43 @@
         {
           "slug": "basic",
           "title": "Basic Bottom Sheet",
-          "description": "A complete independently runnable bottom sheet preview.",
-          "canvasHeight": 320,
+          "description": "A standard bottom sheet anchored to the bottom edge with a close button.",
+          "canvasHeight": 360,
           "source": {
-            "html": "<div class=\"c-bottom-sheet-demo\" data-component=\"bottom-sheet\"><div class=\"surface\"><div class=\"row\"><button type=\"button\" data-trigger aria-expanded=\"true\">Toggle Bottom Sheet</button><span class=\"muted\">Focused task surface</span></div><dialog class=\"dialog\" open data-dialog><div><div class=\"row\"><h2>Bottom Sheet</h2><button type=\"button\" data-close aria-label=\"Close\">×</button></div><p class=\"muted\">Keep the current task visible while the surrounding page remains available.</p><button type=\"button\" data-close>Done</button></div></dialog></div></div>",
-            "css": ".c-bottom-sheet-demo{--a:#b9f474;--at:#162600;--b:#dcddd4;--bs:#bfc1b7;--bg:#f5f5ef;--m:#62665d;--s:#fff;--t:#171915;align-content:center;background:var(--bg);color:var(--t);display:grid;font-family:Inter,ui-sans-serif,system-ui,sans-serif;gap:1rem;min-height:100%;padding:2rem}.c-bottom-sheet-demo *{box-sizing:border-box}.c-bottom-sheet-demo .surface{background:var(--s);border:1px solid var(--b);border-radius:.75rem;margin:auto;max-width:42rem;padding:1.5rem;width:min(100%,42rem)}.c-bottom-sheet-demo .stack{display:grid;gap:.75rem}.c-bottom-sheet-demo .row{align-items:center;display:flex;flex-wrap:wrap;gap:.6rem}.c-bottom-sheet-demo .grid{display:grid;gap:.75rem;grid-template-columns:repeat(3,minmax(0,1fr))}.c-bottom-sheet-demo :is(button,input,select,textarea){border:1px solid var(--bs);border-radius:.5rem;font:inherit;min-height:2.6rem;padding:.65rem .8rem}.c-bottom-sheet-demo button{background:var(--t);color:#fff;cursor:pointer}.c-bottom-sheet-demo button:hover{background:#34382f}.c-bottom-sheet-demo :focus-visible{outline:.2rem solid var(--a);outline-offset:.15rem}.c-bottom-sheet-demo [hidden]{display:none!important}.c-bottom-sheet-demo .muted{color:var(--m);font-size:.9rem;line-height:1.5}.c-bottom-sheet-demo .eyebrow{color:var(--m);font-size:.7rem;font-weight:700;letter-spacing:.08em;margin:0;text-transform:uppercase}.c-bottom-sheet-demo h2,.c-bottom-sheet-demo h3,.c-bottom-sheet-demo p{margin:0}.c-bottom-sheet-demo h2{font-size:1.35rem;letter-spacing:-.03em}.c-bottom-sheet-demo .list{display:grid;gap:.4rem;list-style:none;margin:0;padding:0}.c-bottom-sheet-demo .list li{background:#fbfbf8;border:1px solid var(--b);border-radius:.5rem;padding:.7rem}.c-bottom-sheet-demo .menu-panel{background:var(--s);border:1px solid var(--b);border-radius:.5rem;display:grid;gap:.25rem;margin-top:.5rem;padding:.35rem}.c-bottom-sheet-demo .menu-panel button{background:transparent;color:var(--t);text-align:left;width:100%}.c-bottom-sheet-demo .menu-panel button:hover{background:var(--a)}.c-bottom-sheet-demo .dialog{border:1px solid var(--b);border-radius:.75rem;box-shadow:0 1rem 3rem #17191522;max-width:min(30rem,calc(100% - 2rem));padding:0;width:100%}.c-bottom-sheet-demo .dialog::backdrop{background:#17191555}.c-bottom-sheet-demo .dialog>div{display:grid;gap:1rem;padding:1.25rem}.c-bottom-sheet-demo .field{display:grid;gap:.35rem}.c-bottom-sheet-demo .field input,.c-bottom-sheet-demo .field select,.c-bottom-sheet-demo .field textarea{width:100%}.c-bottom-sheet-demo .output{background:#eff8e5;border-radius:.4rem;color:#35551d;padding:.6rem}.c-bottom-sheet-demo .table{border-collapse:collapse;width:100%}.c-bottom-sheet-demo .table th,.c-bottom-sheet-demo .table td{border-bottom:1px solid var(--b);padding:.7rem;text-align:left}.c-bottom-sheet-demo .progress{background:#e7eadf;border-radius:99rem;height:.7rem;overflow:hidden}.c-bottom-sheet-demo .progress span{background:var(--a);display:block;height:100%;width:68%}.c-bottom-sheet-demo .spinner{animation:spin 900ms linear infinite;border:.25rem solid var(--b);border-right-color:var(--t);border-radius:50%;height:2rem;width:2rem}@keyframes spin{to{transform:rotate(360deg)}}.c-bottom-sheet-demo .skeleton{display:grid;gap:.6rem}.c-bottom-sheet-demo .skeleton span{background:#e9ebe3;border-radius:.35rem;height:.8rem}.c-bottom-sheet-demo .skeleton span:first-child{height:4rem}.c-bottom-sheet-demo .ratio{align-items:center;aspect-ratio:16/9;background:linear-gradient(135deg,#dff8bd,#fff);border:1px solid var(--b);display:grid;justify-items:center}.c-bottom-sheet-demo .ratio strong{font-size:1.4rem}.c-bottom-sheet-demo .timeline{border-left:2px solid var(--b);display:grid;gap:1rem;padding-left:1rem}.c-bottom-sheet-demo .timeline article{position:relative}.c-bottom-sheet-demo .timeline article:before{background:var(--a);border:2px solid var(--s);border-radius:50%;content:\"\";height:.65rem;left:-1.4rem;position:absolute;top:.25rem;width:.65rem}.c-bottom-sheet-demo .chips{display:flex;flex-wrap:wrap;gap:.5rem}.c-bottom-sheet-demo .chip{background:#e7f9cf;border-radius:99rem;padding:.45rem .7rem}.c-bottom-sheet-demo .terminal{background:#171915;border-radius:.5rem;color:#e7f9cf;font-family:ui-monospace,monospace;padding:1rem}.c-bottom-sheet-demo .terminal input{background:#2d3329;border-color:#59634e;color:#fff;width:100%}.c-bottom-sheet-demo .scroll{max-height:12rem;overflow:auto}.c-bottom-sheet-demo .split{display:grid;gap:.75rem;grid-template-columns:1fr 1fr}.c-bottom-sheet-demo .divider{border:0;border-top:1px solid var(--b);margin:1rem 0}@media(max-width:32rem){.c-bottom-sheet-demo{padding:1rem}.c-bottom-sheet-demo .surface{padding:1rem}.c-bottom-sheet-demo .grid,.c-bottom-sheet-demo .split{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.c-bottom-sheet-demo *{animation-duration:.01ms!important;scroll-behavior:auto!important}}",
-            "javascript": "export function createBottomSheet(root){const trigger=root.querySelector(\"[data-trigger]\"),dialog=root.querySelector(\"[data-dialog]\"),close=root.querySelector(\"[data-close]\");if(!trigger||!dialog)return{destroy(){}};const show=()=>{if(!dialog.open){if(dialog.showModal)dialog.showModal();else dialog.setAttribute(\"open\",\"\");}trigger.setAttribute(\"aria-expanded\",\"true\");};const hide=()=>{if(dialog.close&&dialog.open)dialog.close();else dialog.removeAttribute(\"open\");trigger.setAttribute(\"aria-expanded\",\"false\");};const toggle=()=>dialog.open?hide():show();trigger.addEventListener(\"click\",toggle);close?.addEventListener(\"click\",hide);return{destroy(){trigger.removeEventListener(\"click\",toggle);close?.removeEventListener(\"click\",hide);}}}document.querySelectorAll(\"[data-component=\\\"bottom-sheet\\\"]\").forEach(createBottomSheet);"
+            "html": "<div class=\"c-bottom-sheet-demo\" data-component=\"bottom-sheet\"><div class=\"surface\"><div class=\"page-content\"><p class=\"eyebrow\">Project</p><h2>Weekend plans</h2><p class=\"muted\">A few ideas for your next free afternoon.</p><div class=\"row\"><button type=\"button\" data-trigger aria-expanded=\"true\" aria-controls=\"bottom-sheet-panel\">Toggle bottom sheet</button><span class=\"muted\">The page remains available</span></div></div><section class=\"sheet\" id=\"bottom-sheet-panel\" data-sheet aria-labelledby=\"bottom-sheet-title\"><div class=\"sheet-heading\"><h3 id=\"bottom-sheet-title\">Choose an activity</h3><button type=\"button\" class=\"icon-button\" data-close aria-label=\"Close bottom sheet\">×</button></div><p class=\"muted\">Pick something to do nearby.</p><div class=\"sheet-actions\"><button type=\"button\" class=\"sheet-action\">Visit the farmers market <span>›</span></button><button type=\"button\" class=\"sheet-action\">Walk by the river <span>›</span></button></div></section></div></div>",
+            "css": ".c-bottom-sheet-demo{--a:#b9f474;--b:#dcddd4;--bs:#bfc1b7;--bg:#f5f5ef;--m:#62665d;--s:#fff;--t:#171915;align-content:center;background:var(--bg);color:var(--t);display:grid;font-family:Inter,ui-sans-serif,system-ui,sans-serif;min-height:100%;padding:1.5rem}.c-bottom-sheet-demo *{box-sizing:border-box}.c-bottom-sheet-demo button{border:1px solid var(--bs);border-radius:.5rem;cursor:pointer;font:inherit;min-height:2.6rem;padding:.6rem .85rem}.c-bottom-sheet-demo button:focus-visible{outline:.2rem solid #8acb42;outline-offset:.15rem}.c-bottom-sheet-demo .surface{background:#fafaf7;border:1px solid var(--b);border-radius:.8rem;height:19rem;margin:auto;max-width:42rem;overflow:hidden;position:relative;width:100%}.c-bottom-sheet-demo .page-content{display:grid;gap:.8rem;padding:1.4rem}.c-bottom-sheet-demo .eyebrow{color:var(--m);font-size:.7rem;font-weight:700;letter-spacing:.08em;margin:0;text-transform:uppercase}.c-bottom-sheet-demo h2,.c-bottom-sheet-demo h3,.c-bottom-sheet-demo p{margin:0}.c-bottom-sheet-demo h2{font-size:1.3rem}.c-bottom-sheet-demo .muted{color:var(--m);font-size:.86rem;line-height:1.5}.c-bottom-sheet-demo .row{align-items:center;display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.3rem}.c-bottom-sheet-demo .row button{background:var(--t);border-color:var(--t);color:#fff;font-size:.85rem}.c-bottom-sheet-demo .sheet{background:var(--s);border:1px solid var(--b);border-radius:1rem 1rem 0 0;bottom:0;box-shadow:0 -.5rem 1.5rem #17191512;left:0;padding:1rem 1.2rem;position:absolute;right:0;transform:translateY(0);transition:transform .35s cubic-bezier(.2,.75,.25,1)}.c-bottom-sheet-demo .sheet.is-hidden{transform:translateY(105%)}.c-bottom-sheet-demo .sheet-heading{align-items:center;display:flex;justify-content:space-between}.c-bottom-sheet-demo .sheet-heading h3{font-size:1rem}.c-bottom-sheet-demo .icon-button{background:transparent;border:0;font-size:1.3rem;min-height:2rem;padding:.2rem .4rem}.c-bottom-sheet-demo .sheet-actions{display:grid;gap:.3rem;margin-top:.45rem}.c-bottom-sheet-demo .sheet-action{align-items:center;background:#fff;border:0;border-top:1px solid #ecece6;border-radius:0;display:flex;justify-content:space-between;text-align:left;width:100%}.c-bottom-sheet-demo .sheet-action span{color:var(--m);font-size:1.25rem}@media(max-width:32rem){.c-bottom-sheet-demo{padding:1rem}.c-bottom-sheet-demo .page-content{padding:1rem}.c-bottom-sheet-demo .sheet{padding-left:1rem;padding-right:1rem}}@media(prefers-reduced-motion:reduce){.c-bottom-sheet-demo .sheet{transition:none}}",
+            "javascript": "export function createBottomSheet(root){const trigger=root.querySelector(\"[data-trigger]\"),sheet=root.querySelector(\"[data-sheet]\"),close=root.querySelector(\"[data-close]\");if(!trigger||!sheet)return{destroy(){}};const setOpen=(open)=>{sheet.classList.toggle(\"is-hidden\",!open);trigger.setAttribute(\"aria-expanded\",String(open));};const toggle=()=>setOpen(trigger.getAttribute(\"aria-expanded\")!==\"true\");const hide=()=>setOpen(false);trigger.addEventListener(\"click\",toggle);close?.addEventListener(\"click\",hide);return{destroy(){trigger.removeEventListener(\"click\",toggle);close?.removeEventListener(\"click\",hide);}}}document.querySelectorAll(\"[data-component=\\\"bottom-sheet\\\"]\").forEach(createBottomSheet);"
           }
         }
       ],
-      "variants": [],
+      "variants": [
+        {
+          "slug": "slide",
+          "title": "Slide",
+          "summary": "A bottom sheet that slides into a compact handle state.",
+          "tags": [
+            "slide",
+            "handle"
+          ],
+          "useWhen": "Use the slide variant when the sheet should collapse while remaining discoverable at the bottom edge.",
+          "avoidWhen": "Avoid the slide variant when a simple close action is enough.",
+          "customization": [
+            "Toggle the panel between expanded and handle-only states.",
+            "The handle supports pointer, Enter, and Space activation."
+          ],
+          "example": {
+            "slug": "slide",
+            "title": "Slide Bottom Sheet",
+            "description": "A bottom sheet that slides down to a visible grab handle and can be restored from that handle.",
+            "canvasHeight": 360,
+            "source": {
+              "html": "<div class=\"c-bottom-sheet-demo\" data-component=\"bottom-sheet\"><div class=\"surface\"><div class=\"page-content\"><p class=\"eyebrow\">Project</p><h2>Weekend plans</h2><p class=\"muted\">A few ideas for your next free afternoon.</p><div class=\"row\"><button type=\"button\" data-trigger aria-expanded=\"true\" aria-controls=\"bottom-sheet-panel\">Toggle bottom sheet</button><span class=\"muted\">The page remains available</span></div></div><section class=\"sheet\" id=\"bottom-sheet-panel\" data-sheet aria-labelledby=\"bottom-sheet-title\"><button type=\"button\" class=\"sheet-handle\" data-handle aria-label=\"Collapse bottom sheet\" aria-controls=\"bottom-sheet-panel\" aria-expanded=\"true\"><span aria-hidden=\"true\"></span></button><div class=\"sheet-heading\"><h3 id=\"bottom-sheet-title\">Choose an activity</h3><button type=\"button\" class=\"icon-button\" data-close aria-label=\"Close bottom sheet\">×</button></div><p class=\"muted\">Pick something to do nearby.</p><div class=\"sheet-actions\"><button type=\"button\" class=\"sheet-action\">Visit the farmers market <span>›</span></button><button type=\"button\" class=\"sheet-action\">Walk by the river <span>›</span></button></div></section></div></div>",
+              "css": ".c-bottom-sheet-demo{--a:#b9f474;--b:#dcddd4;--bs:#bfc1b7;--bg:#f5f5ef;--m:#62665d;--s:#fff;--t:#171915;align-content:center;background:var(--bg);color:var(--t);display:grid;font-family:Inter,ui-sans-serif,system-ui,sans-serif;min-height:100%;padding:1.5rem}.c-bottom-sheet-demo *{box-sizing:border-box}.c-bottom-sheet-demo button{border:1px solid var(--bs);border-radius:.5rem;cursor:pointer;font:inherit;min-height:2.6rem;padding:.6rem .85rem}.c-bottom-sheet-demo button:focus-visible{outline:.2rem solid #8acb42;outline-offset:.15rem}.c-bottom-sheet-demo .surface{background:#fafaf7;border:1px solid var(--b);border-radius:.8rem;height:19rem;margin:auto;max-width:42rem;overflow:hidden;position:relative;width:100%}.c-bottom-sheet-demo .page-content{display:grid;gap:.8rem;padding:1.4rem}.c-bottom-sheet-demo .eyebrow{color:var(--m);font-size:.7rem;font-weight:700;letter-spacing:.08em;margin:0;text-transform:uppercase}.c-bottom-sheet-demo h2,.c-bottom-sheet-demo h3,.c-bottom-sheet-demo p{margin:0}.c-bottom-sheet-demo h2{font-size:1.3rem}.c-bottom-sheet-demo .muted{color:var(--m);font-size:.86rem;line-height:1.5}.c-bottom-sheet-demo .row{align-items:center;display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.3rem}.c-bottom-sheet-demo .row button{background:var(--t);border-color:var(--t);color:#fff;font-size:.85rem}.c-bottom-sheet-demo .sheet{background:var(--s);border:1px solid var(--b);border-radius:1rem 1rem 0 0;bottom:0;box-shadow:0 -.5rem 1.5rem #17191512;left:0;padding:.65rem 1.2rem 1rem;position:absolute;right:0;transform:translateY(0);transition:transform .25s ease}.c-bottom-sheet-demo .sheet.is-hidden{transform:translateY(calc(100% - 1.2rem))}.c-bottom-sheet-demo .sheet-heading{align-items:center;display:flex;justify-content:space-between}.c-bottom-sheet-demo .sheet-heading h3{font-size:1rem}.c-bottom-sheet-demo .icon-button{background:transparent;border:0;font-size:1.3rem;min-height:2rem;padding:.2rem .4rem}.c-bottom-sheet-demo .sheet-actions{display:grid;gap:.3rem;margin-top:.45rem}.c-bottom-sheet-demo .sheet-action{align-items:center;background:#fff;border:0;border-top:1px solid #ecece6;border-radius:0;display:flex;justify-content:space-between;text-align:left;width:100%}.c-bottom-sheet-demo .sheet-action span{color:var(--m);font-size:1.25rem}@media(max-width:32rem){.c-bottom-sheet-demo{padding:1rem}.c-bottom-sheet-demo .page-content{padding:1rem}.c-bottom-sheet-demo .sheet{padding-left:1rem;padding-right:1rem}}@media(prefers-reduced-motion:reduce){.c-bottom-sheet-demo .sheet{transition:none}}.c-bottom-sheet-demo .sheet-handle{background:transparent;border:0;display:grid;justify-items:center;margin:0 auto .55rem;min-height:1.4rem;padding:.45rem;width:3.5rem}.c-bottom-sheet-demo .sheet-handle span{background:#c8c9c1;border-radius:99px;height:.25rem;width:2.25rem}.c-bottom-sheet-demo .sheet.is-hidden{transform:translateY(calc(100% - 2.1rem))}.c-bottom-sheet-demo .sheet.is-dragging{transition:none!important}.c-bottom-sheet-demo .sheet-handle:focus-visible{outline-offset:0}.c-bottom-sheet-demo .sheet{touch-action:none}.c-bottom-sheet-demo .sheet-handle{cursor:grab}.c-bottom-sheet-demo .sheet-handle:active{cursor:grabbing}",
+              "javascript": "export function createBottomSheet(root){const trigger=root.querySelector(\"[data-trigger]\"),sheet=root.querySelector(\"[data-sheet]\"),close=root.querySelector(\"[data-close]\"),handle=root.querySelector(\"[data-handle]\");if(!trigger||!sheet||!handle)return{destroy(){}};let open=true,startY=0,startOffset=0,dragging=false;const collapsedOffset=()=>Math.max(0,sheet.offsetHeight-34);const setOpen=(value)=>{open=value;sheet.classList.toggle(\"is-hidden\",!open);sheet.style.transform=\"\";trigger.setAttribute(\"aria-expanded\",String(open));handle.setAttribute(\"aria-expanded\",String(open));handle.setAttribute(\"aria-label\",open?\"Drag to collapse bottom sheet\":\"Drag to expand bottom sheet\");};const pointerDown=(event)=>{if(event.button!==undefined&&event.button!==0)return;dragging=true;startY=event.clientY;startOffset=open?0:collapsedOffset();sheet.classList.add(\"is-dragging\");handle.setPointerCapture?.(event.pointerId);};const pointerMove=(event)=>{if(!dragging)return;const offset=Math.max(0,Math.min(collapsedOffset(),startOffset+event.clientY-startY));sheet.style.transform=`translateY(${offset}px)`;};const pointerUp=(event)=>{if(!dragging)return;dragging=false;sheet.classList.remove(\"is-dragging\");try{if(handle.hasPointerCapture?.(event.pointerId))handle.releasePointerCapture(event.pointerId);}catch{}const matrix=new DOMMatrixReadOnly(getComputedStyle(sheet).transform);const offset=matrix.m42;setOpen(offset<collapsedOffset()/2);};const keydown=(event)=>{if(event.key===\"ArrowDown\"){event.preventDefault();setOpen(false);}else if(event.key===\"ArrowUp\"){event.preventDefault();setOpen(true);}};const toggle=()=>setOpen(!open);const hide=()=>setOpen(false);handle.addEventListener(\"pointerdown\",pointerDown);handle.addEventListener(\"pointermove\",pointerMove);handle.addEventListener(\"pointerup\",pointerUp);handle.addEventListener(\"pointercancel\",pointerUp);handle.addEventListener(\"keydown\",keydown);trigger.addEventListener(\"click\",toggle);close?.addEventListener(\"click\",hide);return{destroy(){handle.removeEventListener(\"pointerdown\",pointerDown);handle.removeEventListener(\"pointermove\",pointerMove);handle.removeEventListener(\"pointerup\",pointerUp);handle.removeEventListener(\"pointercancel\",pointerUp);handle.removeEventListener(\"keydown\",keydown);trigger.removeEventListener(\"click\",toggle);close?.removeEventListener(\"click\",hide);}}}document.querySelectorAll(\"[data-component=\\\"bottom-sheet\\\"]\").forEach(createBottomSheet);"
+            }
+          }
+        }
+      ],
       "anatomy": [
         {
           "name": "Native structure",
