@@ -1,5 +1,28 @@
 @if (entry().content.component; as component) {
   <article class="component-entry">
+    <div class="mobile-doc-toolbar">
+      <button
+        class="mobile-variant-trigger"
+        type="button"
+        aria-label="Choose component variant"
+        aria-controls="mobile-variant-menu"
+        [attr.aria-expanded]="variantMenuOpen()"
+        (click)="variantMenuOpen.set(true)"
+      >
+        <span>{{ activeVariant()?.title || 'Default' }}</span>
+        <span class="mobile-variant-trigger__chevron" aria-hidden="true">⌄</span>
+      </button>
+      <button
+        class="mobile-session-trigger"
+        type="button"
+        aria-label="Open page sessions"
+        aria-controls="mobile-page-menu"
+        [attr.aria-expanded]="sessionMenuOpen()"
+        (click)="sessionMenuOpen.set(true)"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
     <header class="component-header">
       <div class="component-header__meta">
         <span class="status-pill">{{ component.status }}</span>
@@ -14,6 +37,68 @@
         <span><strong>HTML · CSS · JS/TS</strong> source</span>
       </div>
     </header>
+
+    <div
+      class="mobile-doc-backdrop"
+      [class.mobile-doc-backdrop--open]="variantMenuOpen() || sessionMenuOpen()"
+      (click)="closeMenus()"
+    ></div>
+    <aside
+      id="mobile-variant-menu"
+      class="mobile-doc-menu mobile-doc-menu--left"
+      [class.mobile-doc-menu--open]="variantMenuOpen()"
+      [attr.aria-hidden]="!variantMenuOpen()"
+      aria-label="Component variants"
+    >
+      <div class="mobile-doc-menu__header">
+        <span>Variants</span>
+        <button type="button" aria-label="Close variants menu" (click)="variantMenuOpen.set(false)">×</button>
+      </div>
+      <nav>
+        <a
+          [routerLink]="['/entry', entry().catalog.slug]"
+          fragment="examples"
+          [class.component-tree__link--active]="!activeVariant()"
+          (click)="variantMenuOpen.set(false)"
+        ><span class="component-tree__branch" aria-hidden="true">◆</span><span><strong>Default</strong><small>Core pattern</small></span></a>
+        @for (variant of component.variants; track variant.slug) {
+          <a
+            [routerLink]="['/entry', entry().catalog.slug]"
+            [fragment]="'variant-' + variant.slug"
+            [class.component-tree__link--active]="activeVariant()?.slug === variant.slug"
+            (click)="variantMenuOpen.set(false)"
+          ><span class="component-tree__branch" aria-hidden="true">↳</span><span><strong>{{ variant.title }}</strong><small>{{ variant.tags[0] }}</small></span></a>
+        }
+      </nav>
+    </aside>
+    <aside
+      id="mobile-page-menu"
+      class="mobile-doc-menu mobile-doc-menu--right"
+      [class.mobile-doc-menu--open]="sessionMenuOpen()"
+      [attr.aria-hidden]="!sessionMenuOpen()"
+      aria-label="Sessions on this page"
+    >
+      <div class="mobile-doc-menu__header">
+        <span>On this page</span>
+        <button type="button" aria-label="Close sessions menu" (click)="sessionMenuOpen.set(false)">×</button>
+      </div>
+      <nav>
+        @if (activeVariant(); as variant) {
+          <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--overview'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--overview')" (click)="sessionMenuOpen.set(false)">Overview</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--usage'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--usage')" (click)="sessionMenuOpen.set(false)">Usage</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--example'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--example')" (click)="sessionMenuOpen.set(false)">Live example</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--customization'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--customization')" (click)="sessionMenuOpen.set(false)">Customization</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" [fragment]="'variant-' + variant.slug + '--inheritance'" [class.page-tree__link--active]="isPageSectionActive('variant-' + variant.slug + '--inheritance')" (click)="sessionMenuOpen.set(false)">Shared contract</a>
+        } @else {
+          <a [routerLink]="['/entry', entry().catalog.slug]" fragment="examples" [class.page-tree__link--active]="isPageSectionActive('examples')" (click)="sessionMenuOpen.set(false)">Example</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" fragment="usage" [class.page-tree__link--active]="isPageSectionActive('usage')" (click)="sessionMenuOpen.set(false)">Usage</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" fragment="anatomy" [class.page-tree__link--active]="isPageSectionActive('anatomy')" (click)="sessionMenuOpen.set(false)">Anatomy</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" fragment="customization" [class.page-tree__link--active]="isPageSectionActive('customization')" (click)="sessionMenuOpen.set(false)">Customization</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" fragment="accessibility" [class.page-tree__link--active]="isPageSectionActive('accessibility')" (click)="sessionMenuOpen.set(false)">Accessibility</a>
+          <a [routerLink]="['/entry', entry().catalog.slug]" fragment="limitations" [class.page-tree__link--active]="isPageSectionActive('limitations')" (click)="sessionMenuOpen.set(false)">Limitations</a>
+        }
+      </nav>
+    </aside>
 
     <div class="documentation-layout">
       <aside class="component-tree" aria-label="Component variants">

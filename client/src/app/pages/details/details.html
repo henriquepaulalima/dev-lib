@@ -7,9 +7,23 @@
       <p>{{ error() }}</p>
     </div>
   } @else if (details(); as entry) {
-    <a class="back" [routerLink]="entry.catalog.type === 'component' ? '/components' : '/features'">
-      ← Back to {{ entry.catalog.type === 'component' ? 'components' : 'features' }}
-    </a>
+    <div class="page-toolbar">
+      <a class="back" [routerLink]="entry.catalog.type === 'component' ? '/components' : '/features'">
+        ← Back to {{ entry.catalog.type === 'component' ? 'components' : 'features' }}
+      </a>
+      @if (entry.catalog.type === 'feature' && entry.content.sections.length) {
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-label="Open session menu"
+          aria-controls="mobile-session-menu"
+          [attr.aria-expanded]="menuOpen()"
+          (click)="menuOpen.set(true)"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      }
+    </div>
 
     @if (entry.catalog.type === 'component') {
       <app-component-details [entry]="entry" [fragment]="fragment()" />
@@ -50,7 +64,7 @@
             }
           </div>
 
-          <aside class="section-nav" aria-label="Sections on this page">
+          <aside class="section-nav section-nav--desktop" aria-label="Sections on this page">
             <span class="section-nav__title">On this page</span>
             <nav>
               @for (section of entry.content.sections; track section.heading; let index = $index) {
@@ -66,6 +80,27 @@
             </nav>
           </aside>
         </div>
+
+        <div class="mobile-menu-backdrop" [class.mobile-menu-backdrop--open]="menuOpen()" (click)="closeMenu()"></div>
+        <aside id="mobile-session-menu" class="mobile-session-menu" [class.mobile-session-menu--open]="menuOpen()" [attr.aria-hidden]="!menuOpen()" aria-label="Sessions">
+          <div class="mobile-session-menu__header">
+            <span>Sessions</span>
+            <button type="button" aria-label="Close session menu" (click)="closeMenu()">×</button>
+          </div>
+          <nav>
+            @for (section of entry.content.sections; track section.heading; let index = $index) {
+              <a
+                [routerLink]="['/entry', slug]"
+                [fragment]="'section-' + index"
+                [class.section-nav__link--active]="activeSection() === index"
+                (click)="closeMenu()"
+              >
+                <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
+                {{ section.heading }}
+              </a>
+            }
+          </nav>
+        </aside>
       </article>
     }
   }

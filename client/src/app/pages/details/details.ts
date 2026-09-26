@@ -24,6 +24,7 @@ export class Details implements OnChanges {
   readonly error = signal('');
   readonly activeSection = signal(0);
   readonly fragment = signal<string | null>(null);
+  readonly menuOpen = signal(false);
 
   constructor() {
     this.route.fragment.pipe(takeUntilDestroyed()).subscribe((fragment) => this.fragment.set(fragment));
@@ -58,5 +59,9 @@ export class Details implements OnChanges {
       this.details.set(details);
       this.loading.set(false);
     });
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
   }
 }

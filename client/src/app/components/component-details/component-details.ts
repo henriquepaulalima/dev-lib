@@ -16,6 +16,8 @@ export class ComponentDetails {
   readonly entry = input.required<EntryDetails>();
   readonly fragment = input<string | null>(null);
   readonly activePageSection = signal('examples');
+  readonly variantMenuOpen = signal(false);
+  readonly sessionMenuOpen = signal(false);
   readonly activeVariant = computed(() => {
     const fragment = this.fragment();
     if (!fragment?.startsWith('variant-')) return null;
@@ -60,5 +62,10 @@ export class ComponentDetails {
 
   isPageSectionActive(target: string): boolean {
     return this.activePageSection() === target;
+  }
+
+  closeMenus(): void {
+    this.variantMenuOpen.set(false);
+    this.sessionMenuOpen.set(false);
   }
 }
