@@ -36,3 +36,9 @@ Required server variables:
 | `PORT` | API listening port |
 | `MONGODB_URI` | MongoDB connection string |
 | `CLIENT_ORIGIN` | Comma-separated origins allowed by CORS |
+
+## Vercel client deployment
+
+The Vercel build runs `npm run seed:db --workspace server` before building the Angular client. Set `MONGODB_URI` in the Vercel project's environment variables for every environment that can deploy (Production, Preview, and Development if those deployments should refresh the database). The build replaces each MongoDB collection represented by a direct subdirectory of `/db` with the JSON documents in that directory. Collections not represented in `/db` are left untouched.
+
+Configure this variable as a secret and ensure its database user can delete and insert documents in the managed collections. A deployment fails before the client build if the variable is missing or the seed operation fails.
