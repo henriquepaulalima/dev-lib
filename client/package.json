@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start:dev": "ng serve --configuration development --proxy-config proxy.conf.json",
+    "start:dev": "ng serve --configuration development --port 4400",
     "start:prod": "ng serve --configuration production",
     "build": "ng build",
     "test": "ng test --watch=false"

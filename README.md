@@ -46,7 +46,9 @@ npm run start:dev --workspace server
 npm run start:dev --workspace client
 ```
 
-The development client reads `client/src/environments/environment.ts`, and the server reads `server/.env.development`.
+The local watch client reads `client/src/environments/environment.ts`, and the server reads `server/.env.development`. Keep the API port in those files aligned. Docker builds use `client/src/environments/environment.docker.ts` to call the API directly on port 3000.
+
+The local client opens on `http://localhost:4400`. To use another client port, pass it after npm's `--` separator, for example `npm run start:dev --workspace client -- --port 4500`, and add that origin to `CLIENT_ORIGIN` in `server/.env.development`.
 
 To run only the database and containerized API together:
 

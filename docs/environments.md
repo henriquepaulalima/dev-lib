@@ -4,14 +4,15 @@
 
 Angular environment files are selected at build time:
 
-- `client/src/environments/environment.ts` is used by development builds and points to `http://localhost:3000/api`.
-- `client/src/environments/environment.production.ts` is used by production builds and contains a placeholder for the deployed API URL.
+- `client/src/environments/environment.ts` is used by `npm run start:dev --workspace client` and sends browser requests directly to the local API. Set its `apiUrl` port to match `PORT` in `server/.env.development` when changing the API port.
+- `client/src/environments/environment.docker.ts` is used by Docker builds and calls the API exposed on local port 3000 directly.
+- `client/src/environments/environment.production.ts` is used by production builds and points to the deployed API.
 
 Update `apiUrl` in the production file before deploying the client. Do not place secrets in Angular environment files: every value is included in the browser bundle.
 
-Run the client with `npm run start:dev --workspace client` or `npm run start:prod --workspace client`.
+Run the local client on port 4400 with `npm run start:dev --workspace client`, or use `npm run start:prod --workspace client` for the production build. To override the local client port, pass `-- --port <port>` after the workspace argument and update `CLIENT_ORIGIN` in the server environment.
 
-The client Dockerfile accepts a `BUILD_CONFIGURATION` build argument. It defaults to `production`; local Docker Compose explicitly selects `development` so the browser can reach the API exposed on local port 3000.
+The client Dockerfile accepts a `BUILD_CONFIGURATION` build argument. It defaults to `production`; local Docker Compose selects `docker` so the browser calls the API exposed on local port 3000.
 
 ## Server
 
