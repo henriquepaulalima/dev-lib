@@ -3,7 +3,7 @@
     "slug": "button",
     "type": "component",
     "title": "Button",
-    "summary": "A native action control with clear emphasis, accessible icon and busy states, and responsive action layouts.",
+    "summary": "A native action control with emphasis, icon, busy, grouped toggle, and responsive variants.",
     "tags": [
       "html",
       "css",
@@ -12,7 +12,10 @@
       "a11y",
       "button",
       "form",
-      "action"
+      "action",
+      "toggle-button",
+      "aria-pressed",
+      "selection"
     ],
     "overview": "A dependency-free button recipe built on the native button element. It keeps action semantics, keyboard behavior, focus treatment, and state announcements intact while exposing a compact token surface.",
     "dependencies": [],
@@ -154,6 +157,38 @@
               "javascript": "export function createButtonGroup(root) {\n  const status = root.querySelector('[data-button-status]');\n  if (!(status instanceof HTMLElement)) throw new Error('Button group markup is incomplete.');\n  const handleClick = (event) => {\n    const target = event.target;\n    if (!(target instanceof Element)) return;\n    const button = target.closest('[data-group-action]');\n    if (!(button instanceof HTMLButtonElement) || !root.contains(button)) return;\n    status.textContent = `${button.dataset.groupAction} activated.`;\n  };\n  root.addEventListener('click', handleClick);\n  return { destroy() { root.removeEventListener('click', handleClick); } };\n}\n\ndocument.querySelectorAll('[data-component=\"button-group\"]').forEach(createButtonGroup);"
             }
           }
+        },
+        {
+          "slug": "toggle-button",
+          "title": "Toggle buttons",
+          "summary": "Connected buttons for exclusive or multiple selections, with visible pressed states and keyboard navigation.",
+          "tags": [
+            "toggle-button",
+            "group",
+            "selection",
+            "aria-pressed",
+            "formatting"
+          ],
+          "useWhen": "Use grouped toggle buttons for a small set of related choices, such as text alignment or formatting.",
+          "avoidWhen": "Use a switch for an immediate on/off setting or a radio group when a form choice must always have one selected value.",
+          "customization": [
+            "Set data-toggle-group to exclusive for one-or-none selection, or multiple for independent pressed states.",
+            "Give every icon button a stable aria-label and keep aria-pressed synchronized with its visual state.",
+            "Keep one tab stop per group. Arrow keys, Home, and End move focus without changing selection; Enter or Space activates the focused button.",
+            "The selected state uses the shared --button-accent and --button-accent-text tokens."
+          ],
+          "example": {
+            "slug": "toggle-button",
+            "title": "Alignment and formatting",
+            "description": "Choose one alignment or turn several formatting options on and off. Use arrow keys within each group and activate with Enter or Space.",
+            "canvasHeight": 380,
+            "source": {
+              "html": "<div class=\"c-button-demo\" data-component=\"toggle-buttons\">\n  <div class=\"c-button-demo__section\">\n    <span class=\"c-button-demo__label\">Text alignment</span>\n    <div class=\"c-button-demo__toggle-group\" role=\"group\" aria-label=\"Text alignment\" data-toggle-group=\"exclusive\">\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Align left\" aria-pressed=\"false\" tabindex=\"0\" data-toggle-value=\"left\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 5h16M4 9h10M4 13h16M4 17h10\"/></svg></button>\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Align center\" aria-pressed=\"true\" tabindex=\"-1\" data-toggle-value=\"center\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 5h16M7 9h10M4 13h16M7 17h10\"/></svg></button>\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Align right\" aria-pressed=\"false\" tabindex=\"-1\" data-toggle-value=\"right\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 5h16M10 9h10M4 13h16M10 17h10\"/></svg></button>\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Justify text\" aria-pressed=\"false\" tabindex=\"-1\" data-toggle-value=\"justify\" disabled><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 5h16M4 9h16M4 13h16M4 17h16\"/></svg></button>\n    </div>\n  </div>\n  <div class=\"c-button-demo__section\">\n    <span class=\"c-button-demo__label\">Formatting</span>\n    <div class=\"c-button-demo__toggle-group\" role=\"group\" aria-label=\"Formatting\" data-toggle-group=\"multiple\">\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Bold\" aria-pressed=\"true\" tabindex=\"0\" data-toggle-value=\"bold\"><strong aria-hidden=\"true\">B</strong></button>\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Italic\" aria-pressed=\"false\" tabindex=\"-1\" data-toggle-value=\"italic\"><em aria-hidden=\"true\">I</em></button>\n      <button class=\"c-button c-button--toggle\" type=\"button\" aria-label=\"Underline\" aria-pressed=\"false\" tabindex=\"-1\" data-toggle-value=\"underline\"><u aria-hidden=\"true\">U</u></button>\n    </div>\n  </div>\n  <p class=\"c-button-demo__status\" data-toggle-status aria-live=\"polite\">Choose a text option.</p>\n</div>",
+              "css": ".c-button-demo {\n  --button-accent: #b9f474;\n  --button-accent-text: #162600;\n  --button-border: #dcddd4;\n  --button-border-strong: #bfc1b7;\n  --button-canvas: #f5f5ef;\n  --button-control-height: 2.75rem;\n  --button-focus: #b9f474;\n  --button-font: Inter, ui-sans-serif, system-ui, sans-serif;\n  --button-muted: #62665d;\n  --button-radius: 0.55rem;\n  --button-surface: #ffffff;\n  --button-text: #171915;\n\n  align-content: center;\n  background: var(--button-canvas);\n  color: var(--button-text);\n  display: grid;\n  font-family: var(--button-font);\n  gap: 1.5rem;\n  min-height: 100%;\n  padding: 2rem;\n}\n\n.c-button-demo__section { display: grid; gap: 0.5rem; justify-items: start; }\n.c-button-demo__label { color: var(--button-muted); font-size: 0.875rem; }\n.c-button-demo__toggle-group { display: inline-flex; max-width: 100%; }\n.c-button--toggle {\n  align-items: center;\n  background: var(--button-surface);\n  border: 1px solid var(--button-border-strong);\n  border-radius: 0;\n  color: var(--button-text);\n  cursor: pointer;\n  display: inline-flex;\n  font: inherit;\n  justify-content: center;\n  min-height: var(--button-control-height);\n  min-width: var(--button-control-height);\n  padding: 0.5rem;\n  position: relative;\n}\n.c-button--toggle + .c-button--toggle { margin-inline-start: -1px; }\n.c-button--toggle:first-child { border-radius: var(--button-radius) 0 0 var(--button-radius); }\n.c-button--toggle:last-child { border-radius: 0 var(--button-radius) var(--button-radius) 0; }\n.c-button--toggle:hover:not(:disabled) { border-color: var(--button-text); z-index: 1; }\n.c-button--toggle[aria-pressed=\"true\"] {\n  background: var(--button-accent);\n  border-color: var(--button-accent-text);\n  color: var(--button-accent-text);\n  z-index: 1;\n}\n.c-button--toggle:focus-visible { outline: 0.2rem solid var(--button-focus); outline-offset: 0.15rem; z-index: 2; }\n.c-button--toggle:disabled { cursor: not-allowed; opacity: 0.45; }\n.c-button--toggle svg { fill: none; height: 1.25rem; stroke: currentColor; stroke-linecap: round; stroke-width: 2; width: 1.25rem; }\n.c-button--toggle :is(strong, em, u) { font-size: 1.125rem; line-height: 1; }\n.c-button-demo__status { color: var(--button-muted); line-height: 1.6; margin: 0; }\n@media (max-width: 32rem) { .c-button-demo { padding: 1.5rem; } .c-button-demo__toggle-group { width: 100%; } .c-button--toggle { flex: 1; } }\n@media (prefers-reduced-motion: reduce) { .c-button--toggle { scroll-behavior: auto; } }",
+              "javascript": "export function createToggleButtons(root) {\n  const status = root.querySelector('[data-toggle-status]');\n  if (!(status instanceof HTMLElement)) throw new Error('Toggle button markup is incomplete.');\n\n  const getButtons = (group) => [...group.querySelectorAll('[data-toggle-value]')].filter((button) => button instanceof HTMLButtonElement && !button.disabled);\n  const setTabStop = (group, active) => {\n    getButtons(group).forEach((button) => { button.tabIndex = button === active ? 0 : -1; });\n  };\n  const handleClick = (event) => {\n    if (!(event.target instanceof Element)) return;\n    const button = event.target.closest('[data-toggle-value]');\n    if (!(button instanceof HTMLButtonElement) || button.disabled || !root.contains(button)) return;\n    const group = button.closest('[data-toggle-group]');\n    if (!(group instanceof HTMLElement)) return;\n    const pressed = button.getAttribute('aria-pressed') === 'true';\n    if (group.dataset.toggleGroup === 'exclusive') {\n      getButtons(group).forEach((item) => item.setAttribute('aria-pressed', 'false'));\n    }\n    button.setAttribute('aria-pressed', String(!pressed));\n    status.textContent = `${button.getAttribute('aria-label')} ${pressed ? 'off' : 'on'}.`;\n  };\n  const handleFocus = (event) => {\n    if (!(event.target instanceof HTMLButtonElement)) return;\n    const group = event.target.closest('[data-toggle-group]');\n    if (group instanceof HTMLElement && root.contains(group)) setTabStop(group, event.target);\n  };\n  const handleKeydown = (event) => {\n    if (!(event.target instanceof HTMLButtonElement)) return;\n    const group = event.target.closest('[data-toggle-group]');\n    if (!(group instanceof HTMLElement) || !root.contains(group)) return;\n    const buttons = getButtons(group);\n    const index = buttons.indexOf(event.target);\n    if (index < 0) return;\n    let next;\n    if (event.key === 'ArrowRight') next = buttons[(index + 1) % buttons.length];\n    else if (event.key === 'ArrowLeft') next = buttons[(index - 1 + buttons.length) % buttons.length];\n    else if (event.key === 'Home') next = buttons[0];\n    else if (event.key === 'End') next = buttons[buttons.length - 1];\n    else return;\n    event.preventDefault();\n    next.focus();\n  };\n\n  root.addEventListener('click', handleClick);\n  root.addEventListener('focusin', handleFocus);\n  root.addEventListener('keydown', handleKeydown);\n  return { destroy() {\n    root.removeEventListener('click', handleClick);\n    root.removeEventListener('focusin', handleFocus);\n    root.removeEventListener('keydown', handleKeydown);\n  } };\n}\n\ndocument.querySelectorAll('[data-component=\"toggle-buttons\"]').forEach(createToggleButtons);",
+              "typescript": "export function createToggleButtons(root: Element): { destroy(): void } {\n  const status = root.querySelector<HTMLElement>('[data-toggle-status]');\n  if (!status) throw new Error('Toggle button markup is incomplete.');\n\n  const getButtons = (group: Element): HTMLButtonElement[] =>\n    Array.from(group.querySelectorAll<HTMLButtonElement>('[data-toggle-value]')).filter((button) => !button.disabled);\n  const setTabStop = (group: Element, active: HTMLButtonElement): void => {\n    getButtons(group).forEach((button) => { button.tabIndex = button === active ? 0 : -1; });\n  };\n  const handleClick = (event: Event): void => {\n    if (!(event.target instanceof Element)) return;\n    const button = event.target.closest<HTMLButtonElement>('[data-toggle-value]');\n    if (!button || button.disabled || !root.contains(button)) return;\n    const group = button.closest<HTMLElement>('[data-toggle-group]');\n    if (!group) return;\n    const pressed = button.getAttribute('aria-pressed') === 'true';\n    if (group.dataset['toggleGroup'] === 'exclusive') {\n      getButtons(group).forEach((item) => item.setAttribute('aria-pressed', 'false'));\n    }\n    button.setAttribute('aria-pressed', String(!pressed));\n    status.textContent = `${button.getAttribute('aria-label')} ${pressed ? 'off' : 'on'}.`;\n  };\n  const handleFocus = (event: Event): void => {\n    if (!(event.target instanceof HTMLButtonElement)) return;\n    const group = event.target.closest<HTMLElement>('[data-toggle-group]');\n    if (group && root.contains(group)) setTabStop(group, event.target);\n  };\n  const handleKeydown = (event: Event): void => {\n    if (!(event instanceof KeyboardEvent) || !(event.target instanceof HTMLButtonElement)) return;\n    const group = event.target.closest<HTMLElement>('[data-toggle-group]');\n    if (!group || !root.contains(group)) return;\n    const buttons = getButtons(group);\n    const index = buttons.indexOf(event.target);\n    if (index < 0) return;\n    let next: HTMLButtonElement;\n    if (event.key === 'ArrowRight') next = buttons[(index + 1) % buttons.length];\n    else if (event.key === 'ArrowLeft') next = buttons[(index - 1 + buttons.length) % buttons.length];\n    else if (event.key === 'Home') next = buttons[0];\n    else if (event.key === 'End') next = buttons[buttons.length - 1];\n    else return;\n    event.preventDefault();\n    next.focus();\n  };\n\n  root.addEventListener('click', handleClick);\n  root.addEventListener('focusin', handleFocus);\n  root.addEventListener('keydown', handleKeydown);\n  return { destroy(): void {\n    root.removeEventListener('click', handleClick);\n    root.removeEventListener('focusin', handleFocus);\n    root.removeEventListener('keydown', handleKeydown);\n  } };\n}\n\ndocument.querySelectorAll<HTMLElement>('[data-component=\"toggle-buttons\"]').forEach(createToggleButtons);"
+            }
+          }
         }
       ],
       "anatomy": [
@@ -247,12 +282,12 @@
       "responsive": "Buttons wrap without clipping. The responsive-actions variant becomes a full-width vertical stack below 32rem while preserving a logical DOM and keyboard order.",
       "limitations": [
         "The basic recipe reports activation only; application-specific commands, form submission, and error handling remain the consumer's responsibility.",
-        "Inline SVG icons are intentionally simple and should be replaced with product-approved artwork while preserving their accessible naming contract.",
-        "A toggle button is a distinct stateful component and is intentionally not modeled as a visual button variant."
+        "Inline SVG icons are intentionally simple and should be replaced with product-approved artwork while preserving their accessible naming contract."
       ],
       "provenance": {
-        "label": "Cross-library button behavior study",
-        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
+        "label": "Native button patterns informed by Material UI",
+        "url": "https://mui.com/material-ui/react-toggle-button/",
+        "note": "Original native HTML, CSS, and JavaScript. The grouped selection behavior is informed by the Material UI Toggle Button documentation; no library source is copied."
       }
     }
   }
