@@ -1,243 +1,9 @@
 [
   {
-    "slug": "float-label",
-    "type": "component",
-    "title": "Float label",
-    "summary": "A real label that moves above a populated or focused native input.",
-    "tags": [
-      "html",
-      "css",
-      "javascript",
-      "a11y",
-      "form",
-      "float-label"
-    ],
-    "overview": "A compact floating-label treatment that keeps label and input semantics native.",
-    "dependencies": [],
-    "sections": [],
-    "component": {
-      "status": "draft",
-      "useWhen": "Use float label when its native semantic contract matches the task.",
-      "avoidWhen": "Avoid float label when another native control or navigation pattern communicates the task more clearly.",
-      "examples": [
-        {
-          "slug": "basic",
-          "title": "Basic float label",
-          "description": "A complete float label that is independently copyable in the isolated preview.",
-          "canvasHeight": 320,
-          "source": {
-            "html": "<div class=\"c-float-label-demo\" data-component=\"float-label\"><div class=\"c-float-label\"><input id=\"workspace-label\" type=\"text\" placeholder=\" \" aria-describedby=\"workspace-help\"><label for=\"workspace-label\">Workspace name</label><small id=\"workspace-help\">Shown to collaborators.</small></div></div>",
-            "css": ".c-float-label-demo{--float-label-accent:#b9f474;--float-label-accent-text:#162600;--float-label-border:#dcddd4;--float-label-border-strong:#bfc1b7;--float-label-canvas:#f5f5ef;--float-label-focus:#b9f474;--float-label-font:Inter,ui-sans-serif,system-ui,sans-serif;--float-label-muted:#62665d;--float-label-radius:.55rem;--float-label-surface:#fff;--float-label-text:#171915;align-content:center;background:var(--float-label-canvas);display:grid;font-family:var(--float-label-font);min-height:100%;padding:2rem}.c-float-label{display:grid;gap:.5rem;inline-size:min(100%,28rem);margin:auto;position:relative}.c-float-label input{background:var(--float-label-surface);border:1px solid var(--float-label-border-strong);border-radius:var(--float-label-radius);color:var(--float-label-text);font:inherit;min-height:2.75rem;padding:1.1rem .75rem .45rem;width:100%}.c-float-label label{color:var(--float-label-muted);inset:.85rem .75rem auto;pointer-events:none;position:absolute;transition:transform 160ms ease,background 160ms ease}.c-float-label input:focus+label,.c-float-label input:not(:placeholder-shown)+label{background:var(--float-label-surface);color:var(--float-label-text);padding-inline:.2rem;transform:translateY(-1.2rem) scale(.8)}.c-float-label input:focus-visible{outline:.2rem solid var(--float-label-focus);outline-offset:.15rem}@media(prefers-reduced-motion:reduce){.c-float-label label{transition:none}}",
-            "javascript": "export function createFloatLabel(root) {\n  if (!root.matches('[data-component=\"float-label\"]') || !root.querySelector('input')) throw new Error('createFloatLabel markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"float-label\"]').forEach(createFloatLabel);"
-          }
-        }
-      ],
-      "variants": [],
-      "tokens": [
-        {
-          "name": "--float-label-accent",
-          "defaultValue": "#b9f474",
-          "description": "The accent role for this component."
-        },
-        {
-          "name": "--float-label-accent-text",
-          "defaultValue": "#162600",
-          "description": "The accent-text role for this component."
-        },
-        {
-          "name": "--float-label-border",
-          "defaultValue": "#dcddd4",
-          "description": "The border role for this component."
-        },
-        {
-          "name": "--float-label-border-strong",
-          "defaultValue": "#bfc1b7",
-          "description": "The border-strong role for this component."
-        },
-        {
-          "name": "--float-label-canvas",
-          "defaultValue": "#f5f5ef",
-          "description": "The canvas role for this component."
-        },
-        {
-          "name": "--float-label-focus",
-          "defaultValue": "#b9f474",
-          "description": "The focus role for this component."
-        },
-        {
-          "name": "--float-label-font",
-          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
-          "description": "The font role for this component."
-        },
-        {
-          "name": "--float-label-muted",
-          "defaultValue": "#62665d",
-          "description": "The muted role for this component."
-        },
-        {
-          "name": "--float-label-radius",
-          "defaultValue": "0.55rem",
-          "description": "The radius role for this component."
-        },
-        {
-          "name": "--float-label-surface",
-          "defaultValue": "#ffffff",
-          "description": "The surface role for this component."
-        },
-        {
-          "name": "--float-label-text",
-          "defaultValue": "#171915",
-          "description": "The text role for this component."
-        }
-      ],
-      "anatomy": [
-        [
-          "Field",
-          "Native input and connected label"
-        ],
-        [
-          "Floating label",
-          "Visual position of the same label"
-        ]
-      ],
-      "accessibility": [
-        "Keep a real label with for/id.",
-        "Do not use placeholder text as the accessible name.",
-        "Disable motion under reduced-motion preferences."
-      ],
-      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
-      "limitations": [
-        "The CSS :placeholder-shown technique requires a current browser."
-      ],
-      "provenance": {
-        "label": "Native pattern study",
-        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
-      }
-    }
-  },
-  {
-    "slug": "textarea",
-    "type": "component",
-    "title": "Textarea",
-    "summary": "A labeled native multiline input with helper text and a synchronized character count.",
-    "tags": [
-      "html",
-      "css",
-      "javascript",
-      "a11y",
-      "form",
-      "textarea"
-    ],
-    "overview": "A native textarea recipe that preserves browser editing, selection, spellcheck, and form behavior.",
-    "dependencies": [],
-    "sections": [],
-    "component": {
-      "status": "draft",
-      "useWhen": "Use textarea when its native semantic contract matches the task.",
-      "avoidWhen": "Avoid textarea when another native control or navigation pattern communicates the task more clearly.",
-      "examples": [
-        {
-          "slug": "basic",
-          "title": "Basic textarea",
-          "description": "A complete textarea that is independently copyable in the isolated preview.",
-          "canvasHeight": 320,
-          "source": {
-            "html": "<div class=\"c-textarea-demo\" data-component=\"textarea\"><div class=\"c-textarea\"><label for=\"support-message\">Message</label><textarea id=\"support-message\" maxlength=\"240\" aria-describedby=\"support-help support-count\" placeholder=\"Describe what happened\"></textarea><div class=\"c-textarea__meta\"><small id=\"support-help\">Include the page and action.</small><small id=\"support-count\" data-textarea-count>0 / 240</small></div></div></div>",
-            "css": ".c-textarea-demo{--textarea-accent:#b9f474;--textarea-accent-text:#162600;--textarea-border:#dcddd4;--textarea-border-strong:#bfc1b7;--textarea-canvas:#f5f5ef;--textarea-focus:#b9f474;--textarea-font:Inter,ui-sans-serif,system-ui,sans-serif;--textarea-muted:#62665d;--textarea-radius:.55rem;--textarea-surface:#fff;--textarea-text:#171915;align-content:center;background:var(--textarea-canvas);display:grid;font-family:var(--textarea-font);min-height:100%;padding:2rem}.c-textarea{display:grid;gap:.5rem;inline-size:min(100%,34rem);margin:auto}.c-textarea textarea{background:var(--textarea-surface);border:1px solid var(--textarea-border-strong);border-radius:var(--textarea-radius);color:var(--textarea-text);font:inherit;line-height:1.5;min-height:8rem;padding:.75rem;resize:vertical;width:100%}.c-textarea textarea:focus-visible{outline:.2rem solid var(--textarea-focus);outline-offset:.15rem}.c-textarea__meta{color:var(--textarea-muted);display:flex;justify-content:space-between}",
-            "javascript": "export function createTextarea(root){const area=root.querySelector('textarea[maxlength]');const count=root.querySelector('[data-textarea-count]');if(!(area instanceof HTMLTextAreaElement)||!(count instanceof HTMLElement))throw new Error('Textarea markup is incomplete.');const update=()=>count.textContent=`${area.value.length} / ${area.maxLength}`;area.addEventListener('input',update);update();return{destroy(){area.removeEventListener('input',update);}}}document.querySelectorAll('[data-component=\"textarea\"]').forEach(createTextarea);"
-          }
-        }
-      ],
-      "variants": [],
-      "tokens": [
-        {
-          "name": "--textarea-accent",
-          "defaultValue": "#b9f474",
-          "description": "The accent role for this component."
-        },
-        {
-          "name": "--textarea-accent-text",
-          "defaultValue": "#162600",
-          "description": "The accent-text role for this component."
-        },
-        {
-          "name": "--textarea-border",
-          "defaultValue": "#dcddd4",
-          "description": "The border role for this component."
-        },
-        {
-          "name": "--textarea-border-strong",
-          "defaultValue": "#bfc1b7",
-          "description": "The border-strong role for this component."
-        },
-        {
-          "name": "--textarea-canvas",
-          "defaultValue": "#f5f5ef",
-          "description": "The canvas role for this component."
-        },
-        {
-          "name": "--textarea-focus",
-          "defaultValue": "#b9f474",
-          "description": "The focus role for this component."
-        },
-        {
-          "name": "--textarea-font",
-          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
-          "description": "The font role for this component."
-        },
-        {
-          "name": "--textarea-muted",
-          "defaultValue": "#62665d",
-          "description": "The muted role for this component."
-        },
-        {
-          "name": "--textarea-radius",
-          "defaultValue": "0.55rem",
-          "description": "The radius role for this component."
-        },
-        {
-          "name": "--textarea-surface",
-          "defaultValue": "#ffffff",
-          "description": "The surface role for this component."
-        },
-        {
-          "name": "--textarea-text",
-          "defaultValue": "#171915",
-          "description": "The text role for this component."
-        }
-      ],
-      "anatomy": [
-        [
-          "Label",
-          "Persistent visible name"
-        ],
-        [
-          "Textarea",
-          "Native multiline control"
-        ],
-        [
-          "Counter",
-          "Constraint feedback"
-        ]
-      ],
-      "accessibility": [
-        "Connect helper text with aria-describedby.",
-        "Do not use placeholder as the only label.",
-        "Keep the character count outside the accessible name."
-      ],
-      "responsive": "The example fills its available width, wraps content where needed, and preserves the shared minimum target sizes on narrow screens.",
-      "limitations": [],
-      "provenance": {
-        "label": "Native pattern study",
-        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
-      }
-    }
-  },
-  {
     "slug": "slider",
     "type": "component",
     "title": "Slider",
-    "summary": "A native range control with a visible synchronized value and bounded steps.",
+    "summary": "A Material style range slider with a filled track, visible thumb, and value label.",
     "tags": [
       "html",
       "css",
@@ -246,7 +12,7 @@
       "form",
       "slider"
     ],
-    "overview": "A native range input keeps keyboard increments, form behavior, and assistive technology support platform-owned.",
+    "overview": "The default preview uses a native range input styled with a filled track, round thumb, and value label. It supports pointer and keyboard input without a UI dependency.",
     "dependencies": [],
     "sections": [],
     "component": {
@@ -256,13 +22,13 @@
       "examples": [
         {
           "slug": "basic",
-          "title": "Basic slider",
-          "description": "A complete slider that is independently copyable in the isolated preview.",
-          "canvasHeight": 320,
+          "title": "Volume slider",
+          "description": "Adjust volume with a filled track and a value label on the thumb.",
+          "canvasHeight": 360,
           "source": {
-            "html": "<div class=\"c-slider-demo\" data-component=\"slider\"><div class=\"c-slider\"><div class=\"c-slider__meta\"><label for=\"confidence\">Confidence</label><output for=\"confidence\" id=\"confidence-output\">65%</output></div><input id=\"confidence\" type=\"range\" min=\"0\" max=\"100\" step=\"5\" value=\"65\" aria-describedby=\"confidence-output\"></div></div>",
-            "css": ".c-slider-demo{--slider-accent:#b9f474;--slider-accent-text:#162600;--slider-border:#dcddd4;--slider-border-strong:#bfc1b7;--slider-canvas:#f5f5ef;--slider-focus:#b9f474;--slider-font:Inter,ui-sans-serif,system-ui,sans-serif;--slider-muted:#62665d;--slider-radius:.55rem;--slider-surface:#fff;--slider-text:#171915;align-content:center;background:var(--slider-canvas);display:grid;font-family:var(--slider-font);min-height:100%;padding:2rem}.c-slider{display:grid;gap:.75rem;inline-size:min(100%,34rem);margin:auto}.c-slider__meta{display:flex;justify-content:space-between}.c-slider input{accent-color:var(--slider-accent);width:100%}.c-slider input:focus-visible{outline:.2rem solid var(--slider-focus);outline-offset:.25rem}.c-slider output{font-weight:650}",
-            "javascript": "export function createSlider(root){const input=root.querySelector('input[type=\"range\"]');const output=root.querySelector('output');if(!(input instanceof HTMLInputElement)||!(output instanceof HTMLOutputElement))throw new Error('Slider markup is incomplete.');const update=()=>{output.textContent=`${input.value}%`;output.value=input.value};input.addEventListener('input',update);update();return{destroy(){input.removeEventListener('input',update);}}}document.querySelectorAll('[data-component=\"slider\"]').forEach(createSlider);"
+            "html": "<section class=\"slider-demo\" data-slider-demo><div class=\"slider-card\"><div class=\"slider-heading\"><h2>Volume</h2><output id=\"slider-value\" for=\"slider-volume\" data-slider-output>65%</output></div><div class=\"slider-control\"><span aria-hidden=\"true\">−</span><div class=\"slider-track-wrap\"><input id=\"slider-volume\" type=\"range\" min=\"0\" max=\"100\" step=\"1\" value=\"65\" aria-label=\"Volume\" aria-describedby=\"slider-help\" data-slider-input><span class=\"slider-tooltip\" data-slider-tooltip aria-hidden=\"true\">65</span></div><span aria-hidden=\"true\">＋</span></div><div class=\"slider-marks\" aria-hidden=\"true\"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div><p id=\"slider-help\">Drag the thumb or use the arrow keys to adjust.</p></div></section>",
+            "css": ".slider-demo{align-content:center;background:#f5f6f0;color:#20261d;display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;min-height:100%;padding:2rem}.slider-card{background:#fff;border:1px solid #d9ddd3;border-radius:.85rem;display:grid;gap:1.1rem;margin:auto;padding:1.35rem;width:min(100%,31rem)}.slider-heading{align-items:center;display:flex;justify-content:space-between}.slider-heading h2{font-size:1.05rem;margin:0}.slider-heading output{color:#47753b;font-variant-numeric:tabular-nums;font-weight:700}.slider-control{align-items:center;display:flex;gap:.9rem}.slider-control>span{color:#66755e;font-size:1.3rem;line-height:1}.slider-track-wrap{flex:1;min-width:0;position:relative}.slider-track-wrap input{appearance:none;background:linear-gradient(to right,#6aaa4d 0 var(--value),#dfe6d9 var(--value) 100%);border-radius:99px;cursor:pointer;height:.32rem;margin:.9rem 0;width:100%}.slider-track-wrap input::-webkit-slider-thumb{appearance:none;background:#fff;border:3px solid #6aaa4d;border-radius:50%;box-shadow:0 .1rem .3rem #1825162b;height:1.28rem;width:1.28rem}.slider-track-wrap input::-moz-range-thumb{background:#fff;border:3px solid #6aaa4d;border-radius:50%;box-shadow:0 .1rem .3rem #1825162b;height:1rem;width:1rem}.slider-track-wrap input:focus-visible{outline:3px solid #b9f474;outline-offset:.55rem}.slider-tooltip{background:#477f35;border-radius:.35rem;color:#fff;font-size:.68rem;left:var(--value);opacity:0;padding:.2rem .4rem;pointer-events:none;position:absolute;top:-1.4rem;transform:translateX(-50%);transition:opacity .12s}.slider-track-wrap:focus-within .slider-tooltip,.slider-track-wrap:hover .slider-tooltip{opacity:1}.slider-marks{color:#75806f;display:flex;font-size:.68rem;justify-content:space-between;margin:-.65rem 1.8rem 0}.slider-card p{color:#697064;font-size:.76rem;margin:0}@media(max-width:30rem){.slider-demo{padding:1rem}.slider-card{padding:1rem}}",
+            "javascript": "export function createSlider(root){const input=root.querySelector('[data-slider-input]'),output=root.querySelector('[data-slider-output]'),tip=root.querySelector('[data-slider-tooltip]'),wrap=root.querySelector('.slider-track-wrap');if(!input||!output||!tip||!wrap)throw new Error('Slider markup is incomplete.');const render=()=>{const percent=(Number(input.value)-Number(input.min))/(Number(input.max)-Number(input.min))*100;wrap.style.setProperty('--value',`${percent}%`);output.textContent=`${input.value}%`;tip.textContent=input.value;};input.addEventListener('input',render);render();return{destroy(){input.removeEventListener('input',render);}}}document.querySelectorAll('[data-slider-demo]').forEach(createSlider);"
           }
         }
       ],
@@ -355,7 +121,7 @@
     "slug": "date-picker",
     "type": "component",
     "title": "Date picker",
-    "summary": "A native date field that delegates calendar UI, parsing, keyboard support, and locale formatting to the platform.",
+    "summary": "A custom calendar and time picker in one overlay, with date-only, time-only, and date-period variants.",
     "tags": [
       "html",
       "css",
@@ -364,27 +130,107 @@
       "form",
       "date-picker"
     ],
-    "overview": "A trustworthy baseline for one date before a custom calendar is justified.",
+    "overview": "The default opens a single custom picker containing a calendar and a dedicated time control layout. Variants provide date-only, time-only, and single-calendar start/end date selection.",
     "dependencies": [],
     "sections": [],
     "component": {
       "status": "draft",
-      "useWhen": "Use date picker when its native semantic contract matches the task.",
-      "avoidWhen": "Avoid date picker when another native control or navigation pattern communicates the task more clearly.",
+      "useWhen": "Use the custom calendar when the browser-native date control does not match the application interface, or choose a variant for date-only, time-only, or date-period input.",
+      "avoidWhen": "Avoid custom date UI when the native control is a better fit for the device, or when a full scheduling workflow needs time zones, availability, and recurrence rules.",
       "examples": [
         {
-          "slug": "basic",
-          "title": "Basic date picker",
-          "description": "A complete date picker that is independently copyable in the isolated preview.",
-          "canvasHeight": 320,
+          "slug": "date-and-time",
+          "title": "Date and time in one picker",
+          "description": "Open one custom picker to select a date from the calendar and adjust hours and minutes in its dedicated time section.",
+          "canvasHeight": 430,
           "source": {
-            "html": "<div class=\"c-date-picker-demo\" data-component=\"date-picker\"><div class=\"c-date-picker\"><label for=\"due-date\">Due date</label><input id=\"due-date\" type=\"date\" min=\"2026-01-01\" max=\"2026-12-31\" aria-describedby=\"due-help\"><small id=\"due-help\">Choose a date in 2026.</small></div></div>",
-            "css": ".c-date-picker-demo{--date-picker-accent:#b9f474;--date-picker-accent-text:#162600;--date-picker-border:#dcddd4;--date-picker-border-strong:#bfc1b7;--date-picker-canvas:#f5f5ef;--date-picker-focus:#b9f474;--date-picker-font:Inter,ui-sans-serif,system-ui,sans-serif;--date-picker-muted:#62665d;--date-picker-radius:.55rem;--date-picker-surface:#fff;--date-picker-text:#171915;align-content:center;background:var(--date-picker-canvas);display:grid;font-family:var(--date-picker-font);min-height:100%;padding:2rem}.c-date-picker{display:grid;gap:.5rem;inline-size:min(100%,28rem);margin:auto}.c-date-picker input{background:var(--date-picker-surface);border:1px solid var(--date-picker-border-strong);border-radius:var(--date-picker-radius);color:var(--date-picker-text);font:inherit;min-height:2.75rem;padding:.75rem;width:100%}.c-date-picker input:focus-visible{outline:.2rem solid var(--date-picker-focus);outline-offset:.15rem}.c-date-picker small{color:var(--date-picker-muted)}",
-            "javascript": "export function createDatePicker(root) {\n  if (!root.matches('[data-component=\"date-picker\"]') || !root.querySelector('input[type=\"date\"]')) throw new Error('createDatePicker markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"date-picker\"]').forEach(createDatePicker);"
+            "html": "<section class=\"date-demo\" data-date-picker data-mode=\"date-time\" data-value=\"2026-06-12\" data-hour=\"9\" data-minute=\"30\">\n  <div class=\"date-picker\">\n    <label class=\"date-picker__label\" for=\"date-picker-trigger\">Date and time</label>\n    <button class=\"date-picker__trigger\" id=\"date-picker-trigger\" type=\"button\" data-picker-trigger aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"date-picker-panel\">Jun 12, 2026 · 09:30</button>\n    <div class=\"date-panel\" id=\"date-picker-panel\" data-picker-panel role=\"dialog\" aria-label=\"Date and time\" hidden><div class=\"date-panel__header\"><button class=\"date-nav\" type=\"button\" data-month-prev aria-label=\"Previous month\">‹</button><strong data-month-label></strong><button class=\"date-nav\" type=\"button\" data-month-next aria-label=\"Next month\">›</button></div><div class=\"date-calendar__week\" aria-hidden=\"true\"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class=\"date-calendar__days\" data-calendar-days></div><section class=\"date-time\" aria-label=\"Choose time\"><p class=\"date-time__title\">Time</p><div class=\"date-time__units\"><div class=\"date-time__unit\" data-time-unit=\"hour\"><span>Hour</span><button type=\"button\" data-time-down aria-label=\"Decrease hour\">−</button><output data-time-value>09</output><button type=\"button\" data-time-up aria-label=\"Increase hour\">+</button></div><div class=\"date-time__unit\" data-time-unit=\"minute\"><span>Minute</span><button type=\"button\" data-time-down aria-label=\"Decrease minute\">−</button><output data-time-value>30</output><button type=\"button\" data-time-up aria-label=\"Increase minute\">+</button></div></div></section><div class=\"date-panel__footer\"><p class=\"date-period-hint\" data-picker-hint>Choose a date and time.</p></div></div>\n  </div>\n  <output class=\"date-result\" data-date-result aria-live=\"polite\"></output>\n</section>",
+            "css": ".date-demo{--d-accent:#b9f474;--d-border:#dfe2d9;--d-muted:#6d7368;--d-text:#20231e;--d-surface:#fff;align-content:center;background:#f6f7f2;color:var(--d-text);display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;gap:.8rem;justify-items:center;min-height:100%;padding:2rem}.date-picker{position:relative;width:min(100%,24rem)}.date-picker__label{display:block;font-size:.76rem;font-weight:650;margin-bottom:.4rem}.date-picker__trigger{align-items:center;background:#fff;border:1px solid var(--d-border);border-radius:.6rem;color:inherit;cursor:pointer;display:flex;font:inherit;justify-content:space-between;min-height:2.9rem;padding:.7rem .8rem;text-align:left;width:100%}.date-picker__trigger:hover{border-color:#aeb5a5}.date-picker__trigger:after{color:var(--d-muted);content:'▦';margin-left:.7rem}.date-panel{background:#fff;border:1px solid var(--d-border);border-radius:.85rem;box-shadow:0 1rem 2.5rem #17200f24;left:0;padding:1rem;position:absolute;top:calc(100% + .4rem);width:min(100%,31rem);z-index:3}.date-panel[hidden]{display:none}.date-panel__header{align-items:center;display:flex;justify-content:space-between;margin-bottom:.8rem}.date-panel__header strong{font-size:.9rem}.date-panel button{font:inherit}.date-nav{align-items:center;background:transparent;border:1px solid var(--d-border);border-radius:.45rem;cursor:pointer;display:inline-flex;height:2rem;justify-content:center;width:2rem}.date-calendar__week,.date-calendar__days{display:grid;gap:.2rem;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}.date-calendar__week{color:var(--d-muted);font-size:.66rem;padding-bottom:.35rem}.date-day{aspect-ratio:1;background:transparent;border:0;border-radius:50%;color:inherit;cursor:pointer;font-size:.76rem}.date-day:hover{background:#eef3e8}.date-day[aria-pressed=true],.date-day.is-range{background:#eaf5df}.date-day.is-range-start,.date-day.is-range-end{background:var(--d-accent);font-weight:700}.date-day--outside{color:#a0a49c}.date-time{border-top:1px solid var(--d-border);margin-top:.9rem;padding-top:.85rem}.date-time__title{color:var(--d-muted);font-size:.66rem;font-weight:700;letter-spacing:.1em;margin:0 0 .55rem;text-transform:uppercase}.date-time__units{display:grid;gap:.7rem;grid-template-columns:repeat(2,minmax(0,1fr))}.date-time__unit{align-items:center;background:#f7f8f4;border:1px solid var(--d-border);border-radius:.65rem;display:grid;grid-template-columns:2.2rem 1fr 2.2rem;min-height:3.3rem;padding:.3rem}.date-time__unit span{color:var(--d-muted);font-size:.66rem;grid-column:1/-1;text-align:center}.date-time__unit button{background:transparent;border:0;border-radius:.35rem;color:var(--d-muted);cursor:pointer;font-size:1.1rem;height:2rem}.date-time__unit button:hover{background:#eaf5df;color:var(--d-text)}.date-time__unit output{font-size:1.15rem;font-variant-numeric:tabular-nums;font-weight:700;text-align:center}.date-panel__footer{align-items:center;display:flex;justify-content:space-between;margin-top:.75rem}.date-period-hint{color:var(--d-muted);font-size:.72rem;margin:0}.date-demo output.date-result{color:var(--d-muted);font-size:.75rem;min-height:1.1em;text-align:center}.date-demo :focus-visible{outline:3px solid var(--d-accent);outline-offset:2px}@media(max-width:32rem){.date-demo{padding:1rem}.date-panel{max-width:calc(100vw - 2rem)}.date-time__units{gap:.4rem}.date-time__unit{grid-template-columns:1.8rem 1fr 1.8rem}}",
+            "javascript": "export function createDatePicker(root){const mode=root.dataset.mode,trigger=root.querySelector('[data-picker-trigger]'),panel=root.querySelector('[data-picker-panel]'),days=root.querySelector('[data-calendar-days]'),monthLabel=root.querySelector('[data-month-label]'),result=root.querySelector('[data-date-result]'),hint=root.querySelector('[data-picker-hint]');if(!trigger||!panel||!result)throw new Error('Date picker markup is incomplete.');const parse=value=>{const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d,12);};const iso=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;const format=date=>new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(date);let month=parse(root.dataset.value||root.dataset.start||'2026-06-12');let choosingEnd=false;const timeText=()=>`${String(Number(root.dataset.hour||9)).padStart(2,'0')}:${String(Number(root.dataset.minute||30)).padStart(2,'0')}`;const update=()=>{let text='';if(mode==='range'){const start=root.dataset.start,end=root.dataset.end;text=end?`${format(parse(start))} – ${format(parse(end))}`:start?`${format(parse(start))} – choose end date`:'';trigger.textContent=text||'Choose date period';hint.textContent=end?'Select a new start date to begin another period.':start?'Select an end date.':'Select a start date.';}else if(mode==='time-only'){text=timeText();trigger.textContent=text;}else{const date=format(parse(root.dataset.value));text=mode==='date-time'?`${date} · ${timeText()}`:date;trigger.textContent=text;}result.textContent=text;};const renderCalendar=()=>{if(!days)return;monthLabel.textContent=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(month);days.replaceChildren();const first=new Date(month.getFullYear(),month.getMonth(),1,12),start=new Date(first);start.setDate(1-first.getDay());for(let index=0;index<42;index++){const day=new Date(start);day.setDate(start.getDate()+index);const value=iso(day),button=document.createElement('button');button.type='button';button.className=`date-day${day.getMonth()!==month.getMonth()?' date-day--outside':''}`;button.textContent=String(day.getDate());button.setAttribute('aria-label',format(day));if(mode==='range'){const a=root.dataset.start,b=root.dataset.end;const inRange=a&&b&&value>=a&&value<=b;if(inRange)button.classList.add('is-range');if(value===a)button.classList.add('is-range-start');if(value===b)button.classList.add('is-range-end');button.setAttribute('aria-pressed',String(value===a||value===b));}else button.setAttribute('aria-pressed',String(value===root.dataset.value));button.addEventListener('click',()=>choose(value));days.append(button);}};const choose=value=>{if(mode==='range'){if(!root.dataset.start||root.dataset.end){root.dataset.start=value;root.dataset.end='';choosingEnd=true;}else{if(value<root.dataset.start){root.dataset.end=root.dataset.start;root.dataset.start=value;}else root.dataset.end=value;choosingEnd=false;renderCalendar();update();close(true);return;}renderCalendar();update();days.querySelector('.is-range-start')?.focus();return;}root.dataset.value=value;renderCalendar();update();if(mode==='date-only')close(true);else days?.querySelector('[aria-pressed=\"true\"]')?.focus();};const close=restore=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');if(restore)trigger.focus();};const toggle=()=>{const open=panel.hidden;panel.hidden=!open;trigger.setAttribute('aria-expanded',String(open));if(open)(days?.querySelector('[aria-pressed=\"true\"]')||panel.querySelector('[data-time-up]')||panel.querySelector('[data-month-prev]'))?.focus();};const prev=()=>{month.setMonth(month.getMonth()-1);renderCalendar();};const next=()=>{month.setMonth(month.getMonth()+1);renderCalendar();};const onKey=event=>{if(event.key==='Escape'&&!panel.hidden){event.preventDefault();close(true);}};const onOutside=event=>{if(!root.contains(event.target))close(false);};const timeButtons=[...panel.querySelectorAll('[data-time-up],[data-time-down]')];const onTime=event=>{const button=event.currentTarget,unit=button.closest('[data-time-unit]').dataset.timeUnit,key=unit==='hour'?'hour':'minute',step=unit==='hour'?1:5,max=unit==='hour'?24:60;let value=Number(root.dataset[key]||0);value=(value+(button.hasAttribute('data-time-up')?step:-step)+max)%max;root.dataset[key]=String(value);button.closest('[data-time-unit]').querySelector('[data-time-value]').textContent=String(value).padStart(2,'0');update();};trigger.addEventListener('click',toggle);panel.querySelector('[data-month-prev]')?.addEventListener('click',prev);panel.querySelector('[data-month-next]')?.addEventListener('click',next);panel.addEventListener('keydown',onKey);document.addEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.addEventListener('click',onTime));renderCalendar();update();return{destroy(){trigger.removeEventListener('click',toggle);panel.removeEventListener('keydown',onKey);document.removeEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.removeEventListener('click',onTime));}}}document.querySelectorAll('[data-date-picker]').forEach(createDatePicker);"
           }
         }
       ],
-      "variants": [],
+      "variants": [
+        {
+          "slug": "date-only",
+          "title": "Date only",
+          "summary": "A custom calendar for choosing a single date without a time field.",
+          "tags": [
+            "calendar",
+            "date"
+          ],
+          "useWhen": "A custom calendar for choosing a single date without a time field.",
+          "avoidWhen": "Avoid this variant if the task requires a different date or time value.",
+          "customization": [
+            "Adjust the calendar colors, spacing, and date formatting in CSS and the Intl format options.",
+            "Connect selected values to application state or validation as needed."
+          ],
+          "example": {
+            "slug": "date-only",
+            "title": "Date only",
+            "description": "Choose a single date from the custom calendar. The calendar and value stay inside one picker.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<section class=\"date-demo\" data-date-picker data-mode=\"date-only\" data-value=\"2026-06-12\">\n  <div class=\"date-picker\">\n    <label class=\"date-picker__label\" for=\"date-picker-trigger\">Date</label>\n    <button class=\"date-picker__trigger\" id=\"date-picker-trigger\" type=\"button\" data-picker-trigger aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"date-picker-panel\">Jun 12, 2026</button>\n    <div class=\"date-panel\" id=\"date-picker-panel\" data-picker-panel role=\"dialog\" aria-label=\"Date\" hidden><div class=\"date-panel__header\"><button class=\"date-nav\" type=\"button\" data-month-prev aria-label=\"Previous month\">‹</button><strong data-month-label></strong><button class=\"date-nav\" type=\"button\" data-month-next aria-label=\"Next month\">›</button></div><div class=\"date-calendar__week\" aria-hidden=\"true\"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class=\"date-calendar__days\" data-calendar-days></div><div class=\"date-panel__footer\"><p class=\"date-period-hint\" data-picker-hint>Choose a date.</p></div></div>\n  </div>\n  <output class=\"date-result\" data-date-result aria-live=\"polite\"></output>\n</section>",
+              "css": ".date-demo{--d-accent:#b9f474;--d-border:#dfe2d9;--d-muted:#6d7368;--d-text:#20231e;--d-surface:#fff;align-content:center;background:#f6f7f2;color:var(--d-text);display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;gap:.8rem;justify-items:center;min-height:100%;padding:2rem}.date-picker{position:relative;width:min(100%,24rem)}.date-picker__label{display:block;font-size:.76rem;font-weight:650;margin-bottom:.4rem}.date-picker__trigger{align-items:center;background:#fff;border:1px solid var(--d-border);border-radius:.6rem;color:inherit;cursor:pointer;display:flex;font:inherit;justify-content:space-between;min-height:2.9rem;padding:.7rem .8rem;text-align:left;width:100%}.date-picker__trigger:hover{border-color:#aeb5a5}.date-picker__trigger:after{color:var(--d-muted);content:'▦';margin-left:.7rem}.date-panel{background:#fff;border:1px solid var(--d-border);border-radius:.85rem;box-shadow:0 1rem 2.5rem #17200f24;left:0;padding:1rem;position:absolute;top:calc(100% + .4rem);width:min(100%,31rem);z-index:3}.date-panel[hidden]{display:none}.date-panel__header{align-items:center;display:flex;justify-content:space-between;margin-bottom:.8rem}.date-panel__header strong{font-size:.9rem}.date-panel button{font:inherit}.date-nav{align-items:center;background:transparent;border:1px solid var(--d-border);border-radius:.45rem;cursor:pointer;display:inline-flex;height:2rem;justify-content:center;width:2rem}.date-calendar__week,.date-calendar__days{display:grid;gap:.2rem;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}.date-calendar__week{color:var(--d-muted);font-size:.66rem;padding-bottom:.35rem}.date-day{aspect-ratio:1;background:transparent;border:0;border-radius:50%;color:inherit;cursor:pointer;font-size:.76rem}.date-day:hover{background:#eef3e8}.date-day[aria-pressed=true],.date-day.is-range{background:#eaf5df}.date-day.is-range-start,.date-day.is-range-end{background:var(--d-accent);font-weight:700}.date-day--outside{color:#a0a49c}.date-time{border-top:1px solid var(--d-border);margin-top:.9rem;padding-top:.85rem}.date-time__title{color:var(--d-muted);font-size:.66rem;font-weight:700;letter-spacing:.1em;margin:0 0 .55rem;text-transform:uppercase}.date-time__units{display:grid;gap:.7rem;grid-template-columns:repeat(2,minmax(0,1fr))}.date-time__unit{align-items:center;background:#f7f8f4;border:1px solid var(--d-border);border-radius:.65rem;display:grid;grid-template-columns:2.2rem 1fr 2.2rem;min-height:3.3rem;padding:.3rem}.date-time__unit span{color:var(--d-muted);font-size:.66rem;grid-column:1/-1;text-align:center}.date-time__unit button{background:transparent;border:0;border-radius:.35rem;color:var(--d-muted);cursor:pointer;font-size:1.1rem;height:2rem}.date-time__unit button:hover{background:#eaf5df;color:var(--d-text)}.date-time__unit output{font-size:1.15rem;font-variant-numeric:tabular-nums;font-weight:700;text-align:center}.date-panel__footer{align-items:center;display:flex;justify-content:space-between;margin-top:.75rem}.date-period-hint{color:var(--d-muted);font-size:.72rem;margin:0}.date-demo output.date-result{color:var(--d-muted);font-size:.75rem;min-height:1.1em;text-align:center}.date-demo :focus-visible{outline:3px solid var(--d-accent);outline-offset:2px}@media(max-width:32rem){.date-demo{padding:1rem}.date-panel{max-width:calc(100vw - 2rem)}.date-time__units{gap:.4rem}.date-time__unit{grid-template-columns:1.8rem 1fr 1.8rem}}",
+              "javascript": "export function createDatePicker(root){const mode=root.dataset.mode,trigger=root.querySelector('[data-picker-trigger]'),panel=root.querySelector('[data-picker-panel]'),days=root.querySelector('[data-calendar-days]'),monthLabel=root.querySelector('[data-month-label]'),result=root.querySelector('[data-date-result]'),hint=root.querySelector('[data-picker-hint]');if(!trigger||!panel||!result)throw new Error('Date picker markup is incomplete.');const parse=value=>{const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d,12);};const iso=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;const format=date=>new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(date);let month=parse(root.dataset.value||root.dataset.start||'2026-06-12');let choosingEnd=false;const timeText=()=>`${String(Number(root.dataset.hour||9)).padStart(2,'0')}:${String(Number(root.dataset.minute||30)).padStart(2,'0')}`;const update=()=>{let text='';if(mode==='range'){const start=root.dataset.start,end=root.dataset.end;text=end?`${format(parse(start))} – ${format(parse(end))}`:start?`${format(parse(start))} – choose end date`:'';trigger.textContent=text||'Choose date period';hint.textContent=end?'Select a new start date to begin another period.':start?'Select an end date.':'Select a start date.';}else if(mode==='time-only'){text=timeText();trigger.textContent=text;}else{const date=format(parse(root.dataset.value));text=mode==='date-time'?`${date} · ${timeText()}`:date;trigger.textContent=text;}result.textContent=text;};const renderCalendar=()=>{if(!days)return;monthLabel.textContent=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(month);days.replaceChildren();const first=new Date(month.getFullYear(),month.getMonth(),1,12),start=new Date(first);start.setDate(1-first.getDay());for(let index=0;index<42;index++){const day=new Date(start);day.setDate(start.getDate()+index);const value=iso(day),button=document.createElement('button');button.type='button';button.className=`date-day${day.getMonth()!==month.getMonth()?' date-day--outside':''}`;button.textContent=String(day.getDate());button.setAttribute('aria-label',format(day));if(mode==='range'){const a=root.dataset.start,b=root.dataset.end;const inRange=a&&b&&value>=a&&value<=b;if(inRange)button.classList.add('is-range');if(value===a)button.classList.add('is-range-start');if(value===b)button.classList.add('is-range-end');button.setAttribute('aria-pressed',String(value===a||value===b));}else button.setAttribute('aria-pressed',String(value===root.dataset.value));button.addEventListener('click',()=>choose(value));days.append(button);}};const choose=value=>{if(mode==='range'){if(!root.dataset.start||root.dataset.end){root.dataset.start=value;root.dataset.end='';choosingEnd=true;}else{if(value<root.dataset.start){root.dataset.end=root.dataset.start;root.dataset.start=value;}else root.dataset.end=value;choosingEnd=false;renderCalendar();update();close(true);return;}renderCalendar();update();days.querySelector('.is-range-start')?.focus();return;}root.dataset.value=value;renderCalendar();update();if(mode==='date-only')close(true);else days?.querySelector('[aria-pressed=\"true\"]')?.focus();};const close=restore=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');if(restore)trigger.focus();};const toggle=()=>{const open=panel.hidden;panel.hidden=!open;trigger.setAttribute('aria-expanded',String(open));if(open)(days?.querySelector('[aria-pressed=\"true\"]')||panel.querySelector('[data-time-up]')||panel.querySelector('[data-month-prev]'))?.focus();};const prev=()=>{month.setMonth(month.getMonth()-1);renderCalendar();};const next=()=>{month.setMonth(month.getMonth()+1);renderCalendar();};const onKey=event=>{if(event.key==='Escape'&&!panel.hidden){event.preventDefault();close(true);}};const onOutside=event=>{if(!root.contains(event.target))close(false);};const timeButtons=[...panel.querySelectorAll('[data-time-up],[data-time-down]')];const onTime=event=>{const button=event.currentTarget,unit=button.closest('[data-time-unit]').dataset.timeUnit,key=unit==='hour'?'hour':'minute',step=unit==='hour'?1:5,max=unit==='hour'?24:60;let value=Number(root.dataset[key]||0);value=(value+(button.hasAttribute('data-time-up')?step:-step)+max)%max;root.dataset[key]=String(value);button.closest('[data-time-unit]').querySelector('[data-time-value]').textContent=String(value).padStart(2,'0');update();};trigger.addEventListener('click',toggle);panel.querySelector('[data-month-prev]')?.addEventListener('click',prev);panel.querySelector('[data-month-next]')?.addEventListener('click',next);panel.addEventListener('keydown',onKey);document.addEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.addEventListener('click',onTime));renderCalendar();update();return{destroy(){trigger.removeEventListener('click',toggle);panel.removeEventListener('keydown',onKey);document.removeEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.removeEventListener('click',onTime));}}}document.querySelectorAll('[data-date-picker]').forEach(createDatePicker);"
+            }
+          }
+        },
+        {
+          "slug": "time-only",
+          "title": "Time only",
+          "summary": "A time input for tasks that need a time without a calendar date.",
+          "tags": [
+            "time"
+          ],
+          "useWhen": "A time input for tasks that need a time without a calendar date.",
+          "avoidWhen": "Avoid this variant if the task requires a different date or time value.",
+          "customization": [
+            "Adjust the calendar colors, spacing, and date formatting in CSS and the Intl format options.",
+            "Connect selected values to application state or validation as needed."
+          ],
+          "example": {
+            "slug": "time-only",
+            "title": "Time only",
+            "description": "Open a dedicated time picker and adjust hours and minutes with custom controls.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<section class=\"date-demo\" data-date-picker data-mode=\"time-only\" data-hour=\"9\" data-minute=\"30\">\n  <div class=\"date-picker\">\n    <label class=\"date-picker__label\" for=\"date-picker-trigger\">Time</label>\n    <button class=\"date-picker__trigger\" id=\"date-picker-trigger\" type=\"button\" data-picker-trigger aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"date-picker-panel\">09:30</button>\n    <div class=\"date-panel\" id=\"date-picker-panel\" data-picker-panel role=\"dialog\" aria-label=\"Time\" hidden><section class=\"date-time\" aria-label=\"Choose time\"><p class=\"date-time__title\">Time</p><div class=\"date-time__units\"><div class=\"date-time__unit\" data-time-unit=\"hour\"><span>Hour</span><button type=\"button\" data-time-down aria-label=\"Decrease hour\">−</button><output data-time-value>09</output><button type=\"button\" data-time-up aria-label=\"Increase hour\">+</button></div><div class=\"date-time__unit\" data-time-unit=\"minute\"><span>Minute</span><button type=\"button\" data-time-down aria-label=\"Decrease minute\">−</button><output data-time-value>30</output><button type=\"button\" data-time-up aria-label=\"Increase minute\">+</button></div></div></section><div class=\"date-panel__footer\"><p class=\"date-period-hint\" data-picker-hint>Choose a time.</p></div></div>\n  </div>\n  <output class=\"date-result\" data-date-result aria-live=\"polite\"></output>\n</section>",
+              "css": ".date-demo{--d-accent:#b9f474;--d-border:#dfe2d9;--d-muted:#6d7368;--d-text:#20231e;--d-surface:#fff;align-content:center;background:#f6f7f2;color:var(--d-text);display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;gap:.8rem;justify-items:center;min-height:100%;padding:2rem}.date-picker{position:relative;width:min(100%,24rem)}.date-picker__label{display:block;font-size:.76rem;font-weight:650;margin-bottom:.4rem}.date-picker__trigger{align-items:center;background:#fff;border:1px solid var(--d-border);border-radius:.6rem;color:inherit;cursor:pointer;display:flex;font:inherit;justify-content:space-between;min-height:2.9rem;padding:.7rem .8rem;text-align:left;width:100%}.date-picker__trigger:hover{border-color:#aeb5a5}.date-picker__trigger:after{color:var(--d-muted);content:'▦';margin-left:.7rem}.date-panel{background:#fff;border:1px solid var(--d-border);border-radius:.85rem;box-shadow:0 1rem 2.5rem #17200f24;left:0;padding:1rem;position:absolute;top:calc(100% + .4rem);width:min(100%,31rem);z-index:3}.date-panel[hidden]{display:none}.date-panel__header{align-items:center;display:flex;justify-content:space-between;margin-bottom:.8rem}.date-panel__header strong{font-size:.9rem}.date-panel button{font:inherit}.date-nav{align-items:center;background:transparent;border:1px solid var(--d-border);border-radius:.45rem;cursor:pointer;display:inline-flex;height:2rem;justify-content:center;width:2rem}.date-calendar__week,.date-calendar__days{display:grid;gap:.2rem;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}.date-calendar__week{color:var(--d-muted);font-size:.66rem;padding-bottom:.35rem}.date-day{aspect-ratio:1;background:transparent;border:0;border-radius:50%;color:inherit;cursor:pointer;font-size:.76rem}.date-day:hover{background:#eef3e8}.date-day[aria-pressed=true],.date-day.is-range{background:#eaf5df}.date-day.is-range-start,.date-day.is-range-end{background:var(--d-accent);font-weight:700}.date-day--outside{color:#a0a49c}.date-time{border-top:1px solid var(--d-border);margin-top:.9rem;padding-top:.85rem}.date-time__title{color:var(--d-muted);font-size:.66rem;font-weight:700;letter-spacing:.1em;margin:0 0 .55rem;text-transform:uppercase}.date-time__units{display:grid;gap:.7rem;grid-template-columns:repeat(2,minmax(0,1fr))}.date-time__unit{align-items:center;background:#f7f8f4;border:1px solid var(--d-border);border-radius:.65rem;display:grid;grid-template-columns:2.2rem 1fr 2.2rem;min-height:3.3rem;padding:.3rem}.date-time__unit span{color:var(--d-muted);font-size:.66rem;grid-column:1/-1;text-align:center}.date-time__unit button{background:transparent;border:0;border-radius:.35rem;color:var(--d-muted);cursor:pointer;font-size:1.1rem;height:2rem}.date-time__unit button:hover{background:#eaf5df;color:var(--d-text)}.date-time__unit output{font-size:1.15rem;font-variant-numeric:tabular-nums;font-weight:700;text-align:center}.date-panel__footer{align-items:center;display:flex;justify-content:space-between;margin-top:.75rem}.date-period-hint{color:var(--d-muted);font-size:.72rem;margin:0}.date-demo output.date-result{color:var(--d-muted);font-size:.75rem;min-height:1.1em;text-align:center}.date-demo :focus-visible{outline:3px solid var(--d-accent);outline-offset:2px}@media(max-width:32rem){.date-demo{padding:1rem}.date-panel{max-width:calc(100vw - 2rem)}.date-time__units{gap:.4rem}.date-time__unit{grid-template-columns:1.8rem 1fr 1.8rem}}",
+              "javascript": "export function createDatePicker(root){const mode=root.dataset.mode,trigger=root.querySelector('[data-picker-trigger]'),panel=root.querySelector('[data-picker-panel]'),days=root.querySelector('[data-calendar-days]'),monthLabel=root.querySelector('[data-month-label]'),result=root.querySelector('[data-date-result]'),hint=root.querySelector('[data-picker-hint]');if(!trigger||!panel||!result)throw new Error('Date picker markup is incomplete.');const parse=value=>{const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d,12);};const iso=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;const format=date=>new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(date);let month=parse(root.dataset.value||root.dataset.start||'2026-06-12');let choosingEnd=false;const timeText=()=>`${String(Number(root.dataset.hour||9)).padStart(2,'0')}:${String(Number(root.dataset.minute||30)).padStart(2,'0')}`;const update=()=>{let text='';if(mode==='range'){const start=root.dataset.start,end=root.dataset.end;text=end?`${format(parse(start))} – ${format(parse(end))}`:start?`${format(parse(start))} – choose end date`:'';trigger.textContent=text||'Choose date period';hint.textContent=end?'Select a new start date to begin another period.':start?'Select an end date.':'Select a start date.';}else if(mode==='time-only'){text=timeText();trigger.textContent=text;}else{const date=format(parse(root.dataset.value));text=mode==='date-time'?`${date} · ${timeText()}`:date;trigger.textContent=text;}result.textContent=text;};const renderCalendar=()=>{if(!days)return;monthLabel.textContent=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(month);days.replaceChildren();const first=new Date(month.getFullYear(),month.getMonth(),1,12),start=new Date(first);start.setDate(1-first.getDay());for(let index=0;index<42;index++){const day=new Date(start);day.setDate(start.getDate()+index);const value=iso(day),button=document.createElement('button');button.type='button';button.className=`date-day${day.getMonth()!==month.getMonth()?' date-day--outside':''}`;button.textContent=String(day.getDate());button.setAttribute('aria-label',format(day));if(mode==='range'){const a=root.dataset.start,b=root.dataset.end;const inRange=a&&b&&value>=a&&value<=b;if(inRange)button.classList.add('is-range');if(value===a)button.classList.add('is-range-start');if(value===b)button.classList.add('is-range-end');button.setAttribute('aria-pressed',String(value===a||value===b));}else button.setAttribute('aria-pressed',String(value===root.dataset.value));button.addEventListener('click',()=>choose(value));days.append(button);}};const choose=value=>{if(mode==='range'){if(!root.dataset.start||root.dataset.end){root.dataset.start=value;root.dataset.end='';choosingEnd=true;}else{if(value<root.dataset.start){root.dataset.end=root.dataset.start;root.dataset.start=value;}else root.dataset.end=value;choosingEnd=false;renderCalendar();update();close(true);return;}renderCalendar();update();days.querySelector('.is-range-start')?.focus();return;}root.dataset.value=value;renderCalendar();update();if(mode==='date-only')close(true);else days?.querySelector('[aria-pressed=\"true\"]')?.focus();};const close=restore=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');if(restore)trigger.focus();};const toggle=()=>{const open=panel.hidden;panel.hidden=!open;trigger.setAttribute('aria-expanded',String(open));if(open)(days?.querySelector('[aria-pressed=\"true\"]')||panel.querySelector('[data-time-up]')||panel.querySelector('[data-month-prev]'))?.focus();};const prev=()=>{month.setMonth(month.getMonth()-1);renderCalendar();};const next=()=>{month.setMonth(month.getMonth()+1);renderCalendar();};const onKey=event=>{if(event.key==='Escape'&&!panel.hidden){event.preventDefault();close(true);}};const onOutside=event=>{if(!root.contains(event.target))close(false);};const timeButtons=[...panel.querySelectorAll('[data-time-up],[data-time-down]')];const onTime=event=>{const button=event.currentTarget,unit=button.closest('[data-time-unit]').dataset.timeUnit,key=unit==='hour'?'hour':'minute',step=unit==='hour'?1:5,max=unit==='hour'?24:60;let value=Number(root.dataset[key]||0);value=(value+(button.hasAttribute('data-time-up')?step:-step)+max)%max;root.dataset[key]=String(value);button.closest('[data-time-unit]').querySelector('[data-time-value]').textContent=String(value).padStart(2,'0');update();};trigger.addEventListener('click',toggle);panel.querySelector('[data-month-prev]')?.addEventListener('click',prev);panel.querySelector('[data-month-next]')?.addEventListener('click',next);panel.addEventListener('keydown',onKey);document.addEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.addEventListener('click',onTime));renderCalendar();update();return{destroy(){trigger.removeEventListener('click',toggle);panel.removeEventListener('keydown',onKey);document.removeEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.removeEventListener('click',onTime));}}}document.querySelectorAll('[data-date-picker]').forEach(createDatePicker);"
+            }
+          }
+        },
+        {
+          "slug": "date-period",
+          "title": "Date period",
+          "summary": "Choose a start date and end date in sequence from one calendar popup.",
+          "tags": [
+            "range",
+            "period",
+            "calendar"
+          ],
+          "useWhen": "Choose a start date and end date in sequence from one calendar popup.",
+          "avoidWhen": "Avoid this variant if the task requires a different date or time value.",
+          "customization": [
+            "The first selection starts a period and the next selection completes it in the same calendar.",
+            "Selecting an earlier end date automatically orders the period chronologically.",
+            "Adjust the range highlight styles and date formatting in CSS and the Intl format options."
+          ],
+          "example": {
+            "slug": "date-period",
+            "title": "Date period",
+            "description": "Choose a start and end date from the same calendar. The first click marks the start; the next click completes and highlights the selected period.",
+            "canvasHeight": 430,
+            "source": {
+              "html": "<section class=\"date-demo\" data-date-picker data-mode=\"range\" data-start=\"2026-06-12\" data-end=\"2026-06-18\">\n  <div class=\"date-picker\">\n    <label class=\"date-picker__label\" for=\"date-picker-trigger\">Date period</label>\n    <button class=\"date-picker__trigger\" id=\"date-picker-trigger\" type=\"button\" data-picker-trigger aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"date-picker-panel\">Jun 12 – Jun 18, 2026</button>\n    <div class=\"date-panel\" id=\"date-picker-panel\" data-picker-panel role=\"dialog\" aria-label=\"Date period\" hidden><div class=\"date-panel__header\"><button class=\"date-nav\" type=\"button\" data-month-prev aria-label=\"Previous month\">‹</button><strong data-month-label></strong><button class=\"date-nav\" type=\"button\" data-month-next aria-label=\"Next month\">›</button></div><div class=\"date-calendar__week\" aria-hidden=\"true\"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class=\"date-calendar__days\" data-calendar-days></div><div class=\"date-panel__footer\"><p class=\"date-period-hint\" data-picker-hint>Select a start date.</p></div></div>\n  </div>\n  <output class=\"date-result\" data-date-result aria-live=\"polite\"></output>\n</section>",
+              "css": ".date-demo{--d-accent:#b9f474;--d-border:#dfe2d9;--d-muted:#6d7368;--d-text:#20231e;--d-surface:#fff;align-content:center;background:#f6f7f2;color:var(--d-text);display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;gap:.8rem;justify-items:center;min-height:100%;padding:2rem}.date-picker{position:relative;width:min(100%,24rem)}.date-picker__label{display:block;font-size:.76rem;font-weight:650;margin-bottom:.4rem}.date-picker__trigger{align-items:center;background:#fff;border:1px solid var(--d-border);border-radius:.6rem;color:inherit;cursor:pointer;display:flex;font:inherit;justify-content:space-between;min-height:2.9rem;padding:.7rem .8rem;text-align:left;width:100%}.date-picker__trigger:hover{border-color:#aeb5a5}.date-picker__trigger:after{color:var(--d-muted);content:'▦';margin-left:.7rem}.date-panel{background:#fff;border:1px solid var(--d-border);border-radius:.85rem;box-shadow:0 1rem 2.5rem #17200f24;left:0;padding:1rem;position:absolute;top:calc(100% + .4rem);width:min(100%,31rem);z-index:3}.date-panel[hidden]{display:none}.date-panel__header{align-items:center;display:flex;justify-content:space-between;margin-bottom:.8rem}.date-panel__header strong{font-size:.9rem}.date-panel button{font:inherit}.date-nav{align-items:center;background:transparent;border:1px solid var(--d-border);border-radius:.45rem;cursor:pointer;display:inline-flex;height:2rem;justify-content:center;width:2rem}.date-calendar__week,.date-calendar__days{display:grid;gap:.2rem;grid-template-columns:repeat(7,minmax(0,1fr));text-align:center}.date-calendar__week{color:var(--d-muted);font-size:.66rem;padding-bottom:.35rem}.date-day{aspect-ratio:1;background:transparent;border:0;border-radius:50%;color:inherit;cursor:pointer;font-size:.76rem}.date-day:hover{background:#eef3e8}.date-day[aria-pressed=true],.date-day.is-range{background:#eaf5df}.date-day.is-range-start,.date-day.is-range-end{background:var(--d-accent);font-weight:700}.date-day--outside{color:#a0a49c}.date-time{border-top:1px solid var(--d-border);margin-top:.9rem;padding-top:.85rem}.date-time__title{color:var(--d-muted);font-size:.66rem;font-weight:700;letter-spacing:.1em;margin:0 0 .55rem;text-transform:uppercase}.date-time__units{display:grid;gap:.7rem;grid-template-columns:repeat(2,minmax(0,1fr))}.date-time__unit{align-items:center;background:#f7f8f4;border:1px solid var(--d-border);border-radius:.65rem;display:grid;grid-template-columns:2.2rem 1fr 2.2rem;min-height:3.3rem;padding:.3rem}.date-time__unit span{color:var(--d-muted);font-size:.66rem;grid-column:1/-1;text-align:center}.date-time__unit button{background:transparent;border:0;border-radius:.35rem;color:var(--d-muted);cursor:pointer;font-size:1.1rem;height:2rem}.date-time__unit button:hover{background:#eaf5df;color:var(--d-text)}.date-time__unit output{font-size:1.15rem;font-variant-numeric:tabular-nums;font-weight:700;text-align:center}.date-panel__footer{align-items:center;display:flex;justify-content:space-between;margin-top:.75rem}.date-period-hint{color:var(--d-muted);font-size:.72rem;margin:0}.date-demo output.date-result{color:var(--d-muted);font-size:.75rem;min-height:1.1em;text-align:center}.date-demo :focus-visible{outline:3px solid var(--d-accent);outline-offset:2px}@media(max-width:32rem){.date-demo{padding:1rem}.date-panel{max-width:calc(100vw - 2rem)}.date-time__units{gap:.4rem}.date-time__unit{grid-template-columns:1.8rem 1fr 1.8rem}}",
+              "javascript": "export function createDatePicker(root){const mode=root.dataset.mode,trigger=root.querySelector('[data-picker-trigger]'),panel=root.querySelector('[data-picker-panel]'),days=root.querySelector('[data-calendar-days]'),monthLabel=root.querySelector('[data-month-label]'),result=root.querySelector('[data-date-result]'),hint=root.querySelector('[data-picker-hint]');if(!trigger||!panel||!result)throw new Error('Date picker markup is incomplete.');const parse=value=>{const [y,m,d]=value.split('-').map(Number);return new Date(y,m-1,d,12);};const iso=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;const format=date=>new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',year:'numeric'}).format(date);let month=parse(root.dataset.value||root.dataset.start||'2026-06-12');let choosingEnd=false;const timeText=()=>`${String(Number(root.dataset.hour||9)).padStart(2,'0')}:${String(Number(root.dataset.minute||30)).padStart(2,'0')}`;const update=()=>{let text='';if(mode==='range'){const start=root.dataset.start,end=root.dataset.end;text=end?`${format(parse(start))} – ${format(parse(end))}`:start?`${format(parse(start))} – choose end date`:'';trigger.textContent=text||'Choose date period';hint.textContent=end?'Select a new start date to begin another period.':start?'Select an end date.':'Select a start date.';}else if(mode==='time-only'){text=timeText();trigger.textContent=text;}else{const date=format(parse(root.dataset.value));text=mode==='date-time'?`${date} · ${timeText()}`:date;trigger.textContent=text;}result.textContent=text;};const renderCalendar=()=>{if(!days)return;monthLabel.textContent=new Intl.DateTimeFormat(undefined,{month:'long',year:'numeric'}).format(month);days.replaceChildren();const first=new Date(month.getFullYear(),month.getMonth(),1,12),start=new Date(first);start.setDate(1-first.getDay());for(let index=0;index<42;index++){const day=new Date(start);day.setDate(start.getDate()+index);const value=iso(day),button=document.createElement('button');button.type='button';button.className=`date-day${day.getMonth()!==month.getMonth()?' date-day--outside':''}`;button.textContent=String(day.getDate());button.setAttribute('aria-label',format(day));if(mode==='range'){const a=root.dataset.start,b=root.dataset.end;const inRange=a&&b&&value>=a&&value<=b;if(inRange)button.classList.add('is-range');if(value===a)button.classList.add('is-range-start');if(value===b)button.classList.add('is-range-end');button.setAttribute('aria-pressed',String(value===a||value===b));}else button.setAttribute('aria-pressed',String(value===root.dataset.value));button.addEventListener('click',()=>choose(value));days.append(button);}};const choose=value=>{if(mode==='range'){if(!root.dataset.start||root.dataset.end){root.dataset.start=value;root.dataset.end='';choosingEnd=true;}else{if(value<root.dataset.start){root.dataset.end=root.dataset.start;root.dataset.start=value;}else root.dataset.end=value;choosingEnd=false;renderCalendar();update();close(true);return;}renderCalendar();update();days.querySelector('.is-range-start')?.focus();return;}root.dataset.value=value;renderCalendar();update();if(mode==='date-only')close(true);else days?.querySelector('[aria-pressed=\"true\"]')?.focus();};const close=restore=>{panel.hidden=true;trigger.setAttribute('aria-expanded','false');if(restore)trigger.focus();};const toggle=()=>{const open=panel.hidden;panel.hidden=!open;trigger.setAttribute('aria-expanded',String(open));if(open)(days?.querySelector('[aria-pressed=\"true\"]')||panel.querySelector('[data-time-up]')||panel.querySelector('[data-month-prev]'))?.focus();};const prev=()=>{month.setMonth(month.getMonth()-1);renderCalendar();};const next=()=>{month.setMonth(month.getMonth()+1);renderCalendar();};const onKey=event=>{if(event.key==='Escape'&&!panel.hidden){event.preventDefault();close(true);}};const onOutside=event=>{if(!root.contains(event.target))close(false);};const timeButtons=[...panel.querySelectorAll('[data-time-up],[data-time-down]')];const onTime=event=>{const button=event.currentTarget,unit=button.closest('[data-time-unit]').dataset.timeUnit,key=unit==='hour'?'hour':'minute',step=unit==='hour'?1:5,max=unit==='hour'?24:60;let value=Number(root.dataset[key]||0);value=(value+(button.hasAttribute('data-time-up')?step:-step)+max)%max;root.dataset[key]=String(value);button.closest('[data-time-unit]').querySelector('[data-time-value]').textContent=String(value).padStart(2,'0');update();};trigger.addEventListener('click',toggle);panel.querySelector('[data-month-prev]')?.addEventListener('click',prev);panel.querySelector('[data-month-next]')?.addEventListener('click',next);panel.addEventListener('keydown',onKey);document.addEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.addEventListener('click',onTime));renderCalendar();update();return{destroy(){trigger.removeEventListener('click',toggle);panel.removeEventListener('keydown',onKey);document.removeEventListener('pointerdown',onOutside);timeButtons.forEach(button=>button.removeEventListener('click',onTime));}}}document.querySelectorAll('[data-date-picker]').forEach(createDatePicker);"
+            }
+          }
+        }
+      ],
       "tokens": [
         {
           "name": "--date-picker-accent",

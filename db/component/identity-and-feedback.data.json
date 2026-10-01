@@ -517,7 +517,7 @@
     "slug": "tooltip",
     "type": "component",
     "title": "Tooltip",
-    "summary": "A concise noninteractive description shown on both hover and focus, dismissible with Escape.",
+    "summary": "A hover and focus tooltip with a four-position variant.",
     "tags": [
       "html",
       "css",
@@ -528,7 +528,7 @@
       "focus",
       "escape"
     ],
-    "overview": "A dependency-free tooltip for supplemental text. It never contains actions, appears for keyboard and pointer users, and remains connected to its trigger through aria-describedby.",
+    "overview": "A dependency-free tooltip for brief supplemental text. It appears on hover and focus, dismisses with Escape, and supports top, right, bottom, and left placement.",
     "dependencies": [],
     "sections": [],
     "component": {
@@ -548,7 +548,36 @@
           }
         }
       ],
-      "variants": [],
+      "variants": [
+        {
+          "slug": "position",
+          "title": "Positions",
+          "summary": "Place a concise tooltip above, right, below, or left of its trigger.",
+          "tags": [
+            "tooltip",
+            "position",
+            "a11y"
+          ],
+          "useWhen": "Place a concise tooltip above, right, below, or left of its trigger.",
+          "avoidWhen": "Use the default pattern when this behavior is unnecessary.",
+          "customization": [
+            "Adjust colors and spacing in CSS.",
+            "Replace the sample content with application data.",
+            "Preserve the demonstrated keyboard and focus behavior."
+          ],
+          "example": {
+            "slug": "position",
+            "title": "Tooltip positions",
+            "description": "Hover or focus each button; press Escape to dismiss.",
+            "canvasHeight": 440,
+            "source": {
+              "html": "<section class=\"tooltip-positions\" data-tooltip-positions><div class=\"tooltip-board\"><h2>Tooltip positions</h2><p>Hover or focus each button to reveal its hint.</p><div class=\"tooltip-grid\"><div class=\"tip-wrap\" data-side=\"top\"><button type=\"button\" aria-describedby=\"tip-top\">Top</button><span id=\"tip-top\" role=\"tooltip\" hidden>Helpful text above</span></div><div class=\"tip-wrap\" data-side=\"right\"><button type=\"button\" aria-describedby=\"tip-right\">Right</button><span id=\"tip-right\" role=\"tooltip\" hidden>Helpful text to the right</span></div><div class=\"tip-wrap\" data-side=\"left\"><button type=\"button\" aria-describedby=\"tip-left\">Left</button><span id=\"tip-left\" role=\"tooltip\" hidden>Helpful text to the left</span></div><div class=\"tip-wrap\" data-side=\"bottom\"><button type=\"button\" aria-describedby=\"tip-bottom\">Bottom</button><span id=\"tip-bottom\" role=\"tooltip\" hidden>Helpful text below</span></div></div></div></section>",
+              "css": ".tooltip-positions{background:#f5f6f0;color:#20261d;display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;min-height:100%;padding:1rem}.tooltip-board{background:white;border:1px solid #d9ddd3;border-radius:.8rem;margin:auto;padding:1.2rem;width:min(100%,34rem)}.tooltip-board h2{font-size:1.05rem;margin:0}.tooltip-board p{color:#697064;font-size:.8rem;margin:.2rem 0 1rem}.tooltip-grid{display:grid;gap:2.6rem;grid-template-columns:repeat(2,minmax(0,1fr));padding:2.5rem 3rem}.tip-wrap{display:flex;justify-content:center;position:relative}.tip-wrap button{background:white;border:1px solid #bfc6b8;border-radius:.45rem;color:#20261d;cursor:pointer;font:inherit;min-height:2.5rem;padding:.5rem 1rem}.tip-wrap button:focus-visible{outline:3px solid #b9f474;outline-offset:2px}.tip-wrap [role=tooltip]{background:#20261d;border-radius:.4rem;color:white;font-size:.72rem;left:50%;max-width:9rem;padding:.45rem .6rem;pointer-events:none;position:absolute;text-align:center;transform:translateX(-50%);width:max-content;z-index:3}.tip-wrap [hidden]{display:none}.tip-wrap[data-side=top] [role=tooltip]{bottom:calc(100% + .55rem)}.tip-wrap[data-side=bottom] [role=tooltip]{top:calc(100% + .55rem)}.tip-wrap[data-side=left] [role=tooltip]{left:auto;right:calc(100% + .55rem);top:50%;transform:translateY(-50%)}.tip-wrap[data-side=right] [role=tooltip]{left:calc(100% + .55rem);top:50%;transform:translateY(-50%)}@media(max-width:30rem){.tooltip-grid{gap:3.1rem 1rem;padding:2.5rem 1rem}.tip-wrap[data-side=left] [role=tooltip],.tip-wrap[data-side=right] [role=tooltip]{left:50%;right:auto;top:calc(100% + .55rem);transform:translateX(-50%)}}",
+              "javascript": "export function createPositionTooltips(root){const cleanups=[];for(const wrap of root.querySelectorAll('.tip-wrap')){const button=wrap.querySelector('button'),tip=wrap.querySelector('[role=\"tooltip\"]');let hovered=false,focused=false,dismissed=false;const sync=()=>{tip.hidden=dismissed||!(hovered||focused);};const enter=()=>{hovered=true;dismissed=false;sync();};const leave=()=>{hovered=false;sync();};const focus=()=>{focused=true;dismissed=false;sync();};const blur=()=>{focused=false;sync();};const key=event=>{if(event.key==='Escape'){dismissed=true;sync();}};for(const [name,handler] of [['pointerenter',enter],['pointerleave',leave],['focus',focus],['blur',blur],['keydown',key]])button.addEventListener(name,handler);cleanups.push(()=>{for(const [name,handler] of [['pointerenter',enter],['pointerleave',leave],['focus',focus],['blur',blur],['keydown',key]])button.removeEventListener(name,handler);});}return{destroy(){cleanups.forEach(cleanup=>cleanup())}}}document.querySelectorAll('[data-tooltip-positions]').forEach(createPositionTooltips);"
+            }
+          }
+        }
+      ],
       "anatomy": [
         {
           "name": "Trigger",
@@ -630,8 +659,7 @@
       "responsive": "Tooltip width is capped to the viewport gutter; essential information must still exist outside the tooltip on touch devices.",
       "limitations": [
         "The local CSS placement does not detect viewport collisions or port the tooltip to the top layer.",
-        "Touch behavior varies, so tooltips cannot be the only source of required information.",
-        "Only top placement is included because positional permutations do not change the component contract."
+        "Touch behavior varies, so tooltips cannot be the only source of required information."
       ],
       "provenance": {
         "label": "Cross-library tooltip behavior study",

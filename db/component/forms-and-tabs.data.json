@@ -317,7 +317,7 @@
     "slug": "switch",
     "type": "component",
     "title": "Switch",
-    "summary": "An immediate native on/off setting styled as a switch with explicit state feedback and reduced motion.",
+    "summary": "A focused on/off switch with a sliding thumb and visible state feedback.",
     "tags": [
       "html",
       "css",
@@ -327,7 +327,7 @@
       "toggle",
       "settings"
     ],
-    "overview": "A dependency-free switch built on a native checkbox with role=switch. It is reserved for settings that take effect immediately, not form answers awaiting submission.",
+    "overview": "A native checkbox styled as a switch for one boolean setting. Its sliding thumb and live status make the current state clear.",
     "dependencies": [],
     "sections": [],
     "component": {
@@ -337,46 +337,17 @@
       "examples": [
         {
           "slug": "basic",
-          "title": "Immediate setting",
-          "description": "Toggle automatic backups with pointer or Space and observe the explicit status update.",
-          "canvasHeight": 300,
+          "title": "Input switch",
+          "description": "Turn automatic backups on or off with a native checkbox styled as a switch.",
+          "canvasHeight": 320,
           "source": {
-            "html": "<div class=\"c-switch-demo\" data-component=\"switch\"><div class=\"c-switch-list\"><label class=\"c-switch\"><span><strong>Automatic backups</strong><small>Save an encrypted snapshot every day.</small></span><input type=\"checkbox\" role=\"switch\" checked></label></div><p class=\"c-switch-demo__status\" data-switch-status aria-live=\"polite\">Automatic backups are on.</p></div>",
-            "css": ".c-switch-demo {\n  --switch-accent:#b9f474; --switch-accent-text:#162600; --switch-border:#dcddd4; --switch-border-strong:#bfc1b7; --switch-canvas:#f5f5ef; --switch-focus:#b9f474; --switch-font:Inter, ui-sans-serif, system-ui, sans-serif; --switch-muted:#62665d; --switch-radius:0.55rem; --switch-surface:#ffffff; --switch-text:#171915;\n  align-content:center; background:var(--switch-canvas); color:var(--switch-text); display:grid; font-family:var(--switch-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-switch-list { background:var(--switch-surface); border:1px solid var(--switch-border); border-radius:0.75rem; display:grid; inline-size:min(100%,34rem); margin:0 auto; }\n.c-switch { align-items:center; cursor:pointer; display:grid; gap:1rem; grid-template-columns:1fr auto; padding:1rem 1.5rem; }\n.c-switch + .c-switch { border-block-start:1px solid var(--switch-border); }\n.c-switch strong { display:block; }\n.c-switch small { color:var(--switch-muted); display:block; line-height:1.5; margin-block-start:0.25rem; }\n.c-switch input { appearance:none; background:var(--switch-border-strong); border:1px solid var(--switch-border-strong); border-radius:999px; cursor:pointer; height:1.75rem; margin:0; padding:0.2rem; width:3rem; }\n.c-switch input::before { background:var(--switch-surface); border-radius:50%; content:\"\"; display:block; height:1.2rem; transform:translateX(0); transition:transform 170ms ease; width:1.2rem; }\n.c-switch input:checked { background:var(--switch-accent); border-color:var(--switch-accent); }\n.c-switch input:checked::before { transform:translateX(1.15rem); }\n.c-switch input:focus-visible { outline:0.2rem solid var(--switch-focus); outline-offset:0.15rem; }\n.c-switch input:disabled { cursor:not-allowed; opacity:0.55; }\n.c-switch-demo__status { color:var(--switch-muted); inline-size:min(100%,34rem); margin:0 auto; }\n@media(prefers-reduced-motion:reduce){.c-switch input::before{transition:none;}}\n@media(max-width:32rem){.c-switch-demo{padding:1rem;}.c-switch{padding-inline:1rem;}}",
-            "javascript": "export function createSwitch(root) {\n  const input=root.querySelector('input[role=\"switch\"]');const status=root.querySelector('[data-switch-status]');\n  if(!(input instanceof HTMLInputElement)||!(status instanceof HTMLElement))throw new Error('Switch markup is incomplete.');\n  const update=()=>{status.textContent=`Automatic backups are ${input.checked?'on':'off'}.`;root.dispatchEvent(new CustomEvent('switch:change',{detail:{checked:input.checked}}));};\n  input.addEventListener('change',update);\n  return{setChecked(checked){input.checked=Boolean(checked);update();},destroy(){input.removeEventListener('change',update);}};\n}\ndocument.querySelectorAll('[data-component=\"switch\"]').forEach(createSwitch);"
+            "html": "<section class=\"switch-demo\" data-switch-demo><div class=\"switch-card\"><div><h2>Automatic backups</h2><p>Save an encrypted snapshot every day.</p></div><label class=\"switch-control\"><input type=\"checkbox\" role=\"switch\" aria-label=\"Automatic backups\" checked><span class=\"switch-track\" aria-hidden=\"true\"><span class=\"switch-thumb\"></span></span></label></div><output class=\"switch-status\" data-switch-status aria-live=\"polite\">Automatic backups are on.</output></section>",
+            "css": ".switch-demo{align-content:center;background:#f5f6f0;color:#20261d;display:grid;font:14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;min-height:100%;padding:2rem}.switch-card{align-items:center;background:#fff;border:1px solid #d9ddd3;border-radius:.85rem;display:flex;gap:1rem;justify-content:space-between;margin:auto;padding:1.3rem;width:min(100%,30rem)}.switch-card h2{font-size:1rem;margin:0 0 .25rem}.switch-card p,.switch-status{color:#697064;font-size:.78rem;margin:0}.switch-control{cursor:pointer;flex:none;height:1.8rem;position:relative;width:3.1rem}.switch-control input{cursor:pointer;height:100%;inset:0;margin:0;opacity:0;position:absolute;width:100%;z-index:2}.switch-track{background:#c6cec1;border-radius:99px;display:block;height:100%;padding:.2rem;transition:background .18s;width:100%}.switch-thumb{background:#fff;border-radius:50%;box-shadow:0 .1rem .25rem #21311b33;display:block;height:1.4rem;transform:translateX(0);transition:transform .18s;width:1.4rem}.switch-control input:checked+.switch-track{background:#75b854}.switch-control input:checked+.switch-track .switch-thumb{transform:translateX(1.3rem)}.switch-control input:focus-visible+.switch-track{outline:3px solid #b9f474;outline-offset:3px}.switch-control input:disabled+.switch-track{opacity:.5}.switch-status{margin:.7rem auto 0;width:min(100%,30rem)}@media(prefers-reduced-motion:reduce){.switch-track,.switch-thumb{transition:none}}@media(max-width:30rem){.switch-demo{padding:1rem}.switch-card{padding:1rem}}",
+            "javascript": "export function createSwitch(root){const input=root.querySelector('input[role=\"switch\"]'),status=root.querySelector('[data-switch-status]');if(!input||!status)throw new Error('Switch markup is incomplete.');const update=()=>{status.textContent=`Automatic backups are ${input.checked?'on':'off'}.`;};input.addEventListener('change',update);update();return{destroy(){input.removeEventListener('change',update);}}}document.querySelectorAll('[data-switch-demo]').forEach(createSwitch);"
           }
         }
       ],
-      "variants": [
-        {
-          "slug": "settings-list",
-          "title": "Settings list",
-          "summary": "Several independent switches presented as a structured list with disabled-state context.",
-          "tags": [
-            "settings",
-            "list",
-            "disabled"
-          ],
-          "useWhen": "Use a settings list when several independent immediate preferences belong to one section.",
-          "avoidWhen": "Avoid using switches as a substitute for a multi-select form that is saved only after submission.",
-          "customization": [
-            "Each row is its own label and maintains a minimum comfortable target.",
-            "Disabled settings include visible text explaining why they are unavailable.",
-            "Do not add a group role unless the collection has a shared accessible label."
-          ],
-          "example": {
-            "slug": "settings-list",
-            "title": "Privacy settings",
-            "description": "Toggle the available preferences and inspect the disabled setting with its explanation.",
-            "canvasHeight": 410,
-            "source": {
-              "html": "<div class=\"c-switch-demo\" data-component=\"switch-list\"><div class=\"c-switch-list\" aria-label=\"Privacy settings\"><label class=\"c-switch\"><span><strong>Share activity</strong><small>Show recent edits to workspace members.</small></span><input type=\"checkbox\" role=\"switch\" checked></label><label class=\"c-switch\"><span><strong>Weekly digest</strong><small>Receive one email every Monday.</small></span><input type=\"checkbox\" role=\"switch\"></label><label class=\"c-switch\"><span><strong>Public profile</strong><small>Unavailable for private workspaces.</small></span><input type=\"checkbox\" role=\"switch\" disabled></label></div></div>",
-              "css": ".c-switch-demo {\n  --switch-accent:#b9f474; --switch-accent-text:#162600; --switch-border:#dcddd4; --switch-border-strong:#bfc1b7; --switch-canvas:#f5f5ef; --switch-focus:#b9f474; --switch-font:Inter, ui-sans-serif, system-ui, sans-serif; --switch-muted:#62665d; --switch-radius:0.55rem; --switch-surface:#ffffff; --switch-text:#171915;\n  align-content:center; background:var(--switch-canvas); color:var(--switch-text); display:grid; font-family:var(--switch-font); gap:1rem; min-height:100%; padding:2rem;\n}\n.c-switch-list { background:var(--switch-surface); border:1px solid var(--switch-border); border-radius:0.75rem; display:grid; inline-size:min(100%,34rem); margin:0 auto; }\n.c-switch { align-items:center; cursor:pointer; display:grid; gap:1rem; grid-template-columns:1fr auto; padding:1rem 1.5rem; }\n.c-switch + .c-switch { border-block-start:1px solid var(--switch-border); }\n.c-switch strong { display:block; }\n.c-switch small { color:var(--switch-muted); display:block; line-height:1.5; margin-block-start:0.25rem; }\n.c-switch input { appearance:none; background:var(--switch-border-strong); border:1px solid var(--switch-border-strong); border-radius:999px; cursor:pointer; height:1.75rem; margin:0; padding:0.2rem; width:3rem; }\n.c-switch input::before { background:var(--switch-surface); border-radius:50%; content:\"\"; display:block; height:1.2rem; transform:translateX(0); transition:transform 170ms ease; width:1.2rem; }\n.c-switch input:checked { background:var(--switch-accent); border-color:var(--switch-accent); }\n.c-switch input:checked::before { transform:translateX(1.15rem); }\n.c-switch input:focus-visible { outline:0.2rem solid var(--switch-focus); outline-offset:0.15rem; }\n.c-switch input:disabled { cursor:not-allowed; opacity:0.55; }\n.c-switch-demo__status { color:var(--switch-muted); inline-size:min(100%,34rem); margin:0 auto; }\n@media(prefers-reduced-motion:reduce){.c-switch input::before{transition:none;}}\n@media(max-width:32rem){.c-switch-demo{padding:1rem;}.c-switch{padding-inline:1rem;}}",
-              "javascript": "export function createSwitchList(root) {\n  if (!root.matches('[data-component=\"switch-list\"]') || !root.querySelector('input[role=\"switch\"]')) throw new Error('createSwitchList markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"switch-list\"]').forEach(createSwitchList);"
-            }
-          }
-        }
-      ],
+      "variants": [],
       "anatomy": [
         {
           "name": "Label",
@@ -471,174 +442,10 @@
     }
   },
   {
-    "slug": "text-field",
-    "type": "component",
-    "title": "Text field",
-    "summary": "A labeled native text input with helper text, character counting, and an accessible validation-error state.",
-    "tags": [
-      "html",
-      "css",
-      "javascript",
-      "a11y",
-      "input",
-      "text-field",
-      "form",
-      "validation"
-    ],
-    "overview": "A dependency-free text field that keeps label, purpose, constraints, helper text, and errors explicit around a native input.",
-    "dependencies": [],
-    "sections": [],
-    "component": {
-      "status": "draft",
-      "useWhen": "Use a text field for short free-form values that fit on one line.",
-      "avoidWhen": "Avoid it for known option sets, long prose, formatted rich content, or data better collected by a purpose-specific native input type.",
-      "examples": [
-        {
-          "slug": "basic",
-          "title": "Field with character count",
-          "description": "Enter a project name and observe the count without changing the input's stable accessible name.",
-          "canvasHeight": 300,
-          "source": {
-            "html": "<div class=\"c-field-demo\" data-component=\"text-field\"><div class=\"c-field\"><label for=\"project-name\">Project name</label><input id=\"project-name\" name=\"projectName\" type=\"text\" maxlength=\"40\" aria-describedby=\"project-name-help project-name-count\"><div class=\"c-field__meta\"><span id=\"project-name-help\">Use a short name your team will recognize.</span><span id=\"project-name-count\" data-field-count>0 / 40</span></div></div></div>",
-            "css": ".c-field-demo {\n  --field-accent:#b9f474; --field-accent-text:#162600; --field-border:#dcddd4; --field-border-strong:#bfc1b7; --field-canvas:#f5f5ef; --field-focus:#b9f474; --field-font:Inter, ui-sans-serif, system-ui, sans-serif; --field-muted:#62665d; --field-radius:0.55rem; --field-surface:#ffffff; --field-text:#171915; --field-danger:#8f251e;\n  align-content:center; background:var(--field-canvas); color:var(--field-text); display:grid; font-family:var(--field-font); min-height:100%; padding:2rem;\n}\n.c-field { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-field label { font-weight:650; }\n.c-field input { background:var(--field-surface); border:1px solid var(--field-border-strong); border-radius:var(--field-radius); color:var(--field-text); font:inherit; min-height:2.75rem; padding:0.75rem 1rem; width:100%; }\n.c-field input:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n.c-field__meta { color:var(--field-muted); display:flex; gap:1rem; justify-content:space-between; line-height:1.5; }\n.c-field__error { color:var(--field-danger); margin:0; }\n.c-field input[aria-invalid=\"true\"] { border-color:var(--field-danger); box-shadow:inset 0 0 0 1px var(--field-danger); }\n.c-field button { background:var(--field-accent); border:1px solid var(--field-accent); border-radius:var(--field-radius); color:var(--field-accent-text); cursor:pointer; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; justify-self:start; }\n.c-field button:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n@media(max-width:32rem){.c-field-demo{padding:1rem;}.c-field__meta{align-items:start;flex-direction:column;gap:0.25rem;}}",
-            "javascript": "export function createTextField(root) {\n  const input=root.querySelector('input[maxlength]');const count=root.querySelector('[data-field-count]');\n  if(!(input instanceof HTMLInputElement)||!(count instanceof HTMLElement))throw new Error('Text field markup is incomplete.');\n  const update=()=>{count.textContent=`${input.value.length} / ${input.maxLength}`;};\n  input.addEventListener('input',update);update();\n  return{destroy(){input.removeEventListener('input',update);}};\n}\ndocument.querySelectorAll('[data-component=\"text-field\"]').forEach(createTextField);"
-          }
-        }
-      ],
-      "variants": [
-        {
-          "slug": "validation-error",
-          "title": "Validation error",
-          "summary": "A submit-time invalid state with linked error text, focus recovery, and native email validation.",
-          "tags": [
-            "invalid",
-            "error",
-            "aria-describedby",
-            "focus"
-          ],
-          "useWhen": "Use an invalid state after validation has run and the user needs a specific correction.",
-          "avoidWhen": "Avoid showing errors before the person has had a reasonable chance to complete the field.",
-          "customization": [
-            "aria-invalid changes only after validation and clears once the value becomes valid.",
-            "The persistent description and conditional error both appear in aria-describedby.",
-            "Failed submission moves focus to the first invalid field in this compact example."
-          ],
-          "example": {
-            "slug": "validation-error",
-            "title": "Email validation",
-            "description": "Submit an empty or malformed email, then correct it and observe the linked error clear.",
-            "canvasHeight": 350,
-            "source": {
-              "html": "<div class=\"c-field-demo\" data-component=\"validated-field\"><form class=\"c-field\" novalidate><label for=\"contact-email\">Email address</label><input id=\"contact-email\" name=\"email\" type=\"email\" required aria-invalid=\"false\" aria-describedby=\"contact-email-help contact-email-error\"><span id=\"contact-email-help\" class=\"c-field__meta\">We will send the receipt to this address.</span><p id=\"contact-email-error\" class=\"c-field__error\" data-field-error hidden>Enter a complete email address such as name@example.com.</p><button type=\"submit\">Continue</button></form></div>",
-              "css": ".c-field-demo {\n  --field-accent:#b9f474; --field-accent-text:#162600; --field-border:#dcddd4; --field-border-strong:#bfc1b7; --field-canvas:#f5f5ef; --field-focus:#b9f474; --field-font:Inter, ui-sans-serif, system-ui, sans-serif; --field-muted:#62665d; --field-radius:0.55rem; --field-surface:#ffffff; --field-text:#171915; --field-danger:#8f251e;\n  align-content:center; background:var(--field-canvas); color:var(--field-text); display:grid; font-family:var(--field-font); min-height:100%; padding:2rem;\n}\n.c-field { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-field label { font-weight:650; }\n.c-field input { background:var(--field-surface); border:1px solid var(--field-border-strong); border-radius:var(--field-radius); color:var(--field-text); font:inherit; min-height:2.75rem; padding:0.75rem 1rem; width:100%; }\n.c-field input:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n.c-field__meta { color:var(--field-muted); display:flex; gap:1rem; justify-content:space-between; line-height:1.5; }\n.c-field__error { color:var(--field-danger); margin:0; }\n.c-field input[aria-invalid=\"true\"] { border-color:var(--field-danger); box-shadow:inset 0 0 0 1px var(--field-danger); }\n.c-field button { background:var(--field-accent); border:1px solid var(--field-accent); border-radius:var(--field-radius); color:var(--field-accent-text); cursor:pointer; font:inherit; font-weight:650; min-height:2.75rem; padding:0.75rem 1rem; justify-self:start; }\n.c-field button:focus-visible { outline:0.2rem solid var(--field-focus); outline-offset:0.15rem; }\n@media(max-width:32rem){.c-field-demo{padding:1rem;}.c-field__meta{align-items:start;flex-direction:column;gap:0.25rem;}}",
-              "javascript": "export function createValidatedField(root) {\n  const form=root.querySelector('form');const input=root.querySelector('input');const error=root.querySelector('[data-field-error]');\n  if(!(form instanceof HTMLFormElement)||!(input instanceof HTMLInputElement)||!(error instanceof HTMLElement))throw new Error('Validated field markup is incomplete.');\n  const validate=()=>{const valid=input.validity.valid;input.setAttribute('aria-invalid',String(!valid));error.hidden=valid;return valid;};\n  const submit=(event)=>{event.preventDefault();if(!validate())input.focus();};\n  const clear=()=>{if(input.getAttribute('aria-invalid')==='true')validate();};\n  form.addEventListener('submit',submit);input.addEventListener('input',clear);\n  return{validate,destroy(){form.removeEventListener('submit',submit);input.removeEventListener('input',clear);}};\n}\ndocument.querySelectorAll('[data-component=\"validated-field\"]').forEach(createValidatedField);"
-            }
-          }
-        }
-      ],
-      "anatomy": [
-        {
-          "name": "Label",
-          "description": "A visible, stable name connected with for and id."
-        },
-        {
-          "name": "Native input",
-          "description": "The control carrying type, name, autocomplete, required, and value."
-        },
-        {
-          "name": "Helper text",
-          "description": "Persistent format or purpose guidance connected with aria-describedby."
-        },
-        {
-          "name": "Error",
-          "description": "Specific correction guidance shown only after validation."
-        }
-      ],
-      "tokens": [
-        {
-          "name": "--field-accent",
-          "defaultValue": "#b9f474",
-          "description": "Selected state and focus-support color."
-        },
-        {
-          "name": "--field-accent-text",
-          "defaultValue": "#162600",
-          "description": "Text shown on the accent."
-        },
-        {
-          "name": "--field-border",
-          "defaultValue": "#dcddd4",
-          "description": "Quiet boundaries and dividers."
-        },
-        {
-          "name": "--field-border-strong",
-          "defaultValue": "#bfc1b7",
-          "description": "Interactive control borders."
-        },
-        {
-          "name": "--field-canvas",
-          "defaultValue": "#f5f5ef",
-          "description": "Preview canvas background."
-        },
-        {
-          "name": "--field-focus",
-          "defaultValue": "#b9f474",
-          "description": "Visible keyboard focus outline."
-        },
-        {
-          "name": "--field-font",
-          "defaultValue": "Inter, ui-sans-serif, system-ui, sans-serif",
-          "description": "Component font stack."
-        },
-        {
-          "name": "--field-muted",
-          "defaultValue": "#62665d",
-          "description": "Helper and secondary text."
-        },
-        {
-          "name": "--field-radius",
-          "defaultValue": "0.55rem",
-          "description": "Control corner radius."
-        },
-        {
-          "name": "--field-surface",
-          "defaultValue": "#ffffff",
-          "description": "Control and panel surface."
-        },
-        {
-          "name": "--field-text",
-          "defaultValue": "#171915",
-          "description": "Primary text."
-        },
-        {
-          "name": "--field-danger",
-          "defaultValue": "#8f251e",
-          "description": "Invalid border and error text."
-        }
-      ],
-      "accessibility": [
-        "Every field needs a persistent visible label; placeholder text is not a replacement.",
-        "Choose the most specific native input type and autocomplete token available.",
-        "Connect helper and error text with aria-describedby.",
-        "Set aria-invalid only after validation has identified a problem.",
-        "Keep character counts outside the label so the accessible name remains stable."
-      ],
-      "responsive": "Fields fill their container up to 32rem. Helper metadata stacks below 32rem to avoid cramped wrapping.",
-      "limitations": [
-        "Native email validity rules are intentionally broad and do not prove that an address exists.",
-        "The recipe demonstrates one field; full forms need ordered error handling across every invalid control."
-      ],
-      "provenance": {
-        "label": "Cross-library text input study",
-        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
-      }
-    }
-  },
-  {
     "slug": "select",
     "type": "component",
     "title": "Select",
-    "summary": "A labeled native single-select with placeholder guidance, grouped options, and synchronized feedback.",
+    "summary": "A dependency-free custom single-select with styled options, grouped choices, and linked cascading values.",
     "tags": [
       "html",
       "css",
@@ -648,23 +455,23 @@
       "form",
       "options"
     ],
-    "overview": "A dependency-free select that preserves the platform picker, mobile presentation, keyboard type-ahead, form submission, and optgroup semantics.",
+    "overview": "A select-only combobox keeps the familiar single-choice interaction while allowing a fully styled options panel. These raw HTML, CSS, and JavaScript examples include keyboard navigation, grouped options, and cascading region choices.",
     "dependencies": [],
     "sections": [],
     "component": {
       "status": "draft",
-      "useWhen": "Use a native select for one choice from a moderate, known list where seeing every option at once is not necessary.",
-      "avoidWhen": "Avoid it for very few options that radios can expose, large searchable datasets, or multiple free-form values.",
+      "useWhen": "Use the custom select when the options panel needs a deliberate visual design and a moderate list can be scanned quickly.",
+      "avoidWhen": "Prefer a native select when platform picker behavior, maximum assistive-technology compatibility, or a compact implementation matters more than popup styling.",
       "examples": [
         {
-          "slug": "basic",
-          "title": "Single select",
-          "description": "Choose a timezone using the native picker and observe the synchronized visible status.",
-          "canvasHeight": 310,
+          "slug": "custom-options",
+          "title": "Styled options",
+          "description": "Open the custom options panel, choose a timezone, or use Arrow keys, Home, End, type-ahead, Enter, and Escape.",
+          "canvasHeight": 340,
           "source": {
-            "html": "<div class=\"c-select-demo\" data-component=\"select\"><div class=\"c-select\"><label for=\"timezone\">Timezone</label><select id=\"timezone\" name=\"timezone\" aria-describedby=\"timezone-help\"><option value=\"\" selected disabled>Choose a timezone</option><option value=\"america-sao-paulo\">America/São Paulo</option><option value=\"america-new-york\">America/New York</option><option value=\"europe-london\">Europe/London</option><option value=\"asia-tokyo\">Asia/Tokyo</option></select><small id=\"timezone-help\">Dates will be displayed in this timezone.</small></div><p class=\"c-select-demo__status\" data-select-status aria-live=\"polite\">No timezone selected.</p></div>",
-            "css": ".c-select-demo {\n  --select-accent:#b9f474; --select-accent-text:#162600; --select-border:#dcddd4; --select-border-strong:#bfc1b7; --select-canvas:#f5f5ef; --select-focus:#b9f474; --select-font:Inter, ui-sans-serif, system-ui, sans-serif; --select-muted:#62665d; --select-radius:0.55rem; --select-surface:#ffffff; --select-text:#171915;\n  align-content:center; background:var(--select-canvas); color:var(--select-text); display:grid; font-family:var(--select-font); min-height:100%; padding:2rem;\n}\n.c-select { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-select label { font-weight:650; }\n.c-select select { appearance:auto; background:var(--select-surface); border:1px solid var(--select-border-strong); border-radius:var(--select-radius); color:var(--select-text); font:inherit; min-height:2.75rem; padding:0.75rem; width:100%; }\n.c-select select:focus-visible { outline:0.2rem solid var(--select-focus); outline-offset:0.15rem; }\n.c-select small,.c-select-demo__status { color:var(--select-muted); line-height:1.5; }\n.c-select-demo__status { inline-size:min(100%,32rem); margin:1rem auto 0; }\n@media(max-width:32rem){.c-select-demo{padding:1rem;}}",
-            "javascript": "export function createSelect(root) {\n  const select=root.querySelector('select');const status=root.querySelector('[data-select-status]');\n  if(!(select instanceof HTMLSelectElement)||!(status instanceof HTMLElement))throw new Error('Select markup is incomplete.');\n  const update=()=>{const label=select.selectedOptions[0]?.textContent.trim()||'None';status.textContent=`Selected: ${label}.`;root.dispatchEvent(new CustomEvent('select:change',{detail:{value:select.value}}));};\n  select.addEventListener('change',update);\n  return{destroy(){select.removeEventListener('change',update);}};\n}\ndocument.querySelectorAll('[data-component=\"select\"]').forEach(createSelect);"
+            "html": "<div class=\"c-select-demo\" data-component=\"select\">\n  <div class=\"c-select\" data-custom-select>\n    <label id=\"timezone-label\">Timezone</label>\n    <input type=\"hidden\" name=\"timezone\" value=\"\">\n    <div class=\"c-select__control\">\n      <button class=\"c-select__trigger\" type=\"button\" role=\"combobox\" aria-labelledby=\"timezone-label timezone-value\" aria-controls=\"timezone-options\" aria-haspopup=\"listbox\" aria-expanded=\"false\" data-empty=\"true\">\n        <span id=\"timezone-value\" data-value-label>Choose a timezone</span><span class=\"c-select__chevron\" aria-hidden=\"true\">⌄</span>\n      </button>\n      <div class=\"c-select__listbox\" id=\"timezone-options\" role=\"listbox\" aria-labelledby=\"timezone-label\" hidden>\n        <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"america-sao-paulo\" data-label=\"America/São Paulo\" aria-selected=\"false\">America/São Paulo <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n        <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"america-new-york\" data-label=\"America/New York\" aria-selected=\"false\">America/New York <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n        <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"europe-london\" data-label=\"Europe/London\" aria-selected=\"false\">Europe/London <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n        <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"asia-tokyo\" data-label=\"Asia/Tokyo\" aria-selected=\"false\">Asia/Tokyo <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n      </div>\n    </div>\n    <small class=\"c-select__help\">Dates will be displayed in this timezone.</small>\n  </div>\n  <p class=\"c-select-demo__status\" data-select-status aria-live=\"polite\">No timezone selected.</p>\n</div>",
+            "css": ".c-select-demo {\n  --select-accent: #b9f474; --select-border: #dcddd4; --select-border-strong: #bfc1b7; --select-canvas: #f5f5ef; --select-focus: #648f32; --select-muted: #62665d; --select-surface: #fff; --select-text: #171915;\n  align-content: center; background: var(--select-canvas); color: var(--select-text); display: grid; font-family: Inter, ui-sans-serif, system-ui, sans-serif; min-height: 100%; padding: 2rem;\n}\n.c-select { inline-size: min(100%, 32rem); margin: 0 auto; }\n.c-select label { display: block; font-size: .86rem; font-weight: 650; margin-block-end: .45rem; }\n.c-select__help { color: var(--select-muted); display: block; font-size: .78rem; line-height: 1.5; margin-block-start: .55rem; }\n.c-select__control { position: relative; }\n.c-select__trigger { align-items: center; background: var(--select-surface); border: 1px solid var(--select-border-strong); border-radius: .6rem; color: var(--select-text); cursor: pointer; display: flex; font: inherit; font-size: .9rem; justify-content: space-between; min-height: 2.9rem; padding: .7rem .85rem; text-align: left; width: 100%; }\n.c-select__trigger[aria-expanded=\"true\"] { border-color: var(--select-focus); box-shadow: 0 0 0 2px rgb(100 143 50 / 16%); }\n.c-select__trigger[aria-disabled=\"true\"] { background: #f0f1eb; color: #878b81; cursor: not-allowed; }\n.c-select__trigger[data-empty=\"true\"] [data-value-label] { color: var(--select-muted); }\n.c-select__chevron { color: var(--select-muted); font-size: 1.1rem; line-height: 1; }\n.c-select__listbox { background: var(--select-surface); border: 1px solid var(--select-border); border-radius: .7rem; box-shadow: 0 1rem 2rem rgb(23 25 21 / 13%); inset-inline: 0; max-block-size: 15rem; overflow-y: auto; padding: .35rem; position: absolute; top: calc(100% + .4rem); z-index: 3; }\n.c-select__listbox[hidden] { display: none; }\n.c-select__option { align-items: center; background: transparent; border: 0; border-radius: .45rem; color: var(--select-text); cursor: pointer; display: flex; font: inherit; gap: .65rem; justify-content: space-between; min-height: 2.65rem; padding: .6rem .7rem; text-align: left; width: 100%; }\n.c-select__option:hover, .c-select__option:focus { background: #f1f4ea; outline: none; }\n.c-select__option[aria-selected=\"true\"] { background: #e5f4d3; color: #294916; font-weight: 650; }\n.c-select__option-check { color: #426d20; opacity: 0; }\n.c-select__option[aria-selected=\"true\"] .c-select__option-check { opacity: 1; }\n.c-select__group + .c-select__group { border-block-start: 1px solid var(--select-border); margin-block-start: .3rem; padding-block-start: .3rem; }\n.c-select__group-label { color: var(--select-muted); font-size: .66rem; font-weight: 700; letter-spacing: .08em; margin: .35rem .7rem .2rem; text-transform: uppercase; }\n.c-select-demo__status { color: var(--select-muted); inline-size: min(100%, 32rem); line-height: 1.5; margin: 1rem auto 0; }\n.c-select :focus-visible { outline: .2rem solid var(--select-focus); outline-offset: .15rem; }\n@media (max-width: 32rem) { .c-select-demo { padding: 1rem; } }\n",
+            "javascript": "export function createCustomSelect(root) {\n  const field = root.querySelector('[data-custom-select]');\n  const trigger = field?.querySelector('[role=\"combobox\"]');\n  const listbox = field?.querySelector('[role=\"listbox\"]');\n  const valueInput = field?.querySelector('input[type=\"hidden\"]');\n  const valueLabel = trigger?.querySelector('[data-value-label]');\n  const status = root.querySelector('[data-select-status]');\n  if (!field || !trigger || !listbox || !valueInput || !valueLabel) throw new Error('Custom select markup is incomplete.');\n  let typeahead = '';\n  let typeaheadTimer;\n  const options = () => [...listbox.querySelectorAll('[role=\"option\"]')];\n  const close = (restoreFocus = false) => {\n    listbox.hidden = true;\n    trigger.setAttribute('aria-expanded', 'false');\n    if (restoreFocus) trigger.focus();\n  };\n  const open = (edge = 'selected') => {\n    listbox.hidden = false;\n    trigger.setAttribute('aria-expanded', 'true');\n    const items = options();\n    const selected = items.findIndex((option) => option.dataset.value === valueInput.value);\n    const index = selected >= 0 ? selected : edge === 'last' ? items.length - 1 : 0;\n    items[index]?.focus();\n  };\n  const choose = (option) => {\n    if (!option) return;\n    valueInput.value = option.dataset.value;\n    valueLabel.textContent = option.dataset.label;\n    trigger.dataset.empty = 'false';\n    options().forEach((item) => item.setAttribute('aria-selected', String(item === option)));\n    if (status) status.textContent = `Selected: ${option.dataset.label}.`;\n    valueInput.dispatchEvent(new Event('input', { bubbles: true }));\n    valueInput.dispatchEvent(new Event('change', { bubbles: true }));\n    root.dispatchEvent(new CustomEvent('select:change', { detail: { value: valueInput.value } }));\n    close(true);\n  };\n  const onTriggerClick = () => listbox.hidden ? open() : close();\n  const onTriggerKeydown = (event) => {\n    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {\n      event.preventDefault();\n      open(event.key === 'ArrowUp' ? 'last' : 'selected');\n    }\n  };\n  const onListboxClick = (event) => {\n    const option = event.target.closest('[role=\"option\"]');\n    if (option && listbox.contains(option)) choose(option);\n  };\n  const onListboxKeydown = (event) => {\n    const items = options();\n    let index = items.indexOf(document.activeElement);\n    if (event.key === 'Escape') { event.preventDefault(); close(true); return; }\n    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {\n      event.preventDefault();\n      index = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)));\n      items[index]?.focus();\n      items[index]?.scrollIntoView({ block: 'nearest' });\n      return;\n    }\n    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); choose(items[index]); return; }\n    if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {\n      typeahead += event.key.toLocaleLowerCase();\n      window.clearTimeout(typeaheadTimer);\n      typeaheadTimer = window.setTimeout(() => { typeahead = ''; }, 650);\n      const match = items.findIndex((item) => item.dataset.label.toLocaleLowerCase().startsWith(typeahead));\n      if (match >= 0) items[match].focus();\n    }\n  };\n  const onDocumentPointer = (event) => { if (!field.contains(event.target)) close(); };\n  const onFocusOut = () => window.setTimeout(() => { if (!field.contains(document.activeElement)) close(); });\n  trigger.addEventListener('click', onTriggerClick);\n  trigger.addEventListener('keydown', onTriggerKeydown);\n  listbox.addEventListener('click', onListboxClick);\n  listbox.addEventListener('keydown', onListboxKeydown);\n  field.addEventListener('focusout', onFocusOut);\n  document.addEventListener('pointerdown', onDocumentPointer);\n  return { destroy() {\n    window.clearTimeout(typeaheadTimer);\n    trigger.removeEventListener('click', onTriggerClick);\n    trigger.removeEventListener('keydown', onTriggerKeydown);\n    listbox.removeEventListener('click', onListboxClick);\n    listbox.removeEventListener('keydown', onListboxKeydown);\n    field.removeEventListener('focusout', onFocusOut);\n    document.removeEventListener('pointerdown', onDocumentPointer);\n  } };\n}\ndocument.querySelectorAll('[data-component=\"select\"], [data-component=\"grouped-select\"]').forEach(createCustomSelect);"
           }
         }
       ],
@@ -672,52 +479,76 @@
         {
           "slug": "grouped-options",
           "title": "Grouped options",
-          "summary": "A native select organized with optgroup labels for a longer but still manageable list.",
+          "summary": "Style category headings and selectable choices inside one accessible options panel.",
           "tags": [
-            "optgroup",
             "grouped",
-            "regions"
+            "regions",
+            "listbox"
           ],
-          "useWhen": "Use optgroups when meaningful categories make a moderate option list easier to scan.",
-          "avoidWhen": "Avoid deeply nested taxonomies or hundreds of options; use a purpose-built searchable picker instead.",
+          "useWhen": "Use grouped options when meaningful categories make a moderate list easier to scan.",
+          "avoidWhen": "Avoid deep taxonomies or very large lists; use a searchable picker or a dedicated browsing view.",
           "customization": [
-            "Optgroup labels describe categories but are not selectable values.",
-            "Keep option labels understandable outside their group when the chosen value is displayed later.",
-            "The placeholder remains disabled so it cannot become a submitted choice."
+            "Give each option group a concise accessible label and keep its choices in logical order.",
+            "Style group labels separately from selectable rows so users can distinguish headings from choices.",
+            "Keep option labels understandable when the selected value is shown outside its group."
           ],
           "example": {
             "slug": "grouped-options",
             "title": "Grouped deployment region",
-            "description": "Open the native picker and scan regions grouped by continent.",
-            "canvasHeight": 290,
+            "description": "Open the custom panel to scan regions grouped by continent, then select a region.",
+            "canvasHeight": 360,
             "source": {
-              "html": "<div class=\"c-select-demo\" data-component=\"grouped-select\"><div class=\"c-select\"><label for=\"deployment-location\">Deployment location</label><select id=\"deployment-location\" name=\"location\"><option value=\"\" selected disabled>Choose a location</option><optgroup label=\"Americas\"><option value=\"us-east\">US East</option><option value=\"sa-east\">South America East</option></optgroup><optgroup label=\"Europe\"><option value=\"eu-west\">Europe West</option><option value=\"eu-central\">Europe Central</option></optgroup><optgroup label=\"Asia Pacific\"><option value=\"ap-south\">Asia Pacific South</option><option value=\"ap-northeast\">Asia Pacific Northeast</option></optgroup></select></div></div>",
-              "css": ".c-select-demo {\n  --select-accent:#b9f474; --select-accent-text:#162600; --select-border:#dcddd4; --select-border-strong:#bfc1b7; --select-canvas:#f5f5ef; --select-focus:#b9f474; --select-font:Inter, ui-sans-serif, system-ui, sans-serif; --select-muted:#62665d; --select-radius:0.55rem; --select-surface:#ffffff; --select-text:#171915;\n  align-content:center; background:var(--select-canvas); color:var(--select-text); display:grid; font-family:var(--select-font); min-height:100%; padding:2rem;\n}\n.c-select { display:grid; gap:0.5rem; inline-size:min(100%,32rem); margin:0 auto; }\n.c-select label { font-weight:650; }\n.c-select select { appearance:auto; background:var(--select-surface); border:1px solid var(--select-border-strong); border-radius:var(--select-radius); color:var(--select-text); font:inherit; min-height:2.75rem; padding:0.75rem; width:100%; }\n.c-select select:focus-visible { outline:0.2rem solid var(--select-focus); outline-offset:0.15rem; }\n.c-select small,.c-select-demo__status { color:var(--select-muted); line-height:1.5; }\n.c-select-demo__status { inline-size:min(100%,32rem); margin:1rem auto 0; }\n@media(max-width:32rem){.c-select-demo{padding:1rem;}}",
-              "javascript": "export function createGroupedSelect(root) {\n  if (!root.matches('[data-component=\"grouped-select\"]') || !root.querySelector('optgroup')) throw new Error('createGroupedSelect markup is incomplete.');\n  return { destroy() {} };\n}\ndocument.querySelectorAll('[data-component=\"grouped-select\"]').forEach(createGroupedSelect);"
+              "html": "<div class=\"c-select-demo\" data-component=\"grouped-select\">\n  <div class=\"c-select\" data-custom-select>\n    <label id=\"location-label\">Deployment location</label>\n    <input type=\"hidden\" name=\"location\" value=\"\">\n    <div class=\"c-select__control\">\n      <button class=\"c-select__trigger\" type=\"button\" role=\"combobox\" aria-labelledby=\"location-label location-value\" aria-controls=\"location-options\" aria-haspopup=\"listbox\" aria-expanded=\"false\" data-empty=\"true\">\n        <span id=\"location-value\" data-value-label>Choose a location</span><span class=\"c-select__chevron\" aria-hidden=\"true\">⌄</span>\n      </button>\n      <div class=\"c-select__listbox\" id=\"location-options\" role=\"listbox\" aria-labelledby=\"location-label\" hidden>\n        <div class=\"c-select__group\" role=\"group\" aria-labelledby=\"americas-label\">\n          <p class=\"c-select__group-label\" id=\"americas-label\">Americas</p>\n          <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"us-east\" data-label=\"US East\" aria-selected=\"false\">US East <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n          <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"sa-east\" data-label=\"South America East\" aria-selected=\"false\">South America East <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n        </div>\n        <div class=\"c-select__group\" role=\"group\" aria-labelledby=\"europe-label\">\n          <p class=\"c-select__group-label\" id=\"europe-label\">Europe</p>\n          <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"eu-west\" data-label=\"Europe West\" aria-selected=\"false\">Europe West <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n          <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"eu-central\" data-label=\"Europe Central\" aria-selected=\"false\">Europe Central <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n        </div>\n        <div class=\"c-select__group\" role=\"group\" aria-labelledby=\"asia-label\">\n          <p class=\"c-select__group-label\" id=\"asia-label\">Asia Pacific</p>\n          <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"ap-south\" data-label=\"Asia Pacific South\" aria-selected=\"false\">Asia Pacific South <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n          <div class=\"c-select__option\" role=\"option\" tabindex=\"-1\" data-value=\"ap-northeast\" data-label=\"Asia Pacific Northeast\" aria-selected=\"false\">Asia Pacific Northeast <span class=\"c-select__option-check\" aria-hidden=\"true\">✓</span></div>\n        </div>\n      </div>\n    </div>\n    <small class=\"c-select__help\">Options use a custom panel and retain their category labels.</small>\n  </div>\n  <p class=\"c-select-demo__status\" data-select-status aria-live=\"polite\">No location selected.</p>\n</div>",
+              "css": ".c-select-demo {\n  --select-accent: #b9f474; --select-border: #dcddd4; --select-border-strong: #bfc1b7; --select-canvas: #f5f5ef; --select-focus: #648f32; --select-muted: #62665d; --select-surface: #fff; --select-text: #171915;\n  align-content: center; background: var(--select-canvas); color: var(--select-text); display: grid; font-family: Inter, ui-sans-serif, system-ui, sans-serif; min-height: 100%; padding: 2rem;\n}\n.c-select { inline-size: min(100%, 32rem); margin: 0 auto; }\n.c-select label { display: block; font-size: .86rem; font-weight: 650; margin-block-end: .45rem; }\n.c-select__help { color: var(--select-muted); display: block; font-size: .78rem; line-height: 1.5; margin-block-start: .55rem; }\n.c-select__control { position: relative; }\n.c-select__trigger { align-items: center; background: var(--select-surface); border: 1px solid var(--select-border-strong); border-radius: .6rem; color: var(--select-text); cursor: pointer; display: flex; font: inherit; font-size: .9rem; justify-content: space-between; min-height: 2.9rem; padding: .7rem .85rem; text-align: left; width: 100%; }\n.c-select__trigger[aria-expanded=\"true\"] { border-color: var(--select-focus); box-shadow: 0 0 0 2px rgb(100 143 50 / 16%); }\n.c-select__trigger[aria-disabled=\"true\"] { background: #f0f1eb; color: #878b81; cursor: not-allowed; }\n.c-select__trigger[data-empty=\"true\"] [data-value-label] { color: var(--select-muted); }\n.c-select__chevron { color: var(--select-muted); font-size: 1.1rem; line-height: 1; }\n.c-select__listbox { background: var(--select-surface); border: 1px solid var(--select-border); border-radius: .7rem; box-shadow: 0 1rem 2rem rgb(23 25 21 / 13%); inset-inline: 0; max-block-size: 15rem; overflow-y: auto; padding: .35rem; position: absolute; top: calc(100% + .4rem); z-index: 3; }\n.c-select__listbox[hidden] { display: none; }\n.c-select__option { align-items: center; background: transparent; border: 0; border-radius: .45rem; color: var(--select-text); cursor: pointer; display: flex; font: inherit; gap: .65rem; justify-content: space-between; min-height: 2.65rem; padding: .6rem .7rem; text-align: left; width: 100%; }\n.c-select__option:hover, .c-select__option:focus { background: #f1f4ea; outline: none; }\n.c-select__option[aria-selected=\"true\"] { background: #e5f4d3; color: #294916; font-weight: 650; }\n.c-select__option-check { color: #426d20; opacity: 0; }\n.c-select__option[aria-selected=\"true\"] .c-select__option-check { opacity: 1; }\n.c-select__group + .c-select__group { border-block-start: 1px solid var(--select-border); margin-block-start: .3rem; padding-block-start: .3rem; }\n.c-select__group-label { color: var(--select-muted); font-size: .66rem; font-weight: 700; letter-spacing: .08em; margin: .35rem .7rem .2rem; text-transform: uppercase; }\n.c-select-demo__status { color: var(--select-muted); inline-size: min(100%, 32rem); line-height: 1.5; margin: 1rem auto 0; }\n.c-select :focus-visible { outline: .2rem solid var(--select-focus); outline-offset: .15rem; }\n@media (max-width: 32rem) { .c-select-demo { padding: 1rem; } }\n",
+              "javascript": "export function createCustomSelect(root) {\n  const field = root.querySelector('[data-custom-select]');\n  const trigger = field?.querySelector('[role=\"combobox\"]');\n  const listbox = field?.querySelector('[role=\"listbox\"]');\n  const valueInput = field?.querySelector('input[type=\"hidden\"]');\n  const valueLabel = trigger?.querySelector('[data-value-label]');\n  const status = root.querySelector('[data-select-status]');\n  if (!field || !trigger || !listbox || !valueInput || !valueLabel) throw new Error('Custom select markup is incomplete.');\n  let typeahead = '';\n  let typeaheadTimer;\n  const options = () => [...listbox.querySelectorAll('[role=\"option\"]')];\n  const close = (restoreFocus = false) => {\n    listbox.hidden = true;\n    trigger.setAttribute('aria-expanded', 'false');\n    if (restoreFocus) trigger.focus();\n  };\n  const open = (edge = 'selected') => {\n    listbox.hidden = false;\n    trigger.setAttribute('aria-expanded', 'true');\n    const items = options();\n    const selected = items.findIndex((option) => option.dataset.value === valueInput.value);\n    const index = selected >= 0 ? selected : edge === 'last' ? items.length - 1 : 0;\n    items[index]?.focus();\n  };\n  const choose = (option) => {\n    if (!option) return;\n    valueInput.value = option.dataset.value;\n    valueLabel.textContent = option.dataset.label;\n    trigger.dataset.empty = 'false';\n    options().forEach((item) => item.setAttribute('aria-selected', String(item === option)));\n    if (status) status.textContent = `Selected: ${option.dataset.label}.`;\n    valueInput.dispatchEvent(new Event('input', { bubbles: true }));\n    valueInput.dispatchEvent(new Event('change', { bubbles: true }));\n    root.dispatchEvent(new CustomEvent('select:change', { detail: { value: valueInput.value } }));\n    close(true);\n  };\n  const onTriggerClick = () => listbox.hidden ? open() : close();\n  const onTriggerKeydown = (event) => {\n    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {\n      event.preventDefault();\n      open(event.key === 'ArrowUp' ? 'last' : 'selected');\n    }\n  };\n  const onListboxClick = (event) => {\n    const option = event.target.closest('[role=\"option\"]');\n    if (option && listbox.contains(option)) choose(option);\n  };\n  const onListboxKeydown = (event) => {\n    const items = options();\n    let index = items.indexOf(document.activeElement);\n    if (event.key === 'Escape') { event.preventDefault(); close(true); return; }\n    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {\n      event.preventDefault();\n      index = event.key === 'Home' ? 0 : event.key === 'End' ? items.length - 1 : Math.max(0, Math.min(items.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)));\n      items[index]?.focus();\n      items[index]?.scrollIntoView({ block: 'nearest' });\n      return;\n    }\n    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); choose(items[index]); return; }\n    if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {\n      typeahead += event.key.toLocaleLowerCase();\n      window.clearTimeout(typeaheadTimer);\n      typeaheadTimer = window.setTimeout(() => { typeahead = ''; }, 650);\n      const match = items.findIndex((item) => item.dataset.label.toLocaleLowerCase().startsWith(typeahead));\n      if (match >= 0) items[match].focus();\n    }\n  };\n  const onDocumentPointer = (event) => { if (!field.contains(event.target)) close(); };\n  const onFocusOut = () => window.setTimeout(() => { if (!field.contains(document.activeElement)) close(); });\n  trigger.addEventListener('click', onTriggerClick);\n  trigger.addEventListener('keydown', onTriggerKeydown);\n  listbox.addEventListener('click', onListboxClick);\n  listbox.addEventListener('keydown', onListboxKeydown);\n  field.addEventListener('focusout', onFocusOut);\n  document.addEventListener('pointerdown', onDocumentPointer);\n  return { destroy() {\n    window.clearTimeout(typeaheadTimer);\n    trigger.removeEventListener('click', onTriggerClick);\n    trigger.removeEventListener('keydown', onTriggerKeydown);\n    listbox.removeEventListener('click', onListboxClick);\n    listbox.removeEventListener('keydown', onListboxKeydown);\n    field.removeEventListener('focusout', onFocusOut);\n    document.removeEventListener('pointerdown', onDocumentPointer);\n  } };\n}\ndocument.querySelectorAll('[data-component=\"select\"], [data-component=\"grouped-select\"]').forEach(createCustomSelect);"
+            }
+          }
+        },
+        {
+          "slug": "cascade-select",
+          "title": "Cascade select",
+          "summary": "Choose a leaf from a nested hierarchy inside one select input and one popup tree.",
+          "tags": [
+            "cascade",
+            "tree",
+            "hierarchical-options"
+          ],
+          "useWhen": "Use a cascade select when a single value belongs to a clear hierarchy and users need to drill through its levels in one control.",
+          "avoidWhen": "Avoid it for unrelated choices, flat lists, or deep structures that are better explored in a dedicated tree or navigation view.",
+          "customization": [
+            "Keep the hierarchy shallow and label each branch so users can predict what opens next.",
+            "Use Right Arrow to expand a branch, Left Arrow to collapse it or return to its parent, and Enter or Space to choose a leaf.",
+            "For remote options, show loading and error states inside the popup and discard stale responses after a parent changes."
+          ],
+          "example": {
+            "slug": "cascade-select",
+            "title": "Single-input location tree",
+            "description": "Open the one select input and expand Americas → United States to choose a city. Arrow keys navigate; Right expands; Left collapses or returns to the parent; Enter selects a city.",
+            "canvasHeight": 470,
+            "source": {
+              "html": "<div class=\"c-select-demo c-cascade-demo\" data-component=\"cascade-select\">\n  <div class=\"c-cascade-demo__intro\"><p class=\"c-cascade-demo__eyebrow\">One input · nested choices</p><h2>Choose a service location</h2><p>Open the select, then move through the location tree without leaving its popup.</p></div>\n  <div class=\"c-select c-cascade-field\">\n    <label id=\"service-location-label\">Service location</label>\n    <input type=\"hidden\" name=\"serviceLocation\" value=\"\">\n    <div class=\"c-select__control\">\n      <button class=\"c-select__trigger\" type=\"button\" role=\"combobox\" aria-labelledby=\"service-location-label service-location-value\" aria-controls=\"service-location-tree\" aria-haspopup=\"tree\" aria-expanded=\"false\" data-empty=\"true\">\n        <span id=\"service-location-value\" data-value-label>Choose a city</span><span class=\"c-select__chevron\" aria-hidden=\"true\">⌄</span>\n      </button>\n      <div class=\"c-select__listbox c-cascade-tree\" id=\"service-location-tree\" role=\"tree\" aria-labelledby=\"service-location-label\" hidden>\n        <ul class=\"c-cascade-tree__items\" role=\"group\">\n          <li role=\"none\">\n            <div class=\"c-cascade-tree__item\" id=\"location-americas\" role=\"treeitem\" tabindex=\"-1\" aria-expanded=\"false\" data-label=\"Americas\"><span>Americas</span><span class=\"c-cascade-tree__branch\" aria-hidden=\"true\">›</span></div>\n            <ul class=\"c-cascade-tree__items\" role=\"group\" hidden>\n              <li role=\"none\">\n                <div class=\"c-cascade-tree__item\" id=\"location-united-states\" role=\"treeitem\" tabindex=\"-1\" aria-expanded=\"false\" data-label=\"United States\"><span>United States</span><span class=\"c-cascade-tree__branch\" aria-hidden=\"true\">›</span></div>\n                <ul class=\"c-cascade-tree__items\" role=\"group\" hidden>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"us-new-york\" data-label=\"New York\">New York</div></li>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"us-san-francisco\" data-label=\"San Francisco\">San Francisco</div></li>\n                </ul>\n              </li>\n              <li role=\"none\">\n                <div class=\"c-cascade-tree__item\" id=\"location-canada\" role=\"treeitem\" tabindex=\"-1\" aria-expanded=\"false\" data-label=\"Canada\"><span>Canada</span><span class=\"c-cascade-tree__branch\" aria-hidden=\"true\">›</span></div>\n                <ul class=\"c-cascade-tree__items\" role=\"group\" hidden>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"ca-toronto\" data-label=\"Toronto\">Toronto</div></li>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"ca-montreal\" data-label=\"Montreal\">Montreal</div></li>\n                </ul>\n              </li>\n            </ul>\n          </li>\n          <li role=\"none\">\n            <div class=\"c-cascade-tree__item\" id=\"location-europe\" role=\"treeitem\" tabindex=\"-1\" aria-expanded=\"false\" data-label=\"Europe\"><span>Europe</span><span class=\"c-cascade-tree__branch\" aria-hidden=\"true\">›</span></div>\n            <ul class=\"c-cascade-tree__items\" role=\"group\" hidden>\n              <li role=\"none\">\n                <div class=\"c-cascade-tree__item\" id=\"location-france\" role=\"treeitem\" tabindex=\"-1\" aria-expanded=\"false\" data-label=\"France\"><span>France</span><span class=\"c-cascade-tree__branch\" aria-hidden=\"true\">›</span></div>\n                <ul class=\"c-cascade-tree__items\" role=\"group\" hidden>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"fr-paris\" data-label=\"Paris\">Paris</div></li>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"fr-lyon\" data-label=\"Lyon\">Lyon</div></li>\n                </ul>\n              </li>\n              <li role=\"none\">\n                <div class=\"c-cascade-tree__item\" id=\"location-portugal\" role=\"treeitem\" tabindex=\"-1\" aria-expanded=\"false\" data-label=\"Portugal\"><span>Portugal</span><span class=\"c-cascade-tree__branch\" aria-hidden=\"true\">›</span></div>\n                <ul class=\"c-cascade-tree__items\" role=\"group\" hidden>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"pt-lisbon\" data-label=\"Lisbon\">Lisbon</div></li>\n                  <li role=\"none\"><div class=\"c-cascade-tree__item\" role=\"treeitem\" tabindex=\"-1\" aria-selected=\"false\" data-value=\"pt-porto\" data-label=\"Porto\">Porto</div></li>\n                </ul>\n              </li>\n            </ul>\n          </li>\n        </ul>\n      </div>\n    </div>\n    <small class=\"c-select__help\">Use Arrow keys to browse. Right opens a branch; Left returns to its parent.</small>\n  </div>\n  <p class=\"c-select-demo__status\" data-cascade-status aria-live=\"polite\">No location selected.</p>\n</div>",
+              "css": ".c-select-demo {\n  --select-accent: #b9f474; --select-border: #dcddd4; --select-border-strong: #bfc1b7; --select-canvas: #f5f5ef; --select-focus: #648f32; --select-muted: #62665d; --select-surface: #fff; --select-text: #171915;\n  align-content: center; background: var(--select-canvas); color: var(--select-text); display: grid; font-family: Inter, ui-sans-serif, system-ui, sans-serif; min-height: 100%; padding: 2rem;\n}\n.c-select { inline-size: min(100%, 32rem); margin: 0 auto; }\n.c-select label { display: block; font-size: .86rem; font-weight: 650; margin-block-end: .45rem; }\n.c-select__help { color: var(--select-muted); display: block; font-size: .78rem; line-height: 1.5; margin-block-start: .55rem; }\n.c-select__control { position: relative; }\n.c-select__trigger { align-items: center; background: var(--select-surface); border: 1px solid var(--select-border-strong); border-radius: .6rem; color: var(--select-text); cursor: pointer; display: flex; font: inherit; font-size: .9rem; justify-content: space-between; min-height: 2.9rem; padding: .7rem .85rem; text-align: left; width: 100%; }\n.c-select__trigger[aria-expanded=\"true\"] { border-color: var(--select-focus); box-shadow: 0 0 0 2px rgb(100 143 50 / 16%); }\n.c-select__trigger[aria-disabled=\"true\"] { background: #f0f1eb; color: #878b81; cursor: not-allowed; }\n.c-select__trigger[data-empty=\"true\"] [data-value-label] { color: var(--select-muted); }\n.c-select__chevron { color: var(--select-muted); font-size: 1.1rem; line-height: 1; }\n.c-select__listbox { background: var(--select-surface); border: 1px solid var(--select-border); border-radius: .7rem; box-shadow: 0 1rem 2rem rgb(23 25 21 / 13%); inset-inline: 0; max-block-size: 15rem; overflow-y: auto; padding: .35rem; position: absolute; top: calc(100% + .4rem); z-index: 3; }\n.c-select__listbox[hidden] { display: none; }\n.c-select__option { align-items: center; background: transparent; border: 0; border-radius: .45rem; color: var(--select-text); cursor: pointer; display: flex; font: inherit; gap: .65rem; justify-content: space-between; min-height: 2.65rem; padding: .6rem .7rem; text-align: left; width: 100%; }\n.c-select__option:hover, .c-select__option:focus { background: #f1f4ea; outline: none; }\n.c-select__option[aria-selected=\"true\"] { background: #e5f4d3; color: #294916; font-weight: 650; }\n.c-select__option-check { color: #426d20; opacity: 0; }\n.c-select__option[aria-selected=\"true\"] .c-select__option-check { opacity: 1; }\n.c-select__group + .c-select__group { border-block-start: 1px solid var(--select-border); margin-block-start: .3rem; padding-block-start: .3rem; }\n.c-select__group-label { color: var(--select-muted); font-size: .66rem; font-weight: 700; letter-spacing: .08em; margin: .35rem .7rem .2rem; text-transform: uppercase; }\n.c-select-demo__status { color: var(--select-muted); inline-size: min(100%, 32rem); line-height: 1.5; margin: 1rem auto 0; }\n.c-select :focus-visible { outline: .2rem solid var(--select-focus); outline-offset: .15rem; }\n@media (max-width: 32rem) { .c-select-demo { padding: 1rem; } }\n\n.c-cascade-demo { gap: 1.25rem; }\n.c-cascade-demo__intro, .c-cascade-demo > .c-select, .c-cascade-demo__status { inline-size: min(100%, 38rem); margin-inline: auto; }\n.c-cascade-demo__intro { display: grid; gap: .5rem; }\n.c-cascade-demo__eyebrow { color: var(--select-muted); font-size: .68rem; font-weight: 700; letter-spacing: .1em; margin: 0; text-transform: uppercase; }\n.c-cascade-demo__intro h2 { font-size: clamp(1.4rem, 4vw, 2rem); letter-spacing: -.05em; margin: 0; }\n.c-cascade-demo__intro > p:last-child { color: var(--select-muted); line-height: 1.5; margin: 0; }\n.c-cascade-tree { max-block-size: 18rem; padding: .4rem; }\n.c-cascade-tree__items { list-style: none; margin: 0; padding: 0; }\n.c-cascade-tree__items[hidden] { display: none; }\n.c-cascade-tree__items .c-cascade-tree__items { margin-inline-start: 1.1rem; }\n.c-cascade-tree__item { align-items: center; border-radius: .45rem; cursor: pointer; display: flex; font-size: .88rem; justify-content: space-between; min-block-size: 2.55rem; padding: .55rem .7rem; }\n.c-cascade-tree__item:hover, .c-cascade-tree__item:focus { background: #f1f4ea; outline: none; }\n.c-cascade-tree__item[aria-selected=\"true\"] { background: #e5f4d3; color: #294916; font-weight: 650; }\n.c-cascade-tree__branch { color: var(--select-muted); font-size: 1.2rem; line-height: 1; }\n.c-cascade-tree__item[aria-expanded=\"true\"] > .c-cascade-tree__branch { transform: rotate(90deg); }\n",
+              "javascript": "export function createCascadeSelect(root) {\n  const trigger = root.querySelector('[role=\"combobox\"]');\n  const tree = root.querySelector('[role=\"tree\"]');\n  const hidden = root.querySelector('input[type=\"hidden\"]');\n  const valueLabel = trigger?.querySelector('[data-value-label]');\n  const status = root.querySelector('[data-cascade-status]');\n  if (!trigger || !tree || !hidden || !valueLabel || !status) throw new Error('Cascade select markup is incomplete.');\n  const items = () => [...tree.querySelectorAll('[role=\"treeitem\"]')];\n  const groupOf = (item) => item.parentElement.querySelector(':scope > [role=\"group\"]');\n  const isBranch = (item) => Boolean(groupOf(item));\n  const visibleItems = () => items().filter((item) => !item.closest('[hidden]'));\n  const close = (restoreFocus = false) => {\n    tree.hidden = true;\n    trigger.setAttribute('aria-expanded', 'false');\n    if (restoreFocus) trigger.focus();\n  };\n  const focusItem = (item) => {\n    if (!item) return;\n    item.focus();\n    item.scrollIntoView({block:'nearest'});\n  };\n  const expand = (item, open = true, moveInto = false) => {\n    const group = groupOf(item);\n    if (!group) return;\n    item.setAttribute('aria-expanded', String(open));\n    group.hidden = !open;\n    if (open && moveInto) focusItem(group.querySelector('[role=\"treeitem\"]'));\n  };\n  const open = (last = false) => {\n    tree.hidden = false;\n    trigger.setAttribute('aria-expanded', 'true');\n    const selected = items().find((item) => item.dataset.value === hidden.value);\n    if (selected) {\n      const ancestors = [];\n      let parent = selected.parentElement.closest('[role=\"treeitem\"]');\n      while (parent) { ancestors.unshift(parent); parent = parent.parentElement.closest('[role=\"treeitem\"]'); }\n      ancestors.forEach((ancestor) => expand(ancestor, true));\n      focusItem(selected);\n    } else {\n      const roots = tree.querySelectorAll(':scope > [role=\"group\"] > [role=\"none\"] > [role=\"treeitem\"]');\n      focusItem(last ? roots[roots.length - 1] : roots[0]);\n    }\n  };\n  const choose = (item) => {\n    if (!item?.dataset.value) return;\n    hidden.value = item.dataset.value;\n    const path = [];\n    let current = item;\n    while (current && current.matches('[role=\"treeitem\"]')) {\n      path.unshift(current.dataset.label);\n      current = current.parentElement.closest('[role=\"treeitem\"]');\n    }\n    valueLabel.textContent = path.join(' / ');\n    trigger.dataset.empty = 'false';\n    items().forEach((node) => {\n      if (node.hasAttribute('aria-selected')) node.setAttribute('aria-selected', String(node === item));\n    });\n    status.textContent = `Selected: ${path.join(' / ')}.`;\n    hidden.dispatchEvent(new Event('input', {bubbles:true}));\n    hidden.dispatchEvent(new Event('change', {bubbles:true}));\n    root.dispatchEvent(new CustomEvent('select:change', {detail:{value:hidden.value}}));\n    close(true);\n  };\n  const onTriggerClick = () => tree.hidden ? open() : close();\n  const onTriggerKey = (event) => {\n    if (['ArrowDown','ArrowUp','Enter',' '].includes(event.key)) { event.preventDefault(); open(event.key === 'ArrowUp'); }\n  };\n  const onTreeClick = (event) => {\n    const item = event.target.closest('[role=\"treeitem\"]');\n    if (!item || !tree.contains(item)) return;\n    if (isBranch(item)) expand(item, item.getAttribute('aria-expanded') !== 'true');\n    else choose(item);\n  };\n  const onTreeKey = (event) => {\n    const item = event.target.closest('[role=\"treeitem\"]');\n    const visible = visibleItems();\n    let index = visible.indexOf(item);\n    if (event.key === 'Escape') { event.preventDefault(); close(true); return; }\n    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Home' || event.key === 'End') {\n      event.preventDefault();\n      index = event.key === 'Home' ? 0 : event.key === 'End' ? visible.length - 1 : Math.max(0, Math.min(visible.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)));\n      focusItem(visible[index]);\n    } else if (event.key === 'ArrowRight' && item && isBranch(item)) {\n      event.preventDefault();\n      if (item.getAttribute('aria-expanded') !== 'true') expand(item, true, true);\n      else focusItem(groupOf(item).querySelector('[role=\"treeitem\"]'));\n    } else if (event.key === 'ArrowLeft' && item) {\n      event.preventDefault();\n      if (isBranch(item) && item.getAttribute('aria-expanded') === 'true') expand(item, false);\n      else focusItem(item.parentElement.closest('[role=\"treeitem\"]'));\n    } else if (event.key === 'Enter' || event.key === ' ') {\n      event.preventDefault();\n      if (item && isBranch(item)) expand(item, item.getAttribute('aria-expanded') !== 'true', item.getAttribute('aria-expanded') !== 'true');\n      else choose(item);\n    }\n  };\n  const onOutsidePointer = (event) => { if (!root.contains(event.target)) close(); };\n  const onFocusOut = () => window.setTimeout(() => { if (!root.contains(document.activeElement)) close(); });\n  trigger.addEventListener('click', onTriggerClick);\n  trigger.addEventListener('keydown', onTriggerKey);\n  tree.addEventListener('click', onTreeClick);\n  tree.addEventListener('keydown', onTreeKey);\n  root.addEventListener('focusout', onFocusOut);\n  document.addEventListener('pointerdown', onOutsidePointer);\n  return { destroy() {\n    trigger.removeEventListener('click', onTriggerClick);\n    trigger.removeEventListener('keydown', onTriggerKey);\n    tree.removeEventListener('click', onTreeClick);\n    tree.removeEventListener('keydown', onTreeKey);\n    root.removeEventListener('focusout', onFocusOut);\n    document.removeEventListener('pointerdown', onOutsidePointer);\n  } };\n}\ndocument.querySelectorAll('[data-component=\"cascade-select\"]').forEach(createCascadeSelect);"
             }
           }
         }
       ],
       "anatomy": [
         {
-          "name": "Label",
-          "description": "A visible name connected to the select."
+          "name": "Visible label",
+          "description": "Names the select control and its current value."
         },
         {
-          "name": "Native select",
-          "description": "The focusable picker and submitted form control."
+          "name": "Combobox trigger",
+          "description": "A keyboard-accessible button that opens and reports the custom listbox state."
         },
         {
-          "name": "Placeholder option",
-          "description": "A disabled prompt when no default is appropriate."
+          "name": "Option listbox",
+          "description": "A custom popup tree that presents nested option groups inside the select input."
         },
         {
-          "name": "Option group",
-          "description": "An optional labeled category for related choices."
-        },
-        {
-          "name": "Helper text",
-          "description": "Persistent context connected with aria-describedby."
+          "name": "Selected value",
+          "description": "The chosen value submitted through a hidden form field and announced beside the trigger."
         }
       ],
       "tokens": [
@@ -778,20 +609,22 @@
         }
       ],
       "accessibility": [
-        "Connect every select to a visible label.",
-        "Use a disabled placeholder only when no valid default exists.",
-        "Keep option labels concise and unique.",
-        "Use optgroup for one meaningful category level only.",
-        "Do not replace the native picker solely to control popup styling."
+        "Give every custom select a visible label and expose its popup as a named listbox.",
+        "Expose options with selected state and support Arrow keys, Home, End, type-ahead, Enter, and Escape.",
+        "Keep focus visible, restore it to the trigger after selection, and announce value changes politely.",
+        "Use named role=group containers for grouped options and do not make group headings selectable.",
+        "Prefer a native select when custom popup styling is not essential; test custom widgets with target browser and assistive-technology combinations.",
+        "For hierarchical choices, expose a tree popup with treeitem expanded and selected states and support parent and child keyboard navigation."
       ],
-      "responsive": "The select fills its container and uses the operating system's native narrow-screen picker.",
+      "responsive": "The styled options panel stays within its trigger width and scrolls when the option list is taller than the available space. Cascading fields stack on narrow screens.",
       "limitations": [
-        "Native option popup styling varies by browser and operating system.",
-        "This component does not provide search, multi-select chips, remote loading, or virtualization."
+        "A custom listbox requires more code and assistive-technology testing than a native select; it does not inherit the operating system picker.",
+        "The examples use local options only; remote loading, filtering, virtualization, and form validation need application-specific handling."
       ],
       "provenance": {
-        "label": "Cross-library select behavior study",
-        "note": "Original native HTML, CSS, and JavaScript; no library source is copied."
+        "label": "WAI-ARIA combobox and PrimeNG CascadeSelect pattern study",
+        "url": "https://primeng.dev/cascadeselect",
+        "note": "The single-input variant adapts PrimeNG CascadeSelect’s nested option tree and parent-child keyboard behavior using original dependency-free HTML, CSS, and JavaScript."
       }
     }
   },

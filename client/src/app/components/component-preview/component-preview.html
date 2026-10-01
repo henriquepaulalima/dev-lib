@@ -67,7 +67,7 @@
           </div>
         }
       </div>
-      <button type="button" (click)="copySelectedSource()">{{ copied() ? 'Copied' : 'Copy file' }}</button>
+      <button type="button" aria-live="polite" (click)="copySelectedSource()">{{ copied() ? 'Copied!' : 'Copy file' }}</button>
     </div>
     <pre><code class="hljs" [innerHTML]="highlightedSource()"></code></pre>
   </div>
