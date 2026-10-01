@@ -167,6 +167,46 @@ export class StoredComponentContent {
 
 const StoredComponentContentSchema = SchemaFactory.createForClass(StoredComponentContent);
 
+@Schema({ _id: false })
+export class StoredFeatureGuide {
+  @Prop({ required: true }) introduction: string;
+  @Prop({ default: [], type: [String] }) dependencies: string[];
+  @Prop({ default: [], type: [StoredSectionSchema] }) sections: StoredSection[];
+}
+const StoredFeatureGuideSchema = SchemaFactory.createForClass(StoredFeatureGuide);
+
+@Schema({ _id: false })
+export class StoredFeatureGuides {
+  @Prop({ type: StoredFeatureGuideSchema, required: true }) javascript: StoredFeatureGuide;
+  @Prop({ type: StoredFeatureGuideSchema, required: true }) typescript: StoredFeatureGuide;
+  @Prop({ type: StoredFeatureGuideSchema, required: true }) go: StoredFeatureGuide;
+  @Prop({ type: StoredFeatureGuideSchema, required: true }) csharp: StoredFeatureGuide;
+}
+const StoredFeatureGuidesSchema = SchemaFactory.createForClass(StoredFeatureGuides);
+
+@Schema({ _id: false })
+export class StoredFeatureVariant {
+  @Prop({ required: true }) slug: string;
+  @Prop({ required: true }) title: string;
+  @Prop({ required: true }) summary: string;
+  @Prop({ type: StoredFeatureGuidesSchema, required: true }) guides: StoredFeatureGuides;
+}
+const StoredFeatureVariantSchema = SchemaFactory.createForClass(StoredFeatureVariant);
+
+@Schema({ _id: false })
+export class StoredFeatureSource {
+  @Prop({ required: true }) label: string;
+  @Prop({ required: true }) url: string;
+}
+const StoredFeatureSourceSchema = SchemaFactory.createForClass(StoredFeatureSource);
+
+@Schema({ _id: false })
+export class StoredFeatureContent {
+  @Prop({ default: [], type: [StoredFeatureVariantSchema] }) variants: StoredFeatureVariant[];
+  @Prop({ default: [], type: [StoredFeatureSourceSchema] }) sources: StoredFeatureSource[];
+}
+const StoredFeatureContentSchema = SchemaFactory.createForClass(StoredFeatureContent);
+
 @Schema({ versionKey: false })
 export class StoredEntry {
   @Prop({ required: true, unique: true, trim: true })
@@ -195,6 +235,9 @@ export class StoredEntry {
 
   @Prop({ type: StoredComponentContentSchema })
   component?: StoredComponentContent;
+
+  @Prop({ type: StoredFeatureContentSchema })
+  feature?: StoredFeatureContent;
 }
 
 export const StoredEntrySchema = SchemaFactory.createForClass(StoredEntry);

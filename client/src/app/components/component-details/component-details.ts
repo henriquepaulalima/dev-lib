@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, ElementRef, computed, effect, input
 import { RouterLink } from '@angular/router';
 import { EntryDetails } from '../../models/library-entry';
 import { ComponentPreview } from '../component-preview/component-preview';
+import { BackLink } from '../back-link/back-link';
 
 @Component({
   selector: 'app-component-details',
-  imports: [RouterLink, ComponentPreview],
+  imports: [RouterLink, ComponentPreview, BackLink],
   templateUrl: './component-details.html',
   styleUrl: './component-details.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

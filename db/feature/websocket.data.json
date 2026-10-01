@@ -1,0 +1,421 @@
+[
+  {
+    "slug": "websocket",
+    "type": "feature",
+    "title": "WebSocket",
+    "summary": "Build a raw WebSocket server, then add room broadcasts and connection heartbeats in JS, TS, Go, or C#.",
+    "tags": [
+      "websocket",
+      "realtime",
+      "backend",
+      "networking"
+    ],
+    "overview": "WebSockets keep a two-way connection open after an HTTP upgrade. Start with an echo server, then choose a variant for broadcasting across a room or detecting stale peers. Each guide includes a local browser-console client to try the server.",
+    "dependencies": [],
+    "sections": [],
+    "feature": {
+      "variants": [
+        {
+          "slug": "echo",
+          "title": "Echo server",
+          "summary": "Upgrade an HTTP request to a WebSocket and echo text or binary frames to the sender.",
+          "guides": {
+            "javascript": {
+              "introduction": "Node.js ESM using only ws beyond the standard library. This is the default server for learning the handshake and message loop.",
+              "dependencies": [
+                "ws"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a Node.js ESM project. Save the next section as server.js, then run node server.js. The ws package handles framing and handshake details.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install ws\nnode server.js",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "Start a WebSocket server on /ws. maxPayload bounds incoming messages to 64 KiB. The ws driver handles the protocol handshake and frames.",
+                  "code": "import { WebSocket, WebSocketServer } from 'ws';\n\nconst wss = new WebSocketServer({ port: 8080, path: '/ws', maxPayload: 64 * 1024 });\nwss.on('connection', (socket) => {\n  socket.on('error', console.error);\n  socket.on('message', (data, isBinary) => {\n    if (socket.readyState === WebSocket.OPEN) socket.send(data, { binary: isBinary });\n  });\n});\nconsole.log('WebSocket echo: ws://localhost:8080/ws');",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page at http://localhost:4400, paste this into its browser console, and watch for the echoed message. Close the socket afterward.",
+                  "code": "const socket = new WebSocket('ws://localhost:8080/ws');\nsocket.addEventListener('open', () => socket.send('hello websocket'));\nsocket.addEventListener('message', (event) => console.log(event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Use wss:// behind TLS in production. Check Origin against your real frontend, authenticate before accepting an upgrade, and budget one persistent connection per client. This is an echo demo, not a message broker."
+                }
+              ]
+            },
+            "typescript": {
+              "introduction": "TypeScript on Node.js using ws and its type declarations. Application code stays close to the JavaScript version.",
+              "dependencies": [
+                "ws",
+                "@types/ws (development)"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a TypeScript ESM project. Save the next section as server.ts. Compile to server.js and run it. @types/ws provides the driver types.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install ws\nnpm install -D typescript @types/node @types/ws\nnpx tsc server.ts --module nodenext --target es2022 --esModuleInterop --types node --skipLibCheck\nnode server.js",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "Start a typed WebSocket server on /ws. The driver handles the upgrade and limits incoming messages to 64 KiB.",
+                  "code": "import WebSocket, { WebSocketServer } from 'ws';\n\nconst wss = new WebSocketServer({ port: 8080, path: '/ws', maxPayload: 64 * 1024 });\nwss.on('connection', (socket: WebSocket) => {\n  socket.on('error', console.error);\n  socket.on('message', (data: WebSocket.RawData, isBinary: boolean) => {\n    if (socket.readyState === WebSocket.OPEN) socket.send(data, { binary: isBinary });\n  });\n});\nconsole.log('WebSocket echo: ws://localhost:8080/ws');",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page at http://localhost:4400, paste this into its browser console, and watch for the echoed message. Close the socket afterward.",
+                  "code": "const socket = new WebSocket('ws://localhost:8080/ws');\nsocket.addEventListener('open', () => socket.send('hello websocket'));\nsocket.addEventListener('message', (event) => console.log(event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Use wss:// behind TLS in production. Check Origin against your real frontend, authenticate before accepting an upgrade, and budget one persistent connection per client. This is an echo demo, not a message broker."
+                }
+              ]
+            },
+            "go": {
+              "introduction": "Go net/http plus Gorilla WebSocket for the protocol upgrade and frames.",
+              "dependencies": [
+                "github.com/gorilla/websocket"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a Go module, add the small Gorilla WebSocket driver, save the next section as main.go, and run it. net/http supplies the HTTP server.",
+                  "code": "go mod init example.com/ws-demo\ngo get github.com/gorilla/websocket\ngo run .",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "Upgrade /ws using Gorilla WebSocket. The local Origin allowlist matches the browser test page, and SetReadLimit bounds incoming messages.",
+                  "code": "package main\n\nimport (\n  \"log\"\n  \"net/http\"\n  \"github.com/gorilla/websocket\"\n)\n\nvar upgrader = websocket.Upgrader{\n  CheckOrigin: func(r *http.Request) bool {\n    origin := r.Header.Get(\"Origin\")\n    return origin == \"\" || origin == \"http://localhost:4400\"\n  },\n}\n\nfunc main() {\n  http.HandleFunc(\"/ws\", func(w http.ResponseWriter, r *http.Request) {\n    conn, err := upgrader.Upgrade(w, r, nil)\n    if err != nil { return }\n    defer conn.Close()\n    conn.SetReadLimit(64 << 10)\n    for {\n      kind, message, err := conn.ReadMessage()\n      if err != nil { return }\n      if err := conn.WriteMessage(kind, message); err != nil { return }\n    }\n  })\n  log.Println(\"WebSocket echo: ws://localhost:8080/ws\")\n  log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+                  "language": "go"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page at http://localhost:4400, paste this into its browser console, and watch for the echoed message. Close the socket afterward.",
+                  "code": "const socket = new WebSocket('ws://localhost:8080/ws');\nsocket.addEventListener('open', () => socket.send('hello websocket'));\nsocket.addEventListener('message', (event) => console.log(event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Use wss:// behind TLS in production. Check Origin against your real frontend, authenticate before accepting an upgrade, and budget one persistent connection per client. This is an echo demo, not a message broker."
+                }
+              ]
+            },
+            "csharp": {
+              "introduction": "ASP.NET Core WebSockets are built into the shared framework. No WebSocket NuGet package is needed.",
+              "dependencies": [],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create an ASP.NET Core empty app, replace Program.cs with the next section, and run it. WebSocket support is part of ASP.NET Core; no NuGet package is needed.",
+                  "code": "dotnet new web -n WsDemo\ncd WsDemo\ndotnet run",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "ASP.NET Core handles the upgrade with no additional package. Forward each received fragment with its EndOfMessage flag; the browser reassembles the message.",
+                  "code": "using System.Net.WebSockets;\n\nvar builder = WebApplication.CreateBuilder(args);\nbuilder.WebHost.UseUrls(\"http://localhost:8080\");\nvar app = builder.Build();\nvar options = new WebSocketOptions { KeepAliveInterval = TimeSpan.FromSeconds(30) };\noptions.AllowedOrigins.Add(\"http://localhost:4400\");\napp.UseWebSockets(options);\napp.Map(\"/ws\", async context =>\n{\n    if (!context.WebSockets.IsWebSocketRequest)\n    {\n        context.Response.StatusCode = 400;\n        return;\n    }\n    using var socket = await context.WebSockets.AcceptWebSocketAsync();\n    var buffer = new byte[4096];\n    while (socket.State == WebSocketState.Open)\n    {\n        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), context.RequestAborted);\n        if (result.MessageType == WebSocketMessageType.Close)\n        {\n            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, \"bye\", CancellationToken.None);\n            break;\n        }\n        await socket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count),\n            result.MessageType, result.EndOfMessage, context.RequestAborted);\n    }\n});\napp.Run();",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page at http://localhost:4400, paste this into its browser console, and watch for the echoed message. Close the socket afterward.",
+                  "code": "const socket = new WebSocket('ws://localhost:8080/ws');\nsocket.addEventListener('open', () => socket.send('hello websocket'));\nsocket.addEventListener('message', (event) => console.log(event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Use wss:// behind TLS in production. Check Origin against your real frontend, authenticate before accepting an upgrade, and budget one persistent connection per client. This is an echo demo, not a message broker."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "slug": "rooms",
+          "title": "Broadcast rooms",
+          "summary": "Group peers by room and broadcast each message to everyone in that room.",
+          "guides": {
+            "javascript": {
+              "introduction": "Build on the echo server when one client message needs to reach other connected clients. Keep room membership local for a single-process example.",
+              "dependencies": [
+                "ws"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a Node.js ESM project. Save the next section as server.js, then run node server.js. The ws package handles framing and handshake details.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install ws\nnode server.js",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "This server validates a room name during the HTTP upgrade, tracks peers in a Map, and removes them on close. The sender also receives its own broadcast.",
+                  "code": "import { createServer } from 'node:http';\nimport { WebSocket, WebSocketServer } from 'ws';\n\nconst rooms = new Map();\nconst server = createServer();\nconst wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });\nserver.on('upgrade', (request, socket, head) => {\n  const url = new URL(request.url, 'http://localhost');\n  const room = url.searchParams.get('room');\n  if (url.pathname !== '/ws' || !room || !/^[a-z0-9-]{1,32}$/.test(room)) {\n    socket.destroy(); return;\n  }\n  const origin = request.headers.origin;\n  if (origin && origin !== 'http://localhost:4400') { socket.destroy(); return; }\n  wss.handleUpgrade(request, socket, head, (peer) => {\n    if (!rooms.has(room)) rooms.set(room, new Set());\n    const members = rooms.get(room);\n    members.add(peer);\n    peer.on('error', console.error);\n    peer.on('close', () => {\n      members.delete(peer);\n      if (members.size === 0) rooms.delete(room);\n    });\n    peer.on('message', (data, isBinary) => {\n      for (const other of members) {\n        if (other.readyState !== WebSocket.OPEN) continue;\n        if (other.bufferedAmount > 1_000_000) { other.close(1009, 'slow client'); continue; }\n        other.send(data, { binary: isBinary });\n      }\n    });\n  });\n});\nserver.listen(8080, () => console.log('Rooms: ws://localhost:8080/ws?room=updates'));",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page in two browser tabs. Paste the snippet in both; messages appear in the same room only. Change one tab to room=other to see isolation.",
+                  "code": "const room = 'updates';\nconst socket = new WebSocket(`ws://localhost:8080/ws?room=${room}`);\nsocket.addEventListener('open', () => socket.send('hello room'));\nsocket.addEventListener('message', (event) => console.log(room, event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "This in-memory registry works in one server process. For multiple instances, route broadcasts through a broker and define room authorization. Cap room count, queue sizes, and per-client output; a slow peer must not hold other broadcasts indefinitely."
+                }
+              ]
+            },
+            "typescript": {
+              "introduction": "Build on the echo server when one client message needs to reach other connected clients. Keep room membership local for a single-process example.",
+              "dependencies": [
+                "ws",
+                "@types/ws (development)"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a TypeScript ESM project. Save the next section as server.ts. Compile to server.js and run it. @types/ws provides the driver types.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install ws\nnpm install -D typescript @types/node @types/ws\nnpx tsc server.ts --module nodenext --target es2022 --esModuleInterop --types node --skipLibCheck\nnode server.js",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "The typed room map holds connected peers. Validate the room before upgrading and remove peers on close.",
+                  "code": "import { createServer } from 'node:http';\nimport WebSocket, { WebSocketServer } from 'ws';\n\nconst rooms = new Map<string, Set<WebSocket>>();\nconst server = createServer();\nconst wss = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });\nserver.on('upgrade', (request, socket, head) => {\n  const url = new URL(request.url ?? '/', 'http://localhost');\n  const room = url.searchParams.get('room');\n  if (url.pathname !== '/ws' || !room || !/^[a-z0-9-]{1,32}$/.test(room)) {\n    socket.destroy(); return;\n  }\n  const origin = request.headers.origin;\n  if (origin && origin !== 'http://localhost:4400') { socket.destroy(); return; }\n  wss.handleUpgrade(request, socket, head, (peer: WebSocket) => {\n    let members = rooms.get(room);\n    if (!members) { members = new Set<WebSocket>(); rooms.set(room, members); }\n    members.add(peer);\n    peer.on('error', console.error);\n    peer.on('close', () => {\n      members.delete(peer);\n      if (members.size === 0) rooms.delete(room);\n    });\n    peer.on('message', (data: WebSocket.RawData, isBinary: boolean) => {\n      for (const other of members) {\n        if (other.readyState !== WebSocket.OPEN) continue;\n        if (other.bufferedAmount > 1_000_000) { other.close(1009, 'slow client'); continue; }\n        other.send(data, { binary: isBinary });\n      }\n    });\n  });\n});\nserver.listen(8080, () => console.log('Rooms: ws://localhost:8080/ws?room=updates'));",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page in two browser tabs. Paste the snippet in both; messages appear in the same room only. Change one tab to room=other to see isolation.",
+                  "code": "const room = 'updates';\nconst socket = new WebSocket(`ws://localhost:8080/ws?room=${room}`);\nsocket.addEventListener('open', () => socket.send('hello room'));\nsocket.addEventListener('message', (event) => console.log(room, event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "This in-memory registry works in one server process. For multiple instances, route broadcasts through a broker and define room authorization. Cap room count, queue sizes, and per-client output; a slow peer must not hold other broadcasts indefinitely."
+                }
+              ]
+            },
+            "go": {
+              "introduction": "Build on the echo server when one client message needs to reach other connected clients. Keep room membership local for a single-process example.",
+              "dependencies": [
+                "github.com/gorilla/websocket"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a Go module, add the small Gorilla WebSocket driver, save the next section as main.go, and run it. net/http supplies the HTTP server.",
+                  "code": "go mod init example.com/ws-demo\ngo get github.com/gorilla/websocket\ngo run .",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "Use a mutex for room membership and one write mutex per connection. Snapshot the recipients before writing so the global lock is not held during network I/O.",
+                  "code": "package main\n\nimport (\n  \"log\"\n  \"net/http\"\n  \"regexp\"\n  \"sync\"\n  \"time\"\n  \"github.com/gorilla/websocket\"\n)\n\ntype peer struct { conn *websocket.Conn; write sync.Mutex }\nvar rooms = map[string]map[*peer]struct{}{}\nvar roomsMu sync.Mutex\nvar roomName = regexp.MustCompile(`^[a-z0-9-]{1,32}$`)\nvar upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool {\n  origin := r.Header.Get(\"Origin\")\n  return origin == \"\" || origin == \"http://localhost:4400\"\n}}\n\nfunc main() {\n  http.HandleFunc(\"/ws\", func(w http.ResponseWriter, r *http.Request) {\n    room := r.URL.Query().Get(\"room\")\n    if !roomName.MatchString(room) { http.Error(w, \"invalid room\", 400); return }\n    conn, err := upgrader.Upgrade(w, r, nil)\n    if err != nil { return }\n    p := &peer{conn: conn}\n    roomsMu.Lock()\n    if rooms[room] == nil { rooms[room] = map[*peer]struct{}{} }\n    rooms[room][p] = struct{}{}\n    roomsMu.Unlock()\n    defer func() {\n      roomsMu.Lock()\n      delete(rooms[room], p)\n      if len(rooms[room]) == 0 { delete(rooms, room) }\n      roomsMu.Unlock()\n      conn.Close()\n    }()\n    conn.SetReadLimit(64 << 10)\n    for {\n      kind, message, err := conn.ReadMessage()\n      if err != nil { return }\n      roomsMu.Lock()\n      members := make([]*peer, 0, len(rooms[room]))\n      for other := range rooms[room] { members = append(members, other) }\n      roomsMu.Unlock()\n      for _, other := range members {\n        other.write.Lock()\n        other.conn.SetWriteDeadline(time.Now().Add(5 * time.Second))\n        err := other.conn.WriteMessage(kind, message)\n        other.write.Unlock()\n        if err != nil { other.conn.Close() }\n      }\n    }\n  })\n  log.Println(\"Rooms: ws://localhost:8080/ws?room=updates\")\n  log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+                  "language": "go"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page in two browser tabs. Paste the snippet in both; messages appear in the same room only. Change one tab to room=other to see isolation.",
+                  "code": "const room = 'updates';\nconst socket = new WebSocket(`ws://localhost:8080/ws?room=${room}`);\nsocket.addEventListener('open', () => socket.send('hello room'));\nsocket.addEventListener('message', (event) => console.log(room, event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "This in-memory registry works in one server process. For multiple instances, route broadcasts through a broker and define room authorization. Cap room count, queue sizes, and per-client output; a slow peer must not hold other broadcasts indefinitely."
+                }
+              ]
+            },
+            "csharp": {
+              "introduction": "Build on the echo server when one client message needs to reach other connected clients. Keep room membership local for a single-process example.",
+              "dependencies": [],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create an ASP.NET Core empty app, replace Program.cs with the next section, and run it. WebSocket support is part of ASP.NET Core; no NuGet package is needed.",
+                  "code": "dotnet new web -n WsDemo\ncd WsDemo\ndotnet run",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "A concurrent dictionary tracks peers by room. Each peer has a send gate because concurrent sends on one WebSocket are unsupported. The receive loop assembles complete messages before broadcasting.",
+                  "code": "using System.Collections.Concurrent;\nusing System.Net.WebSockets;\nusing System.Text.RegularExpressions;\n\nvar builder = WebApplication.CreateBuilder(args);\nbuilder.WebHost.UseUrls(\"http://localhost:8080\");\nvar app = builder.Build();\nvar options = new WebSocketOptions();\noptions.AllowedOrigins.Add(\"http://localhost:4400\");\napp.UseWebSockets(options);\nvar rooms = new ConcurrentDictionary<string, ConcurrentDictionary<Guid, Peer>>();\napp.Map(\"/ws\", async context =>\n{\n    var room = context.Request.Query[\"room\"].ToString();\n    if (!Regex.IsMatch(room, \"^[a-z0-9-]{1,32}$\") || !context.WebSockets.IsWebSocketRequest)\n    {\n        context.Response.StatusCode = 400;\n        return;\n    }\n    using var socket = await context.WebSockets.AcceptWebSocketAsync();\n    var group = rooms.GetOrAdd(room, _ => new ConcurrentDictionary<Guid, Peer>());\n    var id = Guid.NewGuid();\n    group[id] = new Peer(socket);\n    var buffer = new byte[4096];\n    try\n    {\n        while (socket.State == WebSocketState.Open)\n        {\n            using var message = new MemoryStream();\n            WebSocketReceiveResult result;\n            do\n            {\n                result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), context.RequestAborted);\n                if (result.MessageType == WebSocketMessageType.Close)\n                {\n                    await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, \"bye\", CancellationToken.None);\n                    return;\n                }\n                if (message.Length + result.Count > 64 * 1024)\n                {\n                    await socket.CloseAsync(WebSocketCloseStatus.MessageTooBig, \"message too large\", CancellationToken.None);\n                    return;\n                }\n                message.Write(buffer, 0, result.Count);\n            } while (!result.EndOfMessage);\n\n            var payload = message.ToArray();\n            foreach (var other in group.Values)\n            {\n                await other.SendGate.WaitAsync(context.RequestAborted);\n                try\n                {\n                    if (other.Socket.State == WebSocketState.Open)\n                        await other.Socket.SendAsync(new ArraySegment<byte>(payload),\n                            result.MessageType, true, context.RequestAborted);\n                }\n                catch (WebSocketException) { /* Peer disconnected during send. */ }\n                finally { other.SendGate.Release(); }\n            }\n        }\n    }\n    finally { group.TryRemove(id, out _); }\n});\napp.Run();\n\nsealed class Peer(WebSocket socket)\n{\n    public WebSocket Socket { get; } = socket;\n    public SemaphoreSlim SendGate { get; } = new(1, 1);\n}",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "Open the dev/lib page in two browser tabs. Paste the snippet in both; messages appear in the same room only. Change one tab to room=other to see isolation.",
+                  "code": "const room = 'updates';\nconst socket = new WebSocket(`ws://localhost:8080/ws?room=${room}`);\nsocket.addEventListener('open', () => socket.send('hello room'));\nsocket.addEventListener('message', (event) => console.log(room, event.data));\n// When finished: socket.close();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "This in-memory registry works in one server process. For multiple instances, route broadcasts through a broker and define room authorization. Cap room count, queue sizes, and per-client output; a slow peer must not hold other broadcasts indefinitely."
+                }
+              ]
+            }
+          }
+        },
+        {
+          "slug": "heartbeat",
+          "title": "Heartbeat and reconnect",
+          "summary": "Detect half-open sockets with protocol ping/pong and retry browser connections with bounded backoff.",
+          "guides": {
+            "javascript": {
+              "introduction": "Add liveness detection when connections may silently die behind mobile networks or proxies. The browser demo adds reconnect with capped backoff.",
+              "dependencies": [
+                "ws"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a Node.js ESM project. Save the next section as server.js, then run node server.js. The ws package handles framing and handshake details.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install ws\nnode server.js",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "The server sends a ping every 30 seconds. A missing pong by the next tick causes terminate(); ws and browsers send pong frames automatically.",
+                  "code": "import { WebSocket, WebSocketServer } from 'ws';\n\nconst wss = new WebSocketServer({ port: 8080, path: '/ws', maxPayload: 64 * 1024 });\nconst alive = new WeakMap();\nwss.on('connection', (socket) => {\n  alive.set(socket, true);\n  socket.on('error', console.error);\n  socket.on('pong', () => alive.set(socket, true));\n  socket.on('message', (data, isBinary) => socket.send(data, { binary: isBinary }));\n});\nconst timer = setInterval(() => {\n  for (const socket of wss.clients) {\n    if (!alive.get(socket)) { socket.terminate(); continue; }\n    alive.set(socket, false);\n    if (socket.readyState === WebSocket.OPEN) socket.ping();\n  }\n}, 30_000);\nwss.on('close', () => clearInterval(timer));\nconsole.log('Heartbeat: ws://localhost:8080/ws');",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "A browser replies to protocol ping frames automatically. This small client retries with capped exponential backoff if the connection closes. Call stop() to end the demo.",
+                  "code": "let socket, retryTimer;\nlet stopped = false;\nlet delay = 1000;\nfunction connect() {\n  socket = new WebSocket('ws://localhost:8080/ws');\n  socket.onopen = () => { delay = 1000; socket.send('hello'); };\n  socket.onmessage = (event) => console.log(event.data);\n  socket.onclose = () => {\n    if (!stopped) {\n      retryTimer = setTimeout(connect, delay);\n      delay = Math.min(delay * 2, 30000);\n    }\n  };\n}\nfunction stop() { stopped = true; clearTimeout(retryTimer); socket?.close(); }\nconnect();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Protocol pings are not exposed to browser JavaScript; the browser responds automatically. Retry only while the page still needs updates, add jitter for large fleets, and reload missed data after reconnect because WebSockets do not replay messages."
+                }
+              ]
+            },
+            "typescript": {
+              "introduction": "Add liveness detection when connections may silently die behind mobile networks or proxies. The browser demo adds reconnect with capped backoff.",
+              "dependencies": [
+                "ws",
+                "@types/ws (development)"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a TypeScript ESM project. Save the next section as server.ts. Compile to server.js and run it. @types/ws provides the driver types.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install ws\nnpm install -D typescript @types/node @types/ws\nnpx tsc server.ts --module nodenext --target es2022 --esModuleInterop --types node --skipLibCheck\nnode server.js",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "Keep liveness state in a WeakMap. A pong restores the peer to alive; a missing pong on the next check terminates the socket.",
+                  "code": "import WebSocket, { WebSocketServer } from 'ws';\n\nconst wss = new WebSocketServer({ port: 8080, path: '/ws', maxPayload: 64 * 1024 });\nconst alive = new WeakMap<WebSocket, boolean>();\nwss.on('connection', (socket: WebSocket) => {\n  alive.set(socket, true);\n  socket.on('error', console.error);\n  socket.on('pong', () => alive.set(socket, true));\n  socket.on('message', (data: WebSocket.RawData, isBinary: boolean) => socket.send(data, { binary: isBinary }));\n});\nconst timer = setInterval(() => {\n  for (const socket of wss.clients) {\n    if (!alive.get(socket)) { socket.terminate(); continue; }\n    alive.set(socket, false);\n    if (socket.readyState === WebSocket.OPEN) socket.ping();\n  }\n}, 30_000);\nwss.on('close', () => clearInterval(timer));\nconsole.log('Heartbeat: ws://localhost:8080/ws');",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "A browser replies to protocol ping frames automatically. This small client retries with capped exponential backoff if the connection closes. Call stop() to end the demo.",
+                  "code": "let socket, retryTimer;\nlet stopped = false;\nlet delay = 1000;\nfunction connect() {\n  socket = new WebSocket('ws://localhost:8080/ws');\n  socket.onopen = () => { delay = 1000; socket.send('hello'); };\n  socket.onmessage = (event) => console.log(event.data);\n  socket.onclose = () => {\n    if (!stopped) {\n      retryTimer = setTimeout(connect, delay);\n      delay = Math.min(delay * 2, 30000);\n    }\n  };\n}\nfunction stop() { stopped = true; clearTimeout(retryTimer); socket?.close(); }\nconnect();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Protocol pings are not exposed to browser JavaScript; the browser responds automatically. Retry only while the page still needs updates, add jitter for large fleets, and reload missed data after reconnect because WebSockets do not replay messages."
+                }
+              ]
+            },
+            "go": {
+              "introduction": "Add liveness detection when connections may silently die behind mobile networks or proxies. The browser demo adds reconnect with capped backoff.",
+              "dependencies": [
+                "github.com/gorilla/websocket"
+              ],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create a Go module, add the small Gorilla WebSocket driver, save the next section as main.go, and run it. net/http supplies the HTTP server.",
+                  "code": "go mod init example.com/ws-demo\ngo get github.com/gorilla/websocket\ngo run .",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "A ping goroutine sends control frames. The read loop processes pongs, and the pong handler extends a 45-second read deadline. WriteControl is safe beside one regular writer.",
+                  "code": "package main\n\nimport (\n  \"log\"\n  \"net/http\"\n  \"time\"\n  \"github.com/gorilla/websocket\"\n)\n\nvar upgrader = websocket.Upgrader{CheckOrigin: func(r *http.Request) bool {\n  origin := r.Header.Get(\"Origin\")\n  return origin == \"\" || origin == \"http://localhost:4400\"\n}}\n\nfunc main() {\n  http.HandleFunc(\"/ws\", func(w http.ResponseWriter, r *http.Request) {\n    conn, err := upgrader.Upgrade(w, r, nil)\n    if err != nil { return }\n    defer conn.Close()\n    conn.SetReadLimit(64 << 10)\n    conn.SetReadDeadline(time.Now().Add(45 * time.Second))\n    conn.SetPongHandler(func(string) error {\n      return conn.SetReadDeadline(time.Now().Add(45 * time.Second))\n    })\n    done := make(chan struct{})\n    ticker := time.NewTicker(30 * time.Second)\n    defer ticker.Stop()\n    defer close(done)\n    go func() {\n      for {\n        select {\n        case <-done: return\n        case <-ticker.C:\n          if err := conn.WriteControl(websocket.PingMessage, nil,\n            time.Now().Add(5 * time.Second)); err != nil { conn.Close(); return }\n        }\n      }\n    }()\n    for {\n      kind, data, err := conn.ReadMessage() // Reads process pong frames too.\n      if err != nil { return }\n      if err := conn.WriteMessage(kind, data); err != nil { return }\n    }\n  })\n  log.Println(\"Heartbeat: ws://localhost:8080/ws\")\n  log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+                  "language": "go"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "A browser replies to protocol ping frames automatically. This small client retries with capped exponential backoff if the connection closes. Call stop() to end the demo.",
+                  "code": "let socket, retryTimer;\nlet stopped = false;\nlet delay = 1000;\nfunction connect() {\n  socket = new WebSocket('ws://localhost:8080/ws');\n  socket.onopen = () => { delay = 1000; socket.send('hello'); };\n  socket.onmessage = (event) => console.log(event.data);\n  socket.onclose = () => {\n    if (!stopped) {\n      retryTimer = setTimeout(connect, delay);\n      delay = Math.min(delay * 2, 30000);\n    }\n  };\n}\nfunction stop() { stopped = true; clearTimeout(retryTimer); socket?.close(); }\nconnect();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Protocol pings are not exposed to browser JavaScript; the browser responds automatically. Retry only while the page still needs updates, add jitter for large fleets, and reload missed data after reconnect because WebSockets do not replay messages."
+                }
+              ]
+            },
+            "csharp": {
+              "introduction": "Add liveness detection when connections may silently die behind mobile networks or proxies. The browser demo adds reconnect with capped backoff.",
+              "dependencies": [],
+              "sections": [
+                {
+                  "heading": "Prepare the project",
+                  "body": "Create an ASP.NET Core empty app, replace Program.cs with the next section, and run it. WebSocket support is part of ASP.NET Core; no NuGet package is needed. Use the .NET 10 SDK for KeepAliveTimeout.",
+                  "code": "dotnet new web -n WsDemo\ncd WsDemo\ndotnet run",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Run the server",
+                  "body": "On .NET 10, KeepAliveInterval sends protocol pings and KeepAliveTimeout aborts a connection that does not answer. The receive loop still handles application messages.",
+                  "code": "using System.Net.WebSockets;\n\nvar builder = WebApplication.CreateBuilder(args);\nbuilder.WebHost.UseUrls(\"http://localhost:8080\");\nvar app = builder.Build();\nvar options = new WebSocketOptions\n{\n    KeepAliveInterval = TimeSpan.FromSeconds(30),\n    KeepAliveTimeout = TimeSpan.FromSeconds(15)\n};\noptions.AllowedOrigins.Add(\"http://localhost:4400\");\napp.UseWebSockets(options);\napp.Map(\"/ws\", async context =>\n{\n    if (!context.WebSockets.IsWebSocketRequest)\n    {\n        context.Response.StatusCode = 400;\n        return;\n    }\n    using var socket = await context.WebSockets.AcceptWebSocketAsync();\n    var buffer = new byte[4096];\n    try\n    {\n    while (socket.State == WebSocketState.Open)\n    {\n        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), context.RequestAborted);\n        if (result.MessageType == WebSocketMessageType.Close)\n        {\n            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, \"bye\", CancellationToken.None);\n            break;\n        }\n        await socket.SendAsync(new ArraySegment<byte>(buffer, 0, result.Count),\n            result.MessageType, result.EndOfMessage, context.RequestAborted);\n    }\n    }\n    catch (WebSocketException) { /* Missed pong or disconnected peer. */ }\n});\napp.Run();",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Try the connection",
+                  "body": "A browser replies to protocol ping frames automatically. This small client retries with capped exponential backoff if the connection closes. Call stop() to end the demo.",
+                  "code": "let socket, retryTimer;\nlet stopped = false;\nlet delay = 1000;\nfunction connect() {\n  socket = new WebSocket('ws://localhost:8080/ws');\n  socket.onopen = () => { delay = 1000; socket.send('hello'); };\n  socket.onmessage = (event) => console.log(event.data);\n  socket.onclose = () => {\n    if (!stopped) {\n      retryTimer = setTimeout(connect, delay);\n      delay = Math.min(delay * 2, 30000);\n    }\n  };\n}\nfunction stop() { stopped = true; clearTimeout(retryTimer); socket?.close(); }\nconnect();",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Production notes",
+                  "body": "Protocol pings are not exposed to browser JavaScript; the browser responds automatically. Retry only while the page still needs updates, add jitter for large fleets, and reload missed data after reconnect because WebSockets do not replay messages."
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "sources": [
+        {
+          "label": "ws server and heartbeat examples",
+          "url": "https://github.com/websockets/ws/blob/master/README.md"
+        },
+        {
+          "label": "ws API",
+          "url": "https://github.com/websockets/ws/blob/master/doc/ws.md"
+        },
+        {
+          "label": "Gorilla WebSocket package",
+          "url": "https://pkg.go.dev/github.com/gorilla/websocket"
+        },
+        {
+          "label": "ASP.NET Core WebSockets",
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/fundamentals/websockets?view=aspnetcore-10.0"
+        },
+        {
+          "label": "Browser WebSocket client",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_client_applications"
+        }
+      ]
+    }
+  }
+]

@@ -7,21 +7,28 @@
       <p>{{ error() }}</p>
     </div>
   } @else if (details(); as entry) {
-    <div class="page-toolbar">
-      <a class="back" [routerLink]="entry.catalog.type === 'component' ? '/components' : '/features'">
-        ← Back to {{ entry.catalog.type === 'component' ? 'components' : 'features' }}
-      </a>
-      @if (entry.catalog.type === 'feature' && entry.content.sections.length) {
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-label="Open session menu"
-          aria-controls="mobile-session-menu"
-          [attr.aria-expanded]="menuOpen()"
-          (click)="menuOpen.set(true)"
-        >
-          <span></span><span></span><span></span>
-        </button>
+    <div class="page-toolbar" [class.page-toolbar--feature]="entry.catalog.type === 'feature'"
+      [class.page-toolbar--component]="entry.catalog.type === 'component'">
+      <app-back-link [target]="entry.catalog.type === 'component' ? '/components' : '/features'"
+        [label]="'Back to ' + (entry.catalog.type === 'component' ? 'components' : 'features')" />
+      @if (entry.catalog.type === 'feature') {
+        <div class="mobile-doc-controls">
+          @if (entry.content.feature; as feature) {
+            <button class="variant-trigger" type="button" aria-label="Choose feature variant"
+              aria-controls="mobile-variant-menu" [attr.aria-expanded]="variantMenuOpen()"
+              (click)="variantMenuOpen.set(true)">
+              <span>{{ variant()?.title || feature.variants[0]?.title || 'Variant' }}</span>
+              <span aria-hidden="true">⌄</span>
+            </button>
+          }
+          @if (sections().length) {
+            <button class="menu-toggle" type="button" aria-label="Open section menu"
+              aria-controls="mobile-session-menu" [attr.aria-expanded]="menuOpen()"
+              (click)="menuOpen.set(true)">
+              <span></span><span></span><span></span>
+            </button>
+          }
+        </div>
       }
     </div>
 
@@ -38,16 +45,25 @@
           <p>{{ entry.content.overview }}</p>
         </header>
 
-        @if (entry.content.dependencies.length) {
+        @if (entry.content.feature) {
+          @if (variant(); as selectedVariant) {
+            <p class="variant-summary">{{ selectedVariant.summary }}</p>
+          }
+          @if (guide(); as selectedGuide) {
+            <p class="guide-introduction">{{ selectedGuide.introduction }}</p>
+          }
+        }
+
+        @if (guide()?.dependencies?.length || entry.content.dependencies.length) {
           <aside class="dependencies">
             <span>Dependencies</span>
-            <code>{{ entry.content.dependencies.join(', ') }}</code>
+            <code>{{ (guide()?.dependencies ?? entry.content.dependencies).join(', ') }}</code>
           </aside>
         }
 
         <div class="content-layout">
           <div class="sections">
-            @for (section of entry.content.sections; track section.heading; let index = $index) {
+            @for (section of highlightedSections(); track section.heading; let index = $index) {
               <section #contentSection [attr.id]="'section-' + index" [attr.data-index]="index">
                 <span class="section-number">{{ (index + 1).toString().padStart(2, '0') }}</span>
                 <div>
@@ -55,8 +71,14 @@
                   <p>{{ section.body }}</p>
                   @if (section.code) {
                     <div class="code-block">
-                      <span>{{ section.language || 'text' }}</span>
-                      <pre><code>{{ section.code }}</code></pre>
+                      <div class="code-block__header">
+                        <span>{{ section.language || 'text' }}</span>
+                        <button type="button" [attr.aria-label]="copyStatus()?.section === index ? (copyStatus()?.state === 'copied' ? 'Code copied' : 'Copy failed') : 'Copy ' + (section.language || 'text') + ' code'"
+                          aria-live="polite" (click)="copyCode(section, index)">
+                          {{ copyStatus()?.section === index ? (copyStatus()?.state === 'copied' ? 'Copied!' : 'Copy failed') : 'Copy' }}
+                        </button>
+                      </div>
+                      <pre><code class="hljs" [innerHTML]="section.highlightedCode"></code></pre>
                     </div>
                   }
                 </div>
@@ -64,31 +86,84 @@
             }
           </div>
 
-          <aside class="section-nav section-nav--desktop" aria-label="Sections on this page">
-            <span class="section-nav__title">On this page</span>
-            <nav>
-              @for (section of entry.content.sections; track section.heading; let index = $index) {
-                <a
-                  [routerLink]="['/entry', slug]"
-                  [fragment]="'section-' + index"
-                  [class.section-nav__link--active]="activeSection() === index"
-                >
-                  <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
-                  {{ section.heading }}
-                </a>
-              }
-            </nav>
+          <aside class="detail-sidebar" aria-label="Feature navigation">
+            @if (entry.content.feature; as feature) {
+              <div class="variant-nav">
+                <span class="section-nav__title">Variants</span>
+                <nav aria-label="Feature variants">
+                  @for (option of feature.variants; track option.slug) {
+                    <button type="button" [class.variant-nav__active]="activeVariant() === option.slug"
+                      [attr.aria-current]="activeVariant() === option.slug ? 'true' : null"
+                      (click)="selectVariant(option.slug)">
+                      <span class="variant-nav__mark" aria-hidden="true">{{ activeVariant() === option.slug ? '◆' : '↳' }}</span>
+                      <span><strong>{{ option.title }}</strong><small>{{ option.slug === feature.variants[0]?.slug ? 'Default' : 'Variant' }}</small></span>
+                    </button>
+                  }
+                </nav>
+                <label class="language-picker">
+                  <span>Language</span>
+                  <select [value]="activeLanguage()" (change)="onLanguageChange($event)">
+                    @for (language of languages; track language.id) {
+                      <option [value]="language.id">{{ language.label }}</option>
+                    }
+                  </select>
+                </label>
+              </div>
+            }
+            <div class="section-nav">
+              <span class="section-nav__title">On this page</span>
+              <nav aria-label="Sections on this page">
+                @for (section of sections(); track section.heading; let index = $index) {
+                  <a
+                    [routerLink]="['/entry', slug]"
+                    [fragment]="'section-' + index"
+                    [class.section-nav__link--active]="activeSection() === index"
+                  >
+                    <span>{{ (index + 1).toString().padStart(2, '0') }}</span>
+                    {{ section.heading }}
+                  </a>
+                }
+              </nav>
+            </div>
           </aside>
         </div>
 
-        <div class="mobile-menu-backdrop" [class.mobile-menu-backdrop--open]="menuOpen()" (click)="closeMenu()"></div>
-        <aside id="mobile-session-menu" class="mobile-session-menu" [class.mobile-session-menu--open]="menuOpen()" [attr.aria-hidden]="!menuOpen()" aria-label="Sessions">
+        <div class="mobile-menu-backdrop" [class.mobile-menu-backdrop--open]="menuOpen() || variantMenuOpen()" (click)="closeMenu()"></div>
+        @if (entry.content.feature; as feature) {
+          <aside id="mobile-variant-menu" class="mobile-doc-menu mobile-doc-menu--left"
+            [class.mobile-doc-menu--open]="variantMenuOpen()" [attr.aria-hidden]="!variantMenuOpen()"
+            [attr.inert]="!variantMenuOpen() ? '' : null" aria-label="Feature variants">
+            <div class="mobile-doc-menu__header">
+              <span>Variants</span>
+              <button type="button" aria-label="Close variants menu" (click)="closeMenu()">×</button>
+            </div>
+            <label class="language-picker">
+              <span>Language</span>
+              <select [value]="activeLanguage()" (change)="onLanguageChange($event)">
+                @for (language of languages; track language.id) {
+                  <option [value]="language.id">{{ language.label }}</option>
+                }
+              </select>
+            </label>
+            <nav>
+              @for (option of feature.variants; track option.slug) {
+                <button type="button" [class.mobile-doc-menu__active]="activeVariant() === option.slug"
+                  [attr.aria-current]="activeVariant() === option.slug ? 'true' : null"
+                  (click)="selectVariant(option.slug)">
+                  <strong>{{ option.title }}</strong>
+                  <small>{{ option.slug === feature.variants[0]?.slug ? 'Default' : 'Variant' }}</small>
+                </button>
+              }
+            </nav>
+          </aside>
+        }
+        <aside id="mobile-session-menu" class="mobile-doc-menu mobile-doc-menu--right" [class.mobile-doc-menu--open]="menuOpen()" [attr.aria-hidden]="!menuOpen()" [attr.inert]="!menuOpen() ? '' : null" aria-label="Sections">
           <div class="mobile-session-menu__header">
-            <span>Sessions</span>
-            <button type="button" aria-label="Close session menu" (click)="closeMenu()">×</button>
+            <span>On this page</span>
+            <button type="button" aria-label="Close sections menu" (click)="closeMenu()">×</button>
           </div>
           <nav>
-            @for (section of entry.content.sections; track section.heading; let index = $index) {
+            @for (section of sections(); track section.heading; let index = $index) {
               <a
                 [routerLink]="['/entry', slug]"
                 [fragment]="'section-' + index"
@@ -101,6 +176,14 @@
             }
           </nav>
         </aside>
+        @if (entry.content.feature?.sources?.length) {
+          <aside class="feature-sources">
+            <h2>Driver references</h2>
+            @for (source of entry.content.feature!.sources; track source.url) {
+              <a [href]="source.url" target="_blank" rel="noopener noreferrer">{{ source.label }} ↗</a>
+            }
+          </aside>
+        }
       </article>
     }
   }

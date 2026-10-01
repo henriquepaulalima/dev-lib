@@ -6,7 +6,8 @@ import {
   FEATURE_MODEL,
   StoredEntryDocument,
   StoredSection,
-  StoredComponentContent
+  StoredComponentContent,
+  StoredFeatureContent
 } from '../storage/schemas/stored-entry.schema';
 
 export interface LibraryContentView {
@@ -15,6 +16,7 @@ export interface LibraryContentView {
   sections: StoredSection[];
   dependencies: string[];
   component?: StoredComponentContent;
+  feature?: StoredFeatureContent;
 }
 
 @Injectable()
@@ -29,7 +31,7 @@ export class LibraryService {
   async findBySlug(slug: string): Promise<LibraryContentView> {
     const [component, feature] = await Promise.all([
       this.componentModel.findOne({ slug }).select('-_id slug overview sections dependencies component').lean<LibraryContentView>().exec(),
-      this.featureModel.findOne({ slug }).select('-_id slug overview sections dependencies component').lean<LibraryContentView>().exec()
+      this.featureModel.findOne({ slug }).select('-_id slug overview sections dependencies feature').lean<LibraryContentView>().exec()
     ]);
     const content = component ?? feature;
 

@@ -115,20 +115,38 @@ The preview runs the exact `source` values in an isolated iframe. Do not maintai
 
 ## Feature content
 
-Features remain article-like and use ordered sections:
+Features use variants for meaningful backend alternatives. Each variant has a guide for every supported runtime, so the language tabs can switch the entire explanation and code together. Put the default variant first (`postgresql` for the database connection entry). Add official driver references in `sources`.
 
 ```json
 {
-  "sections": [
-    {
-      "heading": "Approach",
-      "body": "Explain the important decisions and tradeoffs.",
-      "language": "typescript",
-      "code": "export function example() {}"
-    }
-  ]
+  "sections": [],
+  "feature": {
+    "variants": [{
+      "slug": "postgresql",
+      "title": "PostgreSQL",
+      "summary": "What this alternative provides.",
+      "guides": {
+        "javascript": {
+          "introduction": "Runtime-specific approach.",
+          "dependencies": ["pg"],
+          "sections": [{
+            "heading": "Connect",
+            "body": "Explain setup and cleanup.",
+            "language": "javascript",
+            "code": "// Direct driver example"
+          }]
+        },
+        "typescript": { "introduction": "...", "dependencies": [], "sections": [] },
+        "go": { "introduction": "...", "dependencies": [], "sections": [] },
+        "csharp": { "introduction": "...", "dependencies": [], "sections": [] }
+      }
+    }],
+    "sources": [{ "label": "Official driver documentation", "url": "https://example.com" }]
+  }
 }
 ```
+
+Author real sections from installation and first connection through basic reads/writes, advanced queries, and pool or client configuration. Keep credentials in environment variables. The top-level `sections` field is retained for older articles, but new feature guides belong under `feature.variants[].guides`.
 
 ## Load changes
 

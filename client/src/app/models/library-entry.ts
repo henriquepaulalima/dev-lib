@@ -23,6 +23,26 @@ export interface ContentSection {
   language?: string;
 }
 
+export type FeatureLanguage = 'javascript' | 'typescript' | 'go' | 'csharp';
+
+export interface FeatureGuide {
+  introduction: string;
+  dependencies: string[];
+  sections: ContentSection[];
+}
+
+export interface FeatureVariant {
+  slug: string;
+  title: string;
+  summary: string;
+  guides: Record<FeatureLanguage, FeatureGuide>;
+}
+
+export interface FeatureContent {
+  variants: FeatureVariant[];
+  sources: { label: string; url: string }[];
+}
+
 export interface ComponentExampleSource {
   html: string;
   css: string;
@@ -86,6 +106,7 @@ export interface LibraryContent {
   sections: ContentSection[];
   dependencies: string[];
   component?: ComponentContent;
+  feature?: FeatureContent;
 }
 
 export interface EntryDetails {

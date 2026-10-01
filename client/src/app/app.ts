@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
 import { SearchDialog } from './components/search-dialog/search-dialog';
 
 @Component({
   selector: 'app-root',
   imports: [RouterLink, RouterLinkActive, RouterOutlet, SearchDialog],
   template: `
-    <header class="site-header">
+    <header class="site-header" [class.site-header--hidden]="isDetailPage()">
       <a class="brand" routerLink="/" aria-label="Dev Lib home">
         <span class="brand__mark" aria-hidden="true">&lt;/&gt;</span>
         <span class="brand__name">dev/lib</span>
@@ -82,10 +84,24 @@ import { SearchDialog } from './components/search-dialog/search-dialog';
       .site-header { gap: 0.65rem; }
       .brand__name { display: none; }
       nav { gap: 0; }
-      nav a { font-size: 0.7rem; padding-inline: 0.5rem; }
+      nav a { font-size: 0.82rem; min-height: 2.75rem; padding: 0.7rem 0.75rem; }
+    }
+
+    @media (max-width: 700px) {
+      .site-header--hidden { display: none; }
     }
 
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class App {}
+export class App {
+  private readonly router = inject(Router);
+  readonly isDetailPage = signal(this.router.url.startsWith('/entry/'));
+
+  constructor() {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe((event) => this.isDetailPage.set(event.urlAfterRedirects.startsWith('/entry/')));
+  }
+}

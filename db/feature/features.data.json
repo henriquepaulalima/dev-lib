@@ -1,39 +1,320 @@
 [
   {
-    "slug": "crud-service-boundaries",
+    "slug": "database-connection",
     "type": "feature",
-    "title": "CRUD service boundaries",
-    "summary": "A backend pattern that keeps transport, validation, business rules, and persistence independently testable.",
-    "tags": ["nestjs", "architecture", "crud"],
-    "overview": "A CRUD feature is most reusable when HTTP concerns stop at the controller and persistence details stop at the repository boundary.",
+    "title": "Database connection",
+    "summary": "Connect to PostgreSQL or MongoDB with native drivers in JavaScript, TypeScript, Go, and C#.",
+    "tags": [
+      "database",
+      "postgresql",
+      "mongodb",
+      "backend"
+    ],
+    "overview": "Start with a reliable connection, then add safe reads and writes, bounded queries, pooling, indexes, and production configuration. Examples use direct driver APIs with no ORM.",
     "dependencies": [],
-    "sections": [
-      {
-        "heading": "Flow",
-        "body": "Controller → application service → repository. Domain decisions belong in the application service; request parsing and response codes belong in the controller."
-      },
-      {
-        "heading": "Contract first",
-        "body": "Define the smallest repository interface the use case needs. This makes the logic portable across MongoDB, SQL, or an in-memory test double.",
-        "language": "typescript",
-        "code": "export interface ItemRepository {\n  findById(id: string): Promise<Item | null>;\n  save(item: Item): Promise<Item>;\n  remove(id: string): Promise<boolean>;\n}"
-      },
-      {
-        "heading": "Validate at the boundary",
-        "body": "Treat transport input as untrusted. Validate shape and primitive constraints before calling the application service, then enforce business invariants inside the service where every transport can share them.",
-        "language": "typescript",
-        "code": "async create(input: CreateItemInput): Promise<Item> {\n  const duplicate = await this.items.findByName(input.name);\n  if (duplicate) throw new ItemNameTakenError(input.name);\n  return this.items.save(Item.create(input));\n}"
-      },
-      {
-        "heading": "Map errors intentionally",
-        "body": "Domain and application errors should not know about HTTP. Translate known errors at the controller or an exception-filter boundary, and avoid leaking database error messages to callers.",
-        "language": "typescript",
-        "code": "try {\n  return await this.createItem.execute(body);\n} catch (error) {\n  if (error instanceof ItemNameTakenError) {\n    throw new ConflictException(error.message);\n  }\n  throw error;\n}"
-      },
-      {
-        "heading": "Test through ports",
-        "body": "Exercise application behavior with an in-memory repository that implements the same contract. Keep separate integration tests for the real persistence adapter and a small end-to-end test for transport mapping."
-      }
-    ]
+    "sections": [],
+    "feature": {
+      "variants": [
+        {
+          "slug": "postgresql",
+          "title": "PostgreSQL",
+          "summary": "Relational tables, SQL queries, transactions, and an explicit connection pool.",
+          "guides": {
+            "javascript": {
+              "introduction": "Node.js ESM with the pg driver. Keep one Pool for the process; a Pool owns reusable connections.",
+              "dependencies": [
+                "pg"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Create a database and provide DATABASE_URL through your environment. The sample table stores a unique email and a display name. Run the SQL once with psql or a migration.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install pg\npsql \"$DATABASE_URL\" <<'SQL'\nCREATE TABLE IF NOT EXISTS users (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL UNIQUE,\n  name text NOT NULL\n);\nSQL",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "Create one Pool at startup. Parameter placeholders keep values separate from SQL. End the pool during shutdown; do not end it after every request.",
+                  "code": "import pg from 'pg';\nconst { Pool } = pg;\nconst pool = new Pool({ connectionString: process.env.DATABASE_URL });\n\ntry {\n  const health = await pool.query('SELECT 1');\n  const inserted = await pool.query(\n    'INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id, email, name',\n    ['ada@example.test', 'Ada']\n  );\n  console.log(health.rows[0], inserted.rows[0]);\n  const found = await pool.query('SELECT id, email, name FROM users WHERE id = $1', [inserted.rows[0].id]);\n  console.log(found.rows[0]);\n} finally {\n  await pool.end();\n}",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "Use parameterized filters, bounded pages, and a checked-out client for transactions. Release that client in finally.",
+                  "code": "const list = await pool.query(\n  'SELECT id, email, name FROM users WHERE name ILIKE $1 ORDER BY id LIMIT $2 OFFSET $3',\n  ['A%', 20, 0]\n);\nconst client = await pool.connect();\ntry {\n  await client.query('BEGIN');\n  await client.query('UPDATE users SET name = $1 WHERE id = $2', ['Ada Lovelace', 1]);\n  await client.query('DELETE FROM users WHERE id = $1', [2]);\n  await client.query('COMMIT');\n} catch (error) {\n  await client.query('ROLLBACK');\n  throw error;\n} finally {\n  client.release();\n}",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Configure the pool",
+                  "body": "Set a connection limit and timeouts that fit your deployment. In production, use the server certificate and a verified TLS configuration; keep credentials outside source control.",
+                  "code": "const pool = new Pool({\n  connectionString: process.env.DATABASE_URL,\n  max: 10,\n  connectionTimeoutMillis: 5_000,\n  idleTimeoutMillis: 30_000\n});\npool.on('error', (error) => console.error('Idle PostgreSQL client failed', error));",
+                  "language": "javascript"
+                }
+              ]
+            },
+            "typescript": {
+              "introduction": "Node.js with TypeScript and the pg driver. Types describe result rows while SQL remains explicit.",
+              "dependencies": [
+                "pg",
+                "@types/pg (development)",
+                "typescript (development)"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Initialize a TypeScript project and create the users table shown in the JavaScript tab. Supply DATABASE_URL at runtime.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install pg\nnpm install -D typescript @types/node @types/pg\nnpx tsc --init --module nodenext --target es2022\npsql \"$DATABASE_URL\" <<'SQL'\nCREATE TABLE IF NOT EXISTS users (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL UNIQUE,\n  name text NOT NULL\n);\nSQL",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "One Pool serves the application. Use a typed result row and positional parameters.",
+                  "code": "import { Pool } from 'pg';\n\ntype User = { id: string; email: string; name: string }; // bigint is returned as text by default\nconst pool = new Pool({ connectionString: process.env['DATABASE_URL'] });\ntry {\n  const created = await pool.query<User>(\n    'INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id, email, name',\n    ['ada@example.test', 'Ada']\n  );\n  const user = await pool.query<User>(\n    'SELECT id, email, name FROM users WHERE id = $1', [created.rows[0].id]\n  );\n  console.log(user.rows[0]);\n} finally {\n  await pool.end();\n}",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "Use an ordered, limited page; use the same checked-out client for each statement in a transaction.",
+                  "code": "const page = await pool.query<User>(\n  'SELECT id, email, name FROM users WHERE name ILIKE $1 ORDER BY id LIMIT $2',\n  ['A%', 20]\n);\nconst client = await pool.connect();\ntry {\n  await client.query('BEGIN');\n  await client.query('UPDATE users SET name = $1 WHERE id = $2', ['Ada Lovelace', page.rows[0].id]);\n  await client.query('COMMIT');\n} catch (error) {\n  await client.query('ROLLBACK');\n  throw error;\n} finally {\n  client.release();\n}",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Configure the pool",
+                  "body": "Size the pool for the database connection budget. Handle errors from idle clients and close the pool at shutdown.",
+                  "code": "const pool = new Pool({\n  connectionString: process.env['DATABASE_URL'],\n  max: 10,\n  connectionTimeoutMillis: 5_000,\n  idleTimeoutMillis: 30_000\n});\npool.on('error', (error: Error) => console.error(error));",
+                  "language": "typescript"
+                }
+              ]
+            },
+            "go": {
+              "introduction": "Go with pgx/v5/pgxpool. pgxpool is safe to share between goroutines and supports context cancellation.",
+              "dependencies": [
+                "github.com/jackc/pgx/v5/pgxpool"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Create a Go module, add pgx, and create the users table from the JavaScript tab. Export DATABASE_URL before running.",
+                  "code": "go mod init example.com/db-demo\ngo get github.com/jackc/pgx/v5/pgxpool\npsql \"$DATABASE_URL\" <<'SQL'\nCREATE TABLE IF NOT EXISTS users (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL UNIQUE,\n  name text NOT NULL\n);\nSQL",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "Construct the pool once, verify it with Ping, and close it at shutdown. QueryRow reports errors when Scan runs.",
+                  "code": "package main\n\nimport (\n  \"context\"\n  \"fmt\"\n  \"log\"\n  \"os\"\n  \"github.com/jackc/pgx/v5/pgxpool\"\n)\n\nfunc main() {\n  ctx := context.Background()\n  pool, err := pgxpool.New(ctx, os.Getenv(\"DATABASE_URL\"))\n  if err != nil { log.Fatal(err) }\n  defer pool.Close()\n  if err := pool.Ping(ctx); err != nil { log.Fatal(err) }\n\n  var id int64\n  err = pool.QueryRow(ctx,\n    \"INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id\",\n    \"ada@example.test\", \"Ada\",\n  ).Scan(&id)\n  if err != nil { log.Fatal(err) }\n  var email, name string\n  err = pool.QueryRow(ctx, \"SELECT email, name FROM users WHERE id = $1\", id).Scan(&email, &name)\n  if err != nil { log.Fatal(err) }\n  fmt.Println(id, email, name)\n}",
+                  "language": "go"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "The fragment below belongs inside a function returning error. Close rows and check rows.Err after iteration. A transaction must commit or roll back before reuse.",
+                  "code": "rows, err := pool.Query(ctx,\n  \"SELECT id, email FROM users WHERE name ILIKE $1 ORDER BY id LIMIT $2\", \"A%\", 20)\nif err != nil { return err }\ndefer rows.Close()\nfor rows.Next() {\n  var id int64\n  var email string\n  if err := rows.Scan(&id, &email); err != nil { return err }\n  fmt.Println(id, email)\n}\nif err := rows.Err(); err != nil { return err }\ntx, err := pool.Begin(ctx)\nif err != nil { return err }\ndefer tx.Rollback(ctx)\n_, err = tx.Exec(ctx, \"UPDATE users SET name = $1 WHERE id = $2\", \"Ada Lovelace\", 1)\nif err != nil { return err }\nreturn tx.Commit(ctx)",
+                  "language": "go"
+                },
+                {
+                  "heading": "Configure the pool",
+                  "body": "The fragment below belongs inside a function returning error. Parse the URI to set pool bounds. Use request-scoped contexts with deadlines in real handlers.",
+                  "code": "config, err := pgxpool.ParseConfig(os.Getenv(\"DATABASE_URL\"))\nif err != nil { return err }\nconfig.MaxConns = 10\nconfig.MinConns = 1\npool, err := pgxpool.NewWithConfig(ctx, config)\nif err != nil { return err }\ndefer pool.Close()",
+                  "language": "go"
+                }
+              ]
+            },
+            "csharp": {
+              "introduction": "C# with Npgsql. Build one NpgsqlDataSource for the application and use parameterized commands.",
+              "dependencies": [
+                "Npgsql"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Create a console app, install Npgsql, and create the users table. Set DATABASE_URL to an Npgsql connection string such as Host=localhost;Database=app;Username=app;Password=... . Adjust the psql host, user, and database to match.",
+                  "code": "dotnet new console -n DbDemo\ncd DbDemo\ndotnet add package Npgsql\npsql -h localhost -U app -d app <<'SQL'\nCREATE TABLE IF NOT EXISTS users (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  email text NOT NULL UNIQUE,\n  name text NOT NULL\n);\nSQL",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "A data source manages a pool. Positional placeholders keep values out of SQL text.",
+                  "code": "using Npgsql;\n\nvar connectionString = Environment.GetEnvironmentVariable(\"DATABASE_URL\")\n    ?? throw new InvalidOperationException(\"DATABASE_URL is required\");\nawait using var dataSource = NpgsqlDataSource.Create(connectionString);\nawait using (var create = dataSource.CreateCommand(\n    \"INSERT INTO users (email, name) VALUES ($1, $2) RETURNING id\"))\n{\n    create.Parameters.AddWithValue(\"email\", \"ada@example.test\");\n    create.Parameters.AddWithValue(\"name\", \"Ada\");\n    var id = (long)(await create.ExecuteScalarAsync())!;\n    await using var find = dataSource.CreateCommand(\"SELECT name FROM users WHERE id = $1\");\n    find.Parameters.AddWithValue(\"id\", id);\n    Console.WriteLine(await find.ExecuteScalarAsync());\n}",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "Use a reader for multiple rows. Use one opened connection and its transaction for related writes.",
+                  "code": "await using (var list = dataSource.CreateCommand(\n    \"SELECT id, email FROM users WHERE name ILIKE $1 ORDER BY id LIMIT $2\"))\n{\n    list.Parameters.AddWithValue(\"prefix\", \"A%\");\n    list.Parameters.AddWithValue(\"limit\", 20);\n    await using var reader = await list.ExecuteReaderAsync();\n    while (await reader.ReadAsync())\n        Console.WriteLine($\"{reader.GetInt64(0)} {reader.GetString(1)}\");\n}\nawait using var connection = await dataSource.OpenConnectionAsync();\nawait using var tx = await connection.BeginTransactionAsync();\ntry\n{\n    await using var update = new NpgsqlCommand(\n        \"UPDATE users SET name = $1 WHERE id = $2\", connection, tx);\n    update.Parameters.AddWithValue(\"name\", \"Ada Lovelace\");\n    update.Parameters.AddWithValue(\"id\", 1L);\n    await update.ExecuteNonQueryAsync();\n    await tx.CommitAsync();\n}\ncatch\n{\n    await tx.RollbackAsync();\n    throw;\n}",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Configure the pool",
+                  "body": "Set a bounded pool and command timeout in the connection string. Require verified TLS for remote production connections.",
+                  "code": "var builder = new NpgsqlConnectionStringBuilder(connectionString)\n{\n    MaxPoolSize = 10,\n    Timeout = 5,\n    CommandTimeout = 30\n};\nawait using var dataSource = NpgsqlDataSource.Create(builder.ConnectionString);",
+                  "language": "csharp"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "slug": "mongodb",
+          "title": "MongoDB",
+          "summary": "Documents, typed collections, cursor queries, indexes, and a shared client.",
+          "guides": {
+            "javascript": {
+              "introduction": "Node.js ESM with the official MongoDB driver. Share one MongoClient across the application.",
+              "dependencies": [
+                "mongodb"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Install the official driver and set MONGODB_URI. MongoDB creates the app database and users collection when first written.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install mongodb\nexport MONGODB_URI='mongodb://localhost:27017'",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "Connect once, ping to check reachability, and close on process shutdown. Documents use a unique email field.",
+                  "code": "import { MongoClient } from 'mongodb';\nconst client = new MongoClient(process.env.MONGODB_URI);\ntry {\n  await client.connect();\n  const db = client.db('app');\n  await db.command({ ping: 1 });\n  const users = db.collection('users');\n  const inserted = await users.insertOne({ email: 'ada@example.test', name: 'Ada' });\n  console.log(await users.findOne({ _id: inserted.insertedId }));\n} finally {\n  await client.close();\n}",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "Filter and project only the fields needed. Bound result size. An aggregation groups by a field; use update and delete filters for writes.",
+                  "code": "const page = await users.find({ name: /^A/ }, { projection: { email: 1, name: 1 } })\n  .sort({ _id: 1 }).limit(20).toArray();\nawait users.updateOne({ email: 'ada@example.test' }, { $set: { name: 'Ada Lovelace' } });\nconst counts = await users.aggregate([\n  { $group: { _id: '$name', count: { $sum: 1 } } },\n  { $sort: { count: -1 } },\n  { $limit: 10 }\n]).toArray();\nconsole.log(page, counts);\nawait users.deleteOne({ email: 'ada@example.test' });",
+                  "language": "javascript"
+                },
+                {
+                  "heading": "Configure connection and indexes",
+                  "body": "Index fields used for lookup; a unique index enforces email uniqueness. Size the client pool and set a selection timeout. Use TLS and authentication in the deployment URI.",
+                  "code": "const client = new MongoClient(process.env.MONGODB_URI, {\n  maxPoolSize: 10,\n  serverSelectionTimeoutMS: 5_000\n});\nawait client.connect();\nconst users = client.db('app').collection('users');\nawait users.createIndex({ email: 1 }, { unique: true });",
+                  "language": "javascript"
+                }
+              ]
+            },
+            "typescript": {
+              "introduction": "Node.js TypeScript with the official MongoDB driver. A typed collection describes document fields.",
+              "dependencies": [
+                "mongodb",
+                "typescript (development)"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Install the driver and TypeScript; set MONGODB_URI. The driver includes its own TypeScript types.",
+                  "code": "npm init -y\nnpm pkg set type=module\nnpm install mongodb\nnpm install -D typescript @types/node\nnpx tsc --init --module nodenext --target es2022",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "Create one MongoClient. Ping makes startup failures visible; close the client at shutdown.",
+                  "code": "import { MongoClient, ObjectId } from 'mongodb';\n\ntype User = { _id?: ObjectId; email: string; name: string };\nconst uri = process.env['MONGODB_URI'];\nif (!uri) throw new Error('MONGODB_URI is required');\nconst client = new MongoClient(uri);\ntry {\n  await client.connect();\n  const db = client.db('app');\n  await db.command({ ping: 1 });\n  const users = db.collection<User>('users');\n  const result = await users.insertOne({ email: 'ada@example.test', name: 'Ada' });\n  console.log(await users.findOne({ _id: result.insertedId }));\n} finally {\n  await client.close();\n}",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "Use bounded cursor results and typed filters. Aggregation output can have a different shape from source documents.",
+                  "code": "const page = await users.find({ name: /^A/ })\n  .sort({ _id: 1 }).limit(20).toArray();\nawait users.updateOne({ email: 'ada@example.test' }, { $set: { name: 'Ada Lovelace' } });\ntype Count = { _id: string; count: number };\nconst counts = await users.aggregate<Count>([\n  { $group: { _id: '$name', count: { $sum: 1 } } },\n  { $sort: { count: -1 } }, { $limit: 10 }\n]).toArray();\nconsole.log(page, counts);",
+                  "language": "typescript"
+                },
+                {
+                  "heading": "Configure connection and indexes",
+                  "body": "Create the unique index during deployment or startup before accepting writes. Keep credentials in the environment.",
+                  "code": "const client = new MongoClient(uri, {\n  maxPoolSize: 10,\n  serverSelectionTimeoutMS: 5_000\n});\nawait client.connect();\nconst users = client.db('app').collection<User>('users');\nawait users.createIndex({ email: 1 }, { unique: true });",
+                  "language": "typescript"
+                }
+              ]
+            },
+            "go": {
+              "introduction": "Go with the official MongoDB Go driver v2. Share the client and pass a context to operations.",
+              "dependencies": [
+                "go.mongodb.org/mongo-driver/v2"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Initialize a module, add the v2 driver, and export MONGODB_URI.",
+                  "code": "go mod init example.com/db-demo\ngo get go.mongodb.org/mongo-driver/v2/mongo",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "Connect a client, ping it, and disconnect on shutdown. Decode a found document into a typed struct.",
+                  "code": "package main\n\nimport (\n  \"context\"\n  \"fmt\"\n  \"log\"\n  \"os\"\n  \"go.mongodb.org/mongo-driver/v2/bson\"\n  \"go.mongodb.org/mongo-driver/v2/mongo\"\n  \"go.mongodb.org/mongo-driver/v2/mongo/options\"\n)\ntype User struct { Email string `bson:\"email\"`; Name string `bson:\"name\"` }\nfunc main() {\n  ctx := context.Background()\n  client, err := mongo.Connect(options.Client().ApplyURI(os.Getenv(\"MONGODB_URI\")))\n  if err != nil { log.Fatal(err) }\n  defer client.Disconnect(ctx)\n  if err := client.Ping(ctx, nil); err != nil { log.Fatal(err) }\n  users := client.Database(\"app\").Collection(\"users\")\n  result, err := users.InsertOne(ctx, User{Email: \"ada@example.test\", Name: \"Ada\"})\n  if err != nil { log.Fatal(err) }\n  var user User\n  if err := users.FindOne(ctx, bson.D{{Key: \"_id\", Value: result.InsertedID}}).Decode(&user); err != nil { log.Fatal(err) }\n  fmt.Println(user)\n}",
+                  "language": "go"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "Inside a function returning error, use a bounded cursor and check iteration errors. Aggregate groups matching documents; close each cursor. UpdateOne changes only matching documents.",
+                  "code": "cursor, err := users.Find(ctx, bson.D{{Key: \"name\", Value: bson.D{{Key: \"$regex\", Value: \"^A\"}}}},\n  options.Find().SetSort(bson.D{{Key: \"_id\", Value: 1}}).SetLimit(20))\nif err != nil { return err }\ndefer cursor.Close(ctx)\nfor cursor.Next(ctx) {\n  var user User\n  if err := cursor.Decode(&user); err != nil { return err }\n  fmt.Println(user)\n}\nif err := cursor.Err(); err != nil { return err }\n_, err = users.UpdateOne(ctx, bson.D{{Key: \"email\", Value: \"ada@example.test\"}},\n  bson.D{{Key: \"$set\", Value: bson.D{{Key: \"name\", Value: \"Ada Lovelace\"}}}})\nif err != nil { return err }\n\npipeline := mongo.Pipeline{bson.D{{Key: \"$group\", Value: bson.D{\n  {Key: \"_id\", Value: \"$name\"},\n  {Key: \"count\", Value: bson.D{{Key: \"$sum\", Value: 1}}},\n}}}}\ncounts, err := users.Aggregate(ctx, pipeline)\nif err != nil { return err }\ndefer counts.Close(ctx)\nfor counts.Next(ctx) {\n  fmt.Println(counts.Current)\n}\nreturn counts.Err()",
+                  "language": "go"
+                },
+                {
+                  "heading": "Configure connection and indexes",
+                  "body": "The fragment below belongs inside a function returning error. Bound the pool and create a unique index for email. A context deadline should bound each request operation.",
+                  "code": "opts := options.Client().ApplyURI(os.Getenv(\"MONGODB_URI\")).SetMaxPoolSize(10)\nclient, err := mongo.Connect(opts)\nif err != nil { return err }\nusers := client.Database(\"app\").Collection(\"users\")\n_, err = users.Indexes().CreateOne(ctx, mongo.IndexModel{\n  Keys: bson.D{{Key: \"email\", Value: 1}},\n  Options: options.Index().SetUnique(true),\n})\nreturn err",
+                  "language": "go"
+                }
+              ]
+            },
+            "csharp": {
+              "introduction": "C# with the official MongoDB .NET driver. Keep MongoClient as an application singleton.",
+              "dependencies": [
+                "MongoDB.Driver"
+              ],
+              "sections": [
+                {
+                  "heading": "Install and prepare",
+                  "body": "Create a project, install the driver, and set MONGODB_URI. The app database appears after the first write.",
+                  "code": "dotnet new console -n DbDemo\ncd DbDemo\ndotnet add package MongoDB.Driver",
+                  "language": "shell"
+                },
+                {
+                  "heading": "Connect and write",
+                  "body": "Get a typed collection and ping to confirm connectivity before accepting requests.",
+                  "code": "using MongoDB.Bson;\nusing MongoDB.Bson.Serialization.Attributes;\nusing MongoDB.Driver;\n\nvar uri = Environment.GetEnvironmentVariable(\"MONGODB_URI\")\n    ?? throw new InvalidOperationException(\"MONGODB_URI is required\");\nvar client = new MongoClient(uri);\nvar db = client.GetDatabase(\"app\");\nawait db.RunCommandAsync<BsonDocument>(new BsonDocument(\"ping\", 1));\nvar users = db.GetCollection<User>(\"users\");\nvar user = new User { Email = \"ada@example.test\", Name = \"Ada\" };\nawait users.InsertOneAsync(user);\nConsole.WriteLine((await users.Find(x => x.Id == user.Id).FirstOrDefaultAsync())?.Name);\n\npublic sealed class User\n{\n    [BsonId] public ObjectId Id { get; set; }\n    public string Email { get; set; } = \"\";\n    public string Name { get; set; } = \"\";\n}",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Query further",
+                  "body": "The fluent API supports filters, sort, and limit. Use targeted updates and aggregation for grouped results.",
+                  "code": "var page = await users.Find(x => x.Name.StartsWith(\"A\"))\n    .SortBy(x => x.Id).Limit(20).ToListAsync();\nawait users.UpdateOneAsync(x => x.Email == \"ada@example.test\",\n    Builders<User>.Update.Set(x => x.Name, \"Ada Lovelace\"));\nvar counts = await users.Aggregate()\n    .Group(x => x.Name, group => new { Name = group.Key, Count = group.Count() })\n    .SortByDescending(x => x.Count).Limit(10).ToListAsync();\nConsole.WriteLine($\"{page.Count} users, {counts.Count} groups\");",
+                  "language": "csharp"
+                },
+                {
+                  "heading": "Configure connection and indexes",
+                  "body": "The client already pools connections. Adjust the limit only for your deployment budget; use TLS and credentials in the URI.",
+                  "code": "var settings = MongoClientSettings.FromConnectionString(uri);\nsettings.MaxConnectionPoolSize = 10;\nsettings.ServerSelectionTimeout = TimeSpan.FromSeconds(5);\nvar client = new MongoClient(settings);\nvar users = client.GetDatabase(\"app\").GetCollection<User>(\"users\");\nvar index = new CreateIndexModel<User>(\n    Builders<User>.IndexKeys.Ascending(x => x.Email),\n    new CreateIndexOptions { Unique = true });\nawait users.Indexes.CreateOneAsync(index);",
+                  "language": "csharp"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "sources": [
+        {
+          "label": "node-postgres",
+          "url": "https://node-postgres.com/features/connecting"
+        },
+        {
+          "label": "pgx / pgxpool",
+          "url": "https://pkg.go.dev/github.com/jackc/pgx/v5/pgxpool"
+        },
+        {
+          "label": "Npgsql basic usage",
+          "url": "https://www.npgsql.org/doc/basic-usage.html"
+        },
+        {
+          "label": "MongoDB Node driver",
+          "url": "https://www.mongodb.com/docs/drivers/node/current/"
+        },
+        {
+          "label": "MongoDB Go driver",
+          "url": "https://www.mongodb.com/docs/drivers/go/current/"
+        },
+        {
+          "label": "MongoDB .NET driver",
+          "url": "https://www.mongodb.com/docs/drivers/csharp/current/"
+        }
+      ]
+    }
   }
 ]
