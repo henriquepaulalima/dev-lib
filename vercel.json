@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": { "deploymentEnabled": false },
   "framework": "angular",
   "installCommand": "npm install",
   "buildCommand": "npm run build --workspace client -- --configuration production",

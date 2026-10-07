@@ -1,0 +1,118 @@
+name: Test and deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  test-client:
+    name: Test client
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test client
+        run: npm test --workspace client
+
+      - name: Build client
+        run: npm run build --workspace client -- --configuration production
+
+  test-api:
+    name: Test API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Includes the check that every db/ seed entry matches the schema.
+      - name: Test API
+        run: npm test --workspace server
+
+      - name: Build API
+        run: npm run build --workspace server
+
+  # Both deploys wait for both test jobs, so a failure anywhere blocks the whole release.
+  deploy-client:
+    name: Deploy client to Vercel
+    needs: [test-client, test-api]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_PROJECT_NAME: ${{ vars.VERCEL_PROJECT_NAME || 'dev-lib' }}
+      VERCEL_SCOPE: ${{ vars.VERCEL_SCOPE }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        run: |
+          test -n "$VERCEL_TOKEN"
+
+          args=(deploy . --prod --yes --token "$VERCEL_TOKEN" --project "$VERCEL_PROJECT_NAME")
+          if [ -n "$VERCEL_SCOPE" ]; then
+            args+=(--scope "$VERCEL_SCOPE")
+          fi
+
+          npx --yes vercel@62.7.0 "${args[@]}"
+
+  deploy-api:
+    name: Deploy API to Railway
+    needs: [test-client, test-api]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+      RAILWAY_SERVICE_ID: ${{ vars.RAILWAY_SERVICE_ID }}
+      RAILWAY_ENVIRONMENT: ${{ vars.RAILWAY_ENVIRONMENT || 'production' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install --global @railway/cli@5.63.4
+
+      # The service builds server/Dockerfile with the repository root as context.
+      - name: Deploy to Railway
+        run: |
+          test -n "$RAILWAY_TOKEN"
+          test -n "$RAILWAY_PROJECT_ID"
+          test -n "$RAILWAY_SERVICE_ID"
+
+          railway up \
+            --project "$RAILWAY_PROJECT_ID" \
+            --service "$RAILWAY_SERVICE_ID" \
+            --environment "$RAILWAY_ENVIRONMENT" \
+            --ci \
+            --yes \
+            --message "GitHub Actions ${GITHUB_SHA}"
