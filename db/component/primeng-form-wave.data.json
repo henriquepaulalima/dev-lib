@@ -91,18 +91,18 @@
         }
       ],
       "anatomy": [
-        [
-          "Label",
-          "Value being adjusted"
-        ],
-        [
-          "Range",
-          "Native bounded control"
-        ],
-        [
-          "Output",
-          "Visible synchronized value"
-        ]
+        {
+          "name": "Label",
+          "description": "Value being adjusted"
+        },
+        {
+          "name": "Range",
+          "description": "Native bounded control"
+        },
+        {
+          "name": "Output",
+          "description": "Visible synchronized value"
+        }
       ],
       "accessibility": [
         "Set min, max, and step.",
@@ -289,18 +289,18 @@
         }
       ],
       "anatomy": [
-        [
-          "Label",
-          "Visible name for the date"
-        ],
-        [
-          "Native date input",
-          "Platform picker and serialized value"
-        ],
-        [
-          "Constraint help",
-          "Human-readable bounds"
-        ]
+        {
+          "name": "Label",
+          "description": "Visible name for the date"
+        },
+        {
+          "name": "Native date input",
+          "description": "Platform picker and serialized value"
+        },
+        {
+          "name": "Constraint help",
+          "description": "Human-readable bounds"
+        }
       ],
       "accessibility": [
         "Use input type=date before introducing a custom calendar.",

@@ -32,7 +32,8 @@ export class StoredComponentExampleSource {
   @Prop({ required: true })
   css: string;
 
-  @Prop({ required: true })
+  // Examples without behavior use an empty script.
+  @Prop({ default: '' })
   javascript: string;
 
   @Prop()
