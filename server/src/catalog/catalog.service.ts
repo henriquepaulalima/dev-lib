@@ -28,8 +28,13 @@ type CatalogDocument = Omit<CatalogSummary, 'subcomponents'> & {
   component?: { variants?: CatalogSubcomponentSummary[] };
 };
 
+const MAX_SEARCH_TERMS = 5;
+
 @Injectable()
 export class CatalogService {
+  // The catalog only changes when the server seeds MongoDB on startup, so it is read once per process.
+  private entries: Promise<CatalogSummary[]> | null = null;
+
   constructor(
     @InjectModel(COMPONENT_MODEL)
     private readonly componentModel: Model<StoredEntryDocument>,
@@ -39,55 +44,48 @@ export class CatalogService {
 
   async search(query = '', type?: string): Promise<CatalogSummary[]> {
     const normalizedQuery = query.trim().slice(0, 100);
-    const filter: Record<string, unknown> = {};
-
-    if (type === 'component' || type === 'feature') filter['type'] = type;
-
-    if (normalizedQuery) {
-      const terms = normalizedQuery.split(/\s+/).filter(Boolean).map(this.escapeRegex);
-      filter['$and'] = terms.map((term) => ({
-        $or: [
-          { title: { $regex: term, $options: 'i' } },
-          { summary: { $regex: term, $options: 'i' } },
-          { tags: { $regex: term, $options: 'i' } },
-          { type: { $regex: term, $options: 'i' } },
-          { 'component.variants.title': { $regex: term, $options: 'i' } },
-          { 'component.variants.summary': { $regex: term, $options: 'i' } },
-          { 'component.variants.tags': { $regex: term, $options: 'i' } }
-        ]
-      }));
-    }
-
-    const models = type === 'component'
-      ? [this.componentModel]
-      : type === 'feature'
-        ? [this.featureModel]
-        : [this.componentModel, this.featureModel];
-    delete filter['type'];
-
-    const results = await Promise.all(models.map((model) => model
-      .find(filter)
-      .select('-_id slug type title summary tags component.variants.slug component.variants.title component.variants.summary component.variants.tags')
-      .lean<CatalogDocument[]>()
-      .exec()));
-    const entries = results.flat().map((document) => this.toSummary(document));
+    const terms = normalizedQuery.split(/\s+/).filter(Boolean).slice(0, MAX_SEARCH_TERMS)
+      .map((term) => term.toLocaleLowerCase());
+    const entries = (await this.loadEntries())
+      .filter((entry) => type !== 'component' && type !== 'feature' || entry.type === type)
+      .filter((entry) => terms.every((term) => this.searchableText(entry).some((text) => text.includes(term))));
 
     return entries.sort((left, right) => this.relevance(right, normalizedQuery) - this.relevance(left, normalizedQuery)
       || left.title.localeCompare(right.title));
   }
 
   async findBySlug(slug: string): Promise<CatalogSummary> {
-    const [component, feature] = await Promise.all([
-      this.componentModel.findOne({ slug })
-        .select('-_id slug type title summary tags component.variants.slug component.variants.title component.variants.summary component.variants.tags')
-        .lean<CatalogDocument>()
-        .exec(),
-      this.featureModel.findOne({ slug }).select('-_id slug type title summary tags').lean<CatalogDocument>().exec()
-    ]);
-    const entry = component ?? feature;
+    const entry = (await this.loadEntries()).find((candidate) => candidate.slug === slug);
 
     if (!entry) throw new NotFoundException(`Catalog entry "${slug}" was not found.`);
-    return this.toSummary(entry);
+    return entry;
+  }
+
+  private loadEntries(): Promise<CatalogSummary[]> {
+    if (!this.entries) {
+      const entries = Promise.all([
+        this.componentModel.find()
+          .select('-_id slug type title summary tags component.variants.slug component.variants.title component.variants.summary component.variants.tags')
+          .lean<CatalogDocument[]>()
+          .exec(),
+        this.featureModel.find().select('-_id slug type title summary tags').lean<CatalogDocument[]>().exec()
+      ]).then((results) => results.flat().map((document) => this.toSummary(document)));
+      entries.catch(() => {
+        this.entries = null;
+      });
+      this.entries = entries;
+    }
+    return this.entries;
+  }
+
+  private searchableText(entry: CatalogSummary): string[] {
+    return [
+      entry.title,
+      entry.summary,
+      entry.type,
+      ...entry.tags,
+      ...entry.subcomponents.flatMap((variant) => [variant.title, variant.summary, ...variant.tags])
+    ].map((text) => text.toLocaleLowerCase());
   }
 
   private relevance(entry: CatalogSummary, query: string): number {
@@ -100,10 +98,6 @@ export class CatalogService {
     if (entry.subcomponents.some((variant) => variant.title.toLocaleLowerCase() === needle)) return 20;
     if (title.includes(needle)) return 10;
     return 1;
-  }
-
-  private escapeRegex(value: string): string {
-    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
   private toSummary({ component, ...entry }: CatalogDocument): CatalogSummary {

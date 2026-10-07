@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { CatalogModule } from './catalog/catalog.module';
 import { HealthController } from './health.controller';
 import { LibraryModule } from './library/library.module';
@@ -17,9 +19,11 @@ import { LibraryModule } from './library/library.module';
         uri: config.getOrThrow<string>('MONGODB_URI')
       })
     }),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
     CatalogModule,
     LibraryModule
   ],
-  controllers: [HealthController]
+  controllers: [HealthController],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }]
 })
 export class AppModule {}

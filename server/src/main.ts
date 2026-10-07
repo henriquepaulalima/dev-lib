@@ -5,9 +5,11 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
+  // Railway's edge is the one proxy in front of the API. Fastify ignores a numeric trustProxy, so the hop count is a function.
+  const proxyHops = Number(process.env.TRUST_PROXY_HOPS ?? 1);
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter({ trustProxy: (_address: string, hop: number) => hop < proxyHops })
   );
   const config = app.get(ConfigService);
   const origins = config.getOrThrow<string>('CLIENT_ORIGIN')
