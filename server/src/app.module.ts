@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ClientIpThrottlerGuard } from './client-ip-throttler.guard';
 import { CatalogModule } from './catalog/catalog.module';
 import { HealthController } from './health.controller';
 import { LibraryModule } from './library/library.module';
@@ -24,6 +25,6 @@ import { LibraryModule } from './library/library.module';
     LibraryModule
   ],
   controllers: [HealthController],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }]
+  providers: [{ provide: APP_GUARD, useClass: ClientIpThrottlerGuard }]
 })
 export class AppModule {}

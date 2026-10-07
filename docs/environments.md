@@ -37,9 +37,8 @@ Required server variables:
 | `PORT` | API listening port |
 | `MONGODB_URI` | MongoDB connection string |
 | `CLIENT_ORIGIN` | Comma-separated origins allowed by CORS |
-| `TRUST_PROXY_HOPS` | Proxies in front of the API, used to find each visitor's address for rate limiting (default `1`, Railway's edge) |
 
-The API allows 120 requests per minute per address (the health check is exempt) and lets clients cache catalog and library responses for five minutes. Catalog and library content is read from MongoDB once per process, because it only changes when the server seeds the database on startup.
+The API allows 120 requests per minute per address (the health check is exempt), identifying visitors by the `X-Real-IP` header Railway's edge sets, and lets clients cache catalog and library responses for five minutes. Catalog and library content is read from MongoDB once per process, because it only changes when the server seeds the database on startup.
 
 ## Deployments
 
